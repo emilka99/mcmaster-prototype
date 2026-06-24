@@ -90,15 +90,15 @@ const TYPE_LABELS = { chapter: 'rozdział', video: 'wideo', calculator: 'kalkula
 // ── Transition hook ───────────────────────────────────────────────────────────
 
 function useSlide(view) {
-  const [visible, setVisible] = useState(false)
-  const prevView = useRef(view)
+  const [visible, setVisible] = useState(true)
+  const isFirst = useRef(true)
 
   useEffect(() => {
+    if (isFirst.current) { isFirst.current = false; return }
     setVisible(false)
     const t = requestAnimationFrame(() => {
       requestAnimationFrame(() => setVisible(true))
     })
-    prevView.current = view
     return () => cancelAnimationFrame(t)
   }, [view])
 
