@@ -113,6 +113,21 @@ function IconPlay({ size = 18 }) {
   )
 }
 
+function IconCalc({ size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" fill="none">
+      <rect x="3" y="2" width="14" height="16" rx="2" stroke="currentColor" strokeWidth="1.7"/>
+      <rect x="5.5" y="4.5" width="9" height="3" rx="1" fill="currentColor" opacity="0.5"/>
+      <circle cx="6.5" cy="11" r="1" fill="currentColor"/>
+      <circle cx="10" cy="11" r="1" fill="currentColor"/>
+      <circle cx="13.5" cy="11" r="1" fill="currentColor"/>
+      <circle cx="6.5" cy="14.5" r="1" fill="currentColor"/>
+      <circle cx="10" cy="14.5" r="1" fill="currentColor"/>
+      <circle cx="13.5" cy="14.5" r="1" fill="currentColor"/>
+    </svg>
+  )
+}
+
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
 function formatMinutes(mins) {
@@ -270,6 +285,65 @@ function EmptyState({ navigate }) {
         />
       </div>
 
+      {/* E-learning section */}
+      <div style={{ marginBottom: '24px' }}>
+        <h3 style={{
+          fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '11px',
+          color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em',
+          marginBottom: '10px',
+        }}>
+          Odkryj materiały edukacyjne
+        </h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <button
+            onClick={() => navigate('/video/v1')}
+            style={{
+              width: '100%', height: '60px', padding: '0 16px',
+              background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)',
+              borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-box)',
+              cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '14px',
+              textAlign: 'left',
+            }}
+          >
+            <span style={{ color: 'var(--interactive-primary)', flexShrink: 0 }}>
+              <IconPlay size={20} />
+            </span>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '14px', color: 'var(--text-primary)' }}>
+                Wideo edukacyjne
+              </div>
+              <div style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                Kardiologia, neurologia i inne
+              </div>
+            </div>
+            <span style={{ color: 'var(--text-tertiary)', fontSize: '16px' }}>›</span>
+          </button>
+          <button
+            onClick={() => navigate('/calculator/score2')}
+            style={{
+              width: '100%', height: '60px', padding: '0 16px',
+              background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)',
+              borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-box)',
+              cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '14px',
+              textAlign: 'left',
+            }}
+          >
+            <span style={{ color: 'var(--interactive-primary)', flexShrink: 0 }}>
+              <IconCalc size={20} />
+            </span>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '14px', color: 'var(--text-primary)' }}>
+                Kalkulatory kliniczne
+              </div>
+              <div style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                SCORE2, BMI, HbA1c, eGFR i inne
+              </div>
+            </div>
+            <span style={{ color: 'var(--text-tertiary)', fontSize: '16px' }}>›</span>
+          </button>
+        </div>
+      </div>
+
       {/* Primary CTA */}
       <button
         onClick={() => navigate('/textbook')}
@@ -392,6 +466,67 @@ function FilledState({ user, navigate }) {
             isLast
             onClick={() => console.log('→ czas czytania')}
           />
+        </div>
+      </section>
+
+      {/* Ostatnio używane */}
+      <section>
+        <h3 style={{
+          fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '11px',
+          color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em',
+          marginBottom: '10px',
+        }}>
+          Ostatnio używane
+        </h3>
+        <div style={{
+          background: 'var(--bg-surface)',
+          borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-box)', overflow: 'hidden',
+        }}>
+          <button
+            onClick={() => navigate('/video/v1')}
+            style={{
+              width: '100%', height: '56px', padding: '0 16px',
+              background: 'none', border: 'none',
+              borderBottom: '1px solid var(--border-subtle)',
+              cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px',
+              textAlign: 'left',
+            }}
+          >
+            <span style={{ color: 'var(--interactive-primary)', flexShrink: 0 }}>
+              <IconPlay size={18} />
+            </span>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '14px', color: 'var(--text-primary)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                Niewydolność serca — przegląd
+              </div>
+              <div style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                Wideo · Kardiologia
+              </div>
+            </div>
+            <span style={{ color: 'var(--text-tertiary)', fontSize: '16px' }}>›</span>
+          </button>
+          <button
+            onClick={() => navigate('/calculator/score2')}
+            style={{
+              width: '100%', height: '56px', padding: '0 16px',
+              background: 'none', border: 'none', borderBottom: 'none',
+              cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px',
+              textAlign: 'left',
+            }}
+          >
+            <span style={{ color: 'var(--interactive-primary)', flexShrink: 0 }}>
+              <IconCalc size={18} />
+            </span>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '14px', color: 'var(--text-primary)' }}>
+                Kalkulator SCORE2
+              </div>
+              <div style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--text-secondary)' }}>
+                Kalkulator · Kardiologia
+              </div>
+            </div>
+            <span style={{ color: 'var(--text-tertiary)', fontSize: '16px' }}>›</span>
+          </button>
         </div>
       </section>
 

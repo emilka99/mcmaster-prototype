@@ -239,7 +239,14 @@ function SpecialtiesView({ onSelect, navigate }) {
   return (
     <>
       <SearchShortcut onClick={() => navigate('/search')} />
-      <div style={{
+      <SpecialtiesViewOnly onSelect={onSelect} />
+    </>
+  )
+}
+
+function SpecialtiesViewOnly({ onSelect }) {
+  return (
+    <div style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
         gap: '12px',
@@ -284,7 +291,6 @@ function SpecialtiesView({ onSelect, navigate }) {
           </button>
         ))}
       </div>
-    </>
   )
 }
 
@@ -362,8 +368,8 @@ function TopicsView({ specialty, onBack, onSelect }) {
 function ContentView({ specialty, topic, onBack, navigate }) {
   function handleClick(item) {
     if (item.type === 'chapter') navigate(`/reader/${item.id}`)
-    else if (item.type === 'video') console.log('video placeholder', item.id)
-    else if (item.type === 'calculator') console.log('calculator placeholder', item.id)
+    else if (item.type === 'video') navigate(`/video/${item.id}`)
+    else if (item.type === 'calculator') navigate(`/calculator/${item.id}`)
   }
 
   return (
@@ -463,6 +469,182 @@ function SlidePane({ viewKey, children }) {
   )
 }
 
+// ── E-learning data ───────────────────────────────────────────────────────────
+
+const MOCK_VIDEOS = [
+  { id: 'v1', title: 'Niewydolność serca — przegląd', specialty: 'Kardiologia', duration: '18 min', color: '#7A003C' },
+  { id: 'v2', title: 'Udar mózgu — diagnostyka', specialty: 'Neurologia', duration: '24 min', color: '#185FA5' },
+  { id: 'v3', title: 'Cukrzyca typu 2', specialty: 'Endokrynologia', duration: '15 min', color: '#0F6E56' },
+  { id: 'v4', title: 'Astma oskrzelowa', specialty: 'Pulmonologia', duration: '12 min', color: '#854F0B' },
+]
+
+const MOCK_CALCULATORS = [
+  { id: 'score2', title: 'Kalkulator ryzyka sercowego', subtitle: 'SCORE2 — ryzyko 10-letnie', specialty: 'Kardiologia' },
+  { id: 'hba1c', title: 'Przelicznik HbA1c', subtitle: 'mmol/mol ↔ %', specialty: 'Endokrynologia' },
+  { id: 'bmi', title: 'Kalkulator BMI', subtitle: 'Body Mass Index + interpretacja', specialty: 'Ogólne' },
+  { id: 'gfr', title: 'Kalkulator eGFR', subtitle: 'CKD-EPI — funkcja nerek', specialty: 'Nefrologia' },
+]
+
+const IconPlay = ({ size = 28, color = 'currentColor' }) => (
+  <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
+    <circle cx="14" cy="14" r="13" fill={color} fillOpacity="0.15"/>
+    <path d="M11 9.5L20 14L11 18.5V9.5Z" fill={color}/>
+  </svg>
+)
+
+const IconCalc = ({ size = 20 }) => (
+  <svg width={size} height={size} viewBox="0 0 20 20" fill="none">
+    <rect x="3" y="2" width="14" height="16" rx="2" stroke="currentColor" strokeWidth="1.7"/>
+    <rect x="5.5" y="4.5" width="9" height="3" rx="1" fill="currentColor" opacity="0.5"/>
+    <circle cx="6.5" cy="11" r="1" fill="currentColor"/>
+    <circle cx="10" cy="11" r="1" fill="currentColor"/>
+    <circle cx="13.5" cy="11" r="1" fill="currentColor"/>
+    <circle cx="6.5" cy="14.5" r="1" fill="currentColor"/>
+    <circle cx="10" cy="14.5" r="1" fill="currentColor"/>
+    <circle cx="13.5" cy="14.5" r="1" fill="currentColor"/>
+  </svg>
+)
+
+function ELearningView({ navigate }) {
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
+
+      {/* Wideo */}
+      <section>
+        <h3 style={{
+          fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '11px',
+          color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em',
+          marginBottom: '12px',
+        }}>
+          Wideo
+        </h3>
+        <div style={{
+          display: 'flex', gap: '12px', overflowX: 'auto',
+          marginLeft: '-16px', marginRight: '-16px',
+          paddingLeft: '16px', paddingRight: '16px',
+          paddingBottom: '4px', scrollbarWidth: 'none',
+        }}>
+          {MOCK_VIDEOS.map(v => (
+            <button
+              key={v.id}
+              onClick={() => navigate(`/video/${v.id}`)}
+              style={{
+                width: '200px', flexShrink: 0, background: 'var(--bg-surface)',
+                border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)',
+                overflow: 'hidden', cursor: 'pointer', textAlign: 'left', padding: 0,
+              }}
+            >
+              <div style={{
+                height: '112px', background: v.color + '26',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <IconPlay size={36} color={v.color} />
+              </div>
+              <div style={{ padding: '10px 12px 12px' }}>
+                <div style={{
+                  fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '13px',
+                  color: 'var(--text-primary)', lineHeight: 1.35,
+                  display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden', marginBottom: '6px',
+                }}>
+                  {v.title}
+                </div>
+                <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--text-secondary)' }}>
+                  {v.specialty} · {v.duration}
+                </div>
+              </div>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      {/* Kalkulatory */}
+      <section>
+        <h3 style={{
+          fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '11px',
+          color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em',
+          marginBottom: '12px',
+        }}>
+          Kalkulatory
+        </h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          {MOCK_CALCULATORS.map(c => (
+            <button
+              key={c.id}
+              onClick={() => navigate(`/calculator/${c.id}`)}
+              style={{
+                width: '100%', height: '64px', padding: '0 16px',
+                background: 'var(--bg-surface)', border: 'none',
+                borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-box)',
+                cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '14px',
+                textAlign: 'left',
+              }}
+            >
+              <span style={{ color: 'var(--interactive-primary)', flexShrink: 0 }}>
+                <IconCalc size={20} />
+              </span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{
+                  fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '15px',
+                  color: 'var(--text-primary)', lineHeight: 1.2,
+                }}>
+                  {c.title}
+                </div>
+                <div style={{
+                  fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--text-secondary)',
+                }}>
+                  {c.specialty} · {c.subtitle}
+                </div>
+              </div>
+              <span style={{ color: 'var(--text-tertiary)', fontSize: '18px' }}>›</span>
+            </button>
+          ))}
+        </div>
+      </section>
+    </div>
+  )
+}
+
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+
+function Tabs({ active, onChange }) {
+  return (
+    <div style={{
+      display: 'flex',
+      background: 'var(--bg-surface)',
+      borderBottom: '1px solid var(--border-subtle)',
+      marginBottom: '20px',
+      marginLeft: '-16px',
+      marginRight: '-16px',
+    }}>
+      {[
+        { id: 'textbook', label: 'Textbook' },
+        { id: 'elearning', label: 'E-learning' },
+      ].map(tab => (
+        <button
+          key={tab.id}
+          onClick={() => onChange(tab.id)}
+          style={{
+            flex: 1,
+            height: '40px',
+            background: 'none',
+            border: 'none',
+            borderBottom: active === tab.id ? '2px solid var(--interactive-primary)' : '2px solid transparent',
+            cursor: 'pointer',
+            fontFamily: 'var(--font-ui)',
+            fontWeight: active === tab.id ? 600 : 400,
+            fontSize: '14px',
+            color: active === tab.id ? 'var(--text-brand)' : 'var(--text-secondary)',
+            transition: 'color 0.15s',
+          }}
+        >
+          {tab.label}
+        </button>
+      ))}
+    </div>
+  )
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 export default function Textbook() {
@@ -470,6 +652,7 @@ export default function Textbook() {
   const [view, setView] = useState('specialties')
   const [selectedSpecialty, setSelectedSpecialty] = useState(null)
   const [selectedTopic, setSelectedTopic] = useState(null)
+  const [tab, setTab] = useState('textbook')
 
   function selectSpecialty(specialty) {
     setSelectedSpecialty(specialty)
@@ -506,7 +689,12 @@ export default function Textbook() {
           }}>
             Textbook
           </h1>
-          <SpecialtiesView onSelect={selectSpecialty} navigate={navigate} />
+          <SearchShortcut onClick={() => navigate('/search')} />
+          <Tabs active={tab} onChange={t => { setTab(t); setView('specialties') }} />
+          {tab === 'textbook'
+            ? <SpecialtiesViewOnly onSelect={selectSpecialty} />
+            : <ELearningView navigate={navigate} />
+          }
         </SlidePane>
       )}
 
