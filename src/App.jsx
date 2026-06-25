@@ -7,6 +7,7 @@ import Reader from './screens/Reader'
 import Profile from './screens/Profile'
 import VideoPlayer from './screens/VideoPlayer'
 import Calculator from './screens/Calculator'
+import Saved from './screens/Saved'
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/video/:videoId" element={<VideoPlayer />} />
         <Route path="/calculator/:calcId" element={<Calculator />} />
+        <Route path="/saved" element={<AppShell><Saved /></AppShell>} />
       </Routes>
     </BrowserRouter>
   )

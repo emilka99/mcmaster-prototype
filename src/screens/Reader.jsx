@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useReadingHistory } from '../hooks/useReadingHistory'
+import { useSavedChapters } from '../hooks/useSavedChapters'
+import BottomSheet from '../components/BottomSheet'
 
 // ── Mock data ─────────────────────────────────────────────────────────────────
 
@@ -342,10 +344,12 @@ const IconMore = () => (
   </svg>
 )
 
-const IconBookmark = () => (
+const IconBookmark = ({ filled }) => (
   <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-    <path d="M4 3H14C14.6 3 15 3.4 15 4V16L9 12.5L3 16V4C3 3.4 3.4 3 4 3Z"
-      stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/>
+    {filled
+      ? <path d="M4 3H14C14.6 3 15 3.4 15 4V16L9 12.5L3 16V4C3 3.4 3.4 3 4 3Z" fill="currentColor" strokeLinejoin="round"/>
+      : <path d="M4 3H14C14.6 3 15 3.4 15 4V16L9 12.5L3 16V4C3 3.4 3.4 3 4 3Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/>
+    }
   </svg>
 )
 
@@ -623,9 +627,15 @@ export default function Reader() {
   const { chapterId } = useParams()
   const { setLastRead } = useReadingHistory()
 
+  const { isSaved, saveChapter, removeChapter, addNote } = useSavedChapters()
+
   const [showTOC, setShowTOC] = useState(false)
   const [progress, setProgress] = useState(0)
   const [activeSection, setActiveSection] = useState('def')
+  const [showNoteInput, setShowNoteInput] = useState(false)
+  const [noteText, setNoteText] = useState('')
+
+  const saved = isSaved(MOCK_CHAPTER.id)
 
   // Inject reader CSS
   useEffect(() => {
@@ -748,14 +758,24 @@ export default function Reader() {
         paddingBottom: 'env(safe-area-inset-bottom)',
       }}>
         <div style={{ height: '52px', padding: '0 20px', display: 'flex', alignItems: 'center', gap: '16px' }}>
+          {/* Zapisz */}
           <button
-            onClick={() => console.log('zapisz rozdział')}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)', fontFamily: 'var(--font-ui)', fontSize: '13px', fontWeight: 500, padding: '0', flexShrink: 0 }}
+            onClick={() => saved ? removeChapter(MOCK_CHAPTER.id) : saveChapter(MOCK_CHAPTER)}
+            style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', gap: '6px',
+              color: saved ? 'var(--interactive-primary)' : 'var(--text-secondary)',
+              fontFamily: 'var(--font-ui)', fontSize: '13px',
+              fontWeight: saved ? 600 : 500,
+              padding: '0', flexShrink: 0,
+              transition: 'color 0.15s',
+            }}
           >
-            <IconBookmark />
-            Zapisz
+            <IconBookmark filled={saved} />
+            {saved ? 'Zapisano' : 'Zapisz'}
           </button>
 
+          {/* Progress */}
           <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
             <div style={{ width: '80px', height: '3px', background: 'var(--border-subtle)', borderRadius: '999px', overflow: 'hidden', flexShrink: 0 }}>
               <div style={{ height: '100%', width: `${progress}%`, background: '#7A003C', borderRadius: '999px', transition: 'width 0.2s ease' }} />
@@ -765,15 +785,75 @@ export default function Reader() {
             </span>
           </div>
 
+          {/* Notatka */}
           <button
-            onClick={() => console.log('notatka')}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)', fontFamily: 'var(--font-ui)', fontSize: '13px', fontWeight: 500, padding: '0', flexShrink: 0 }}
+            onClick={() => setShowNoteInput(true)}
+            style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', gap: '6px',
+              color: 'var(--text-secondary)',
+              fontFamily: 'var(--font-ui)', fontSize: '13px', fontWeight: 500,
+              padding: '0', flexShrink: 0,
+            }}
           >
             <IconNote />
             Notatka
           </button>
         </div>
       </div>
+
+      {/* ── Note bottom sheet ── */}
+      <BottomSheet
+        isOpen={showNoteInput}
+        onClose={() => setShowNoteInput(false)}
+        title="Dodaj notatkę"
+      >
+        <div style={{ padding: '12px 20px 20px' }}>
+          <textarea
+            value={noteText}
+            onChange={e => setNoteText(e.target.value)}
+            placeholder="Twoje przemyślenia do tego rozdziału..."
+            autoFocus
+            style={{
+              width: '100%',
+              minHeight: '120px',
+              border: '1.5px solid var(--border-default)',
+              borderRadius: 'var(--radius-md)',
+              padding: '12px',
+              fontFamily: 'var(--font-ui)',
+              fontSize: '15px',
+              lineHeight: '1.6',
+              resize: 'none',
+              background: 'var(--bg-app)',
+              color: 'var(--text-primary)',
+              outline: 'none',
+              boxSizing: 'border-box',
+            }}
+          />
+          <button
+            onClick={() => {
+              if (!isSaved(MOCK_CHAPTER.id)) saveChapter(MOCK_CHAPTER)
+              addNote(MOCK_CHAPTER.id, noteText)
+              setShowNoteInput(false)
+            }}
+            style={{
+              marginTop: '12px',
+              width: '100%',
+              height: '48px',
+              background: 'var(--interactive-primary)',
+              color: 'white',
+              border: 'none',
+              borderRadius: 'var(--radius-full)',
+              fontFamily: 'var(--font-ui)',
+              fontSize: '15px',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            Zapisz notatkę
+          </button>
+        </div>
+      </BottomSheet>
 
       {/* ── TOC panel ── */}
       <TOCPanel

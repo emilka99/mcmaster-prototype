@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useSavedChapters } from '../hooks/useSavedChapters'
 
 const MOCK_USER = {
   hasHistory: false,
@@ -444,14 +445,14 @@ function FilledState({ user, navigate }) {
           <ResourceRow
             icon={<IconFolder />}
             label="Moje foldery"
-            value={user.folders.length}
-            onClick={() => console.log('→ foldery')}
+            value={user.folders}
+            onClick={() => navigate('/saved?tab=folders')}
           />
           <ResourceRow
             icon={<IconBookmark />}
             label="Zapisane elementy"
             value={user.savedItems}
-            onClick={() => console.log('→ zapisane')}
+            onClick={() => navigate('/saved')}
           />
           <ResourceRow
             icon={<IconNote />}
@@ -600,6 +601,9 @@ function OfflineCard({ ready }) {
 export default function MySpace() {
   const navigate = useNavigate()
   const [mockHasHistory, setMockHasHistory] = useState(MOCK_USER.hasHistory)
+  const { saved, folders } = useSavedChapters()
+
+  const savedWithNotes = saved.filter(s => s.note)
 
   const user = {
     ...MOCK_USER,
@@ -607,14 +611,14 @@ export default function MySpace() {
     lastRead: mockHasHistory
       ? { chapterId: 'cardiology-3-2', title: 'Kardiologia 3.2 — Niewydolność serca' }
       : null,
-    folders: mockHasHistory ? [{ id: 1, name: 'Kardiologia', count: 12 }] : [],
-    savedItems: mockHasHistory ? 24 : 0,
-    notes: mockHasHistory ? 7 : 0,
+    folders: folders.length,
+    savedItems: saved.length,
+    notes: savedWithNotes.length,
     readingMinutes: mockHasHistory ? 340 : 0,
-    offlineReady: mockHasHistory ? false : false,
+    offlineReady: false,
   }
 
-  const isEmpty = !user.hasHistory && user.folders.length === 0
+  const isEmpty = !user.hasHistory && saved.length === 0
 
   return (
     <div style={{ background: 'var(--bg-app)', minHeight: '100%' }}>
