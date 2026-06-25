@@ -1,13 +1,51 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import BottomSheet from '../components/BottomSheet'
+
+// ── Mock data ─────────────────────────────────────────────────────────────────
 
 const MOCK_USER = {
-  name: 'Jan Kowalski',
-  initials: 'JK',
-  email: 'j.kowalski@uj.edu.pl',
-  accessType: 'institutional',
-  institution: 'Uniwersytet Jagielloński',
-  subscriptionStatus: 'active',
-  memberSince: '2024',
+  name: 'Emilka Kowalska',
+  initials: 'EK',
+  email: 'emi@rozkw.it',
+  emailChangeUrl: 'mailto:support@ebm.one',
+  country: 'Poland',
+  professionalStatus: 'Student (health sciences)',
+  subscription: {
+    type: 'ebm.one: all-in access',
+    validFrom: '2026/06/03',
+    validTo: '2026/09/03',
+    activatedCode: null,
+  },
+  consents: {
+    marketing: false,
+    newsletter: false,
+    dataProcessing: true,
+  },
+}
+
+const PROFESSIONAL_STATUSES = [
+  'Physician',
+  'Nurse practitioner/registered nurse',
+  'Pharmacist',
+  'Other health care professional',
+  'Student (health sciences)',
+  'Other',
+]
+
+const COUNTRIES = [
+  'Poland', 'Germany', 'United Kingdom', 'France', 'Netherlands',
+  'Sweden', 'Norway', 'Denmark', 'Austria', 'Switzerland',
+  'Spain', 'Italy', 'Portugal', 'Belgium', 'Czech Republic',
+  'Hungary', 'Romania', 'Croatia', 'Ukraine', 'United States',
+]
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function formatDate(dateStr) {
+  if (!dateStr) return ''
+  const d = new Date(dateStr.replace(/\//g, '-'))
+  return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
 }
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
@@ -18,66 +56,9 @@ const IconBack = () => (
   </svg>
 )
 
-const IconFolder = () => (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-    <path d="M2 4.5C2 3.9 2.4 3.5 3 3.5H7L9 5.5H15C15.6 5.5 16 5.9 16 6.5V13.5C16 14.1 15.6 14.5 15 14.5H3C2.4 14.5 2 14.1 2 13.5V4.5Z"
-      stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round"/>
-  </svg>
-)
-
-const IconBookmark = () => (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-    <path d="M4 3H14C14.6 3 15 3.4 15 4V16L9 12.5L3 16V4C3 3.4 3.4 3 4 3Z"
-      stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round"/>
-  </svg>
-)
-
-const IconNote = () => (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-    <rect x="2" y="2" width="14" height="14" rx="2" stroke="currentColor" strokeWidth="1.7"/>
-    <line x1="5" y1="6.5" x2="13" y2="6.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-    <line x1="5" y1="9.5" x2="13" y2="9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-    <line x1="5" y1="12.5" x2="9" y2="12.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-  </svg>
-)
-
-const IconGlobe = () => (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-    <circle cx="9" cy="9" r="7" stroke="currentColor" strokeWidth="1.7"/>
-    <path d="M9 2C9 2 6.5 5 6.5 9s2.5 7 2.5 7M9 2c0 0 2.5 3 2.5 7S9 16 9 16"
-      stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-    <line x1="2" y1="9" x2="16" y2="9" stroke="currentColor" strokeWidth="1.5"/>
-  </svg>
-)
-
-const IconBell = () => (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-    <path d="M9 2a5 5 0 0 0-5 5v3l-1.5 2.5h13L14 10V7a5 5 0 0 0-5-5Z"
-      stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round"/>
-    <path d="M7.5 14.5a1.5 1.5 0 0 0 3 0" stroke="currentColor" strokeWidth="1.7"/>
-  </svg>
-)
-
-const IconCloud = () => (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-    <path d="M13.5 13H4.5a3 3 0 1 1 .6-5.9A4 4 0 1 1 13.5 9v0a2.5 2.5 0 0 1 0 5v-1Z"
-      stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round"/>
-  </svg>
-)
-
-const IconCard = () => (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-    <rect x="2" y="4" width="14" height="10" rx="1.5" stroke="currentColor" strokeWidth="1.7"/>
-    <line x1="2" y1="7.5" x2="16" y2="7.5" stroke="currentColor" strokeWidth="1.7"/>
-    <rect x="4" y="10" width="3" height="1.5" rx="0.5" fill="currentColor"/>
-  </svg>
-)
-
-const IconHelp = () => (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-    <circle cx="9" cy="9" r="7" stroke="currentColor" strokeWidth="1.7"/>
-    <path d="M6.8 7a2.2 2.2 0 0 1 4.3.7c0 1.5-2.1 2-2.1 3" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/>
-    <circle cx="9" cy="13" r="0.8" fill="currentColor"/>
+const IconCheck = ({ size = 12 }) => (
+  <svg width={size} height={size} viewBox="0 0 12 12" fill="none">
+    <path d="M2 6L5 9L10 3" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 )
 
@@ -93,7 +74,7 @@ function SectionLabel({ children }) {
       textTransform: 'uppercase',
       letterSpacing: '0.08em',
       marginBottom: '10px',
-      paddingLeft: '4px',
+      padding: '0 16px',
     }}>
       {children}
     </h3>
@@ -107,17 +88,18 @@ function ListCard({ children }) {
       borderRadius: 'var(--radius-lg)',
       boxShadow: 'var(--shadow-box)',
       overflow: 'hidden',
-      marginBottom: '28px',
+      margin: '0 16px',
     }}>
       {children}
     </div>
   )
 }
 
-function ListRow({ icon, label, value, isLast, onClick, danger }) {
+function ListRow({ label, value, isLast, onClick, disabled }) {
   return (
     <button
       onClick={onClick}
+      disabled={disabled}
       style={{
         width: '100%',
         height: '52px',
@@ -125,21 +107,19 @@ function ListRow({ icon, label, value, isLast, onClick, danger }) {
         background: 'none',
         border: 'none',
         borderBottom: isLast ? 'none' : '1px solid var(--border-subtle)',
-        cursor: 'pointer',
+        cursor: disabled ? 'default' : 'pointer',
         display: 'flex',
         alignItems: 'center',
         gap: '12px',
         textAlign: 'left',
+        opacity: disabled ? 0.5 : 1,
       }}
     >
-      <span style={{ color: danger ? 'var(--color-error)' : 'var(--text-secondary)', flexShrink: 0 }}>
-        {icon}
-      </span>
       <span style={{
         flex: 1,
         fontFamily: 'var(--font-ui)',
         fontSize: '15px',
-        color: danger ? 'var(--color-error)' : 'var(--text-primary)',
+        color: 'var(--text-primary)',
       }}>
         {label}
       </span>
@@ -147,14 +127,121 @@ function ListRow({ icon, label, value, isLast, onClick, danger }) {
         <span style={{
           fontFamily: 'var(--font-ui)',
           fontSize: '14px',
-          color: 'var(--text-tertiary)',
-          marginRight: '6px',
+          color: 'var(--text-secondary)',
+          marginRight: '4px',
+          maxWidth: '140px',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          textAlign: 'right',
         }}>
           {value}
         </span>
       )}
-      <span style={{ color: 'var(--text-tertiary)', fontSize: '16px', flexShrink: 0 }}>›</span>
+      {!disabled && (
+        <span style={{ color: 'var(--text-tertiary)', fontSize: '18px', flexShrink: 0 }}>›</span>
+      )}
     </button>
+  )
+}
+
+function Checkbox({ checked, disabled, onChange, label, sublabel }) {
+  return (
+    <button
+      onClick={disabled ? undefined : onChange}
+      disabled={disabled}
+      style={{
+        width: '100%',
+        minHeight: '64px',
+        padding: '0 16px',
+        background: 'none',
+        border: 'none',
+        cursor: disabled ? 'default' : 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '14px',
+        textAlign: 'left',
+      }}
+    >
+      <div style={{
+        width: '20px',
+        height: '20px',
+        flexShrink: 0,
+        borderRadius: '5px',
+        border: checked ? 'none' : '1.5px solid var(--border-default)',
+        background: checked ? 'var(--interactive-primary)' : 'transparent',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        transition: 'background 0.15s',
+      }}>
+        {checked && <IconCheck size={12} />}
+      </div>
+      <div style={{ flex: 1 }}>
+        <div style={{
+          fontFamily: 'var(--font-ui)',
+          fontWeight: 600,
+          fontSize: '14px',
+          color: 'var(--text-primary)',
+          marginBottom: '2px',
+          opacity: disabled ? 0.5 : 1,
+        }}>
+          {label}
+        </div>
+        <div style={{
+          fontFamily: 'var(--font-ui)',
+          fontSize: '12px',
+          color: 'var(--text-tertiary)',
+          opacity: disabled ? 0.5 : 1,
+        }}>
+          {sublabel}
+        </div>
+      </div>
+    </button>
+  )
+}
+
+// ── Bottom sheet option list ──────────────────────────────────────────────────
+
+function OptionList({ options, selected, onSelect }) {
+  return (
+    <div>
+      {options.map((opt, i) => (
+        <button
+          key={opt}
+          onClick={() => onSelect(opt)}
+          style={{
+            width: '100%',
+            height: '52px',
+            padding: '0 20px',
+            background: 'none',
+            border: 'none',
+            borderBottom: i < options.length - 1 ? '1px solid var(--border-subtle)' : 'none',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            textAlign: 'left',
+          }}
+        >
+          <span style={{
+            fontFamily: 'var(--font-ui)',
+            fontSize: '15px',
+            color: selected === opt ? 'var(--interactive-primary)' : 'var(--text-primary)',
+            fontWeight: selected === opt ? 600 : 400,
+          }}>
+            {opt}
+          </span>
+          {selected === opt && (
+            <span style={{ color: 'var(--interactive-primary)' }}>
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path d="M3 9L7.5 13.5L15 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </span>
+          )}
+        </button>
+      ))}
+    </div>
   )
 }
 
@@ -162,7 +249,19 @@ function ListRow({ icon, label, value, isLast, onClick, danger }) {
 
 export default function Profile() {
   const navigate = useNavigate()
-  const user = MOCK_USER
+
+  const [country, setCountry] = useState(MOCK_USER.country)
+  const [status, setStatus] = useState(MOCK_USER.professionalStatus)
+  const [consents, setConsents] = useState(MOCK_USER.consents)
+
+  const [sheet, setSheet] = useState(null) // 'country' | 'status' | null
+
+  const sub = MOCK_USER.subscription
+  const isActive = sub?.validTo && new Date(sub.validTo.replace(/\//g, '-')) > new Date()
+
+  function toggleConsent(key) {
+    setConsents(prev => ({ ...prev, [key]: !prev[key] }))
+  }
 
   return (
     <div style={{ background: 'var(--bg-app)', minHeight: '100dvh' }}>
@@ -197,7 +296,6 @@ export default function Profile() {
         >
           <IconBack />
         </button>
-
         <span style={{
           flex: 1,
           textAlign: 'center',
@@ -208,165 +306,283 @@ export default function Profile() {
         }}>
           Profil
         </span>
-
         <div style={{ width: '40px' }} />
       </header>
 
-      {/* Content */}
-      <div style={{ padding: '0 16px 40px', paddingTop: '52px' }}>
+      <div style={{ paddingBottom: '40px' }}>
 
-        {/* Avatar + user info */}
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          paddingTop: '32px',
-          paddingBottom: '32px',
-          gap: '10px',
-        }}>
+        {/* ── SEKCJA 1: Premium banner ───────────────────────────────── */}
+        {isActive && (
+          <div style={{ padding: '16px 16px 0' }}>
+            <div style={{
+              background: 'linear-gradient(135deg, var(--interactive-primary), #4A0080)',
+              borderRadius: 'var(--radius-xl)',
+              padding: '16px 20px',
+              color: '#fff',
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                marginBottom: '4px',
+              }}>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path d="M8 1L10 5.5H15L11 8.5L12.5 13.5L8 10.5L3.5 13.5L5 8.5L1 5.5H6L8 1Z"
+                    fill="white" fillOpacity="0.9"/>
+                </svg>
+                <span style={{
+                  fontFamily: 'var(--font-ui)',
+                  fontWeight: 700,
+                  fontSize: '14px',
+                  letterSpacing: '0.02em',
+                }}>
+                  Premium access
+                </span>
+              </div>
+              <div style={{
+                fontFamily: 'var(--font-ui)',
+                fontSize: '13px',
+                color: 'rgba(255,255,255,0.8)',
+                marginBottom: '12px',
+              }}>
+                Ważny do {formatDate(sub.validTo)}
+              </div>
+              <button
+                onClick={() => console.log('→ web store')}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 0,
+                  fontFamily: 'var(--font-ui)',
+                  fontWeight: 600,
+                  fontSize: '13px',
+                  color: 'rgba(255,255,255,0.9)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                }}
+              >
+                Odnów subskrypcję →
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ── SEKCJA 2: Moje konto ───────────────────────────────────── */}
+        <div style={{ padding: '28px 0 0' }}>
+          <SectionLabel>Moje konto</SectionLabel>
+
+          {/* Avatar + user info */}
           <div style={{
-            width: '72px',
-            height: '72px',
-            borderRadius: '50%',
-            background: 'var(--interactive-primary)',
-            color: '#fff',
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
-            justifyContent: 'center',
-            fontFamily: 'var(--font-display)',
-            fontWeight: 600,
-            fontSize: '24px',
-            marginBottom: '4px',
-            flexShrink: 0,
+            padding: '20px 16px 24px',
+            gap: '8px',
           }}>
-            {user.initials}
-          </div>
-
-          <div style={{
-            fontFamily: 'var(--font-ui)',
-            fontWeight: 600,
-            fontSize: '18px',
-            color: 'var(--text-primary)',
-          }}>
-            {user.name}
-          </div>
-
-          <div style={{
-            fontFamily: 'var(--font-ui)',
-            fontSize: '14px',
-            color: 'var(--text-secondary)',
-          }}>
-            {user.email}
-          </div>
-
-          {user.accessType === 'institutional' ? (
-            <span style={{
-              background: 'var(--bg-brand-subtle)',
-              color: 'var(--text-brand)',
-              borderRadius: 'var(--radius-pill-sm)',
-              padding: '4px 12px',
-              fontFamily: 'var(--font-ui)',
-              fontSize: '12px',
-              fontWeight: 500,
-              marginTop: '2px',
+            <div style={{
+              width: '64px',
+              height: '64px',
+              borderRadius: '50%',
+              background: 'var(--interactive-primary)',
+              color: '#fff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontFamily: 'var(--font-display)',
+              fontWeight: 600,
+              fontSize: '22px',
+              flexShrink: 0,
+              marginBottom: '4px',
             }}>
-              Dostęp instytucjonalny · {user.institution.split(' ')[1] || user.institution}
-            </span>
-          ) : (
-            <span style={{
-              background: '#f0faf7',
-              color: 'var(--color-success)',
-              borderRadius: 'var(--radius-pill-sm)',
-              padding: '4px 12px',
+              {MOCK_USER.initials}
+            </div>
+            <div style={{
               fontFamily: 'var(--font-ui)',
-              fontSize: '12px',
-              fontWeight: 500,
-              marginTop: '2px',
+              fontWeight: 600,
+              fontSize: '17px',
+              color: 'var(--text-primary)',
             }}>
-              Subskrypcja aktywna
-            </span>
-          )}
+              {MOCK_USER.name}
+            </div>
+            <div style={{
+              fontFamily: 'var(--font-ui)',
+              fontSize: '14px',
+              color: 'var(--text-secondary)',
+            }}>
+              {MOCK_USER.email}
+            </div>
+          </div>
+
+          <ListCard>
+            <ListRow
+              label="Kraj praktyki"
+              value={country}
+              onClick={() => setSheet('country')}
+            />
+            <ListRow
+              label="Status zawodowy"
+              value={status}
+              onClick={() => setSheet('status')}
+            />
+            <ListRow
+              label="Zmień hasło"
+              onClick={() => console.log('zmień hasło')}
+            />
+            <ListRow
+              label="Zamówienia"
+              isLast
+              onClick={() => console.log('→ zamówienia')}
+            />
+          </ListCard>
         </div>
 
-        <div style={{ height: '1px', background: 'var(--border-subtle)', marginBottom: '28px' }} />
+        {/* ── SEKCJA 3: Dostęp ──────────────────────────────────────── */}
+        <div style={{ padding: '28px 0 0' }}>
+          <SectionLabel>Mój dostęp</SectionLabel>
+          <ListCard>
+            <button
+              onClick={() => console.log('szczegóły dostępu')}
+              style={{
+                width: '100%',
+                padding: '14px 16px',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                textAlign: 'left',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+              }}
+            >
+              <div style={{ flex: 1 }}>
+                <div style={{
+                  fontFamily: 'var(--font-ui)',
+                  fontWeight: 600,
+                  fontSize: '15px',
+                  color: 'var(--text-primary)',
+                  marginBottom: '3px',
+                }}>
+                  {sub.type}
+                </div>
+                <div style={{
+                  fontFamily: 'var(--font-ui)',
+                  fontSize: '13px',
+                  color: 'var(--text-secondary)',
+                }}>
+                  {formatDate(sub.validFrom)} – {formatDate(sub.validTo)}
+                </div>
+                {sub.activatedCode && (
+                  <span style={{
+                    display: 'inline-block',
+                    marginTop: '6px',
+                    background: 'var(--bg-subtle)',
+                    color: 'var(--text-tertiary)',
+                    fontFamily: 'var(--font-ui)',
+                    fontSize: '11px',
+                    fontWeight: 500,
+                    letterSpacing: '0.06em',
+                    padding: '2px 8px',
+                    borderRadius: 'var(--radius-pill-sm)',
+                  }}>
+                    {sub.activatedCode}
+                  </span>
+                )}
+              </div>
+              <span style={{ color: 'var(--text-tertiary)', fontSize: '18px', flexShrink: 0 }}>›</span>
+            </button>
+          </ListCard>
+        </div>
 
-        {/* Moje treści */}
-        <SectionLabel>Moje treści</SectionLabel>
-        <ListCard>
-          <ListRow icon={<IconFolder />} label="Moje foldery" onClick={() => navigate('/')} />
-          <ListRow icon={<IconBookmark />} label="Zapisane elementy" onClick={() => navigate('/')} />
-          <ListRow icon={<IconNote />} label="Notatki" isLast onClick={() => navigate('/')} />
-        </ListCard>
+        {/* ── SEKCJA 4: Zgody ───────────────────────────────────────── */}
+        <div style={{ padding: '28px 0 0' }}>
+          <SectionLabel>Zgody i komunikacja</SectionLabel>
+          <ListCard>
+            <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+              <Checkbox
+                checked={consents.dataProcessing}
+                disabled
+                label="Przetwarzanie danych osobowych"
+                sublabel="Wymagane do korzystania z usługi"
+              />
+            </div>
+            <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+              <Checkbox
+                checked={consents.marketing}
+                onChange={() => toggleConsent('marketing')}
+                label="Marketing i komunikacja"
+                sublabel="Zgoda na materiały promocyjne"
+              />
+            </div>
+            <Checkbox
+              checked={consents.newsletter}
+              onChange={() => toggleConsent('newsletter')}
+              label="Newsletter"
+              sublabel="Aktualności i nowości medyczne"
+            />
+          </ListCard>
+        </div>
 
-        {/* Ustawienia */}
-        <SectionLabel>Ustawienia</SectionLabel>
-        <ListCard>
-          <ListRow
-            icon={<IconGlobe />}
-            label="Język interfejsu"
-            value="Polski"
-            onClick={() => console.log('język — NIE W MVP')}
-          />
-          <ListRow
-            icon={<IconBell />}
-            label="Powiadomienia"
-            onClick={() => console.log('powiadomienia')}
-          />
-          <ListRow
-            icon={<IconCloud />}
-            label="Offline — zarządzaj"
-            isLast
-            onClick={() => navigate('/')}
-          />
-        </ListCard>
+        {/* ── Wyloguj ───────────────────────────────────────────────── */}
+        <div style={{ padding: '28px 16px 0' }}>
+          <button
+            onClick={() => console.log('wyloguj')}
+            style={{
+              width: '100%',
+              height: '48px',
+              background: 'none',
+              border: '1px solid var(--color-error)',
+              borderRadius: 'var(--radius-full)',
+              fontFamily: 'var(--font-ui)',
+              fontWeight: 600,
+              fontSize: '15px',
+              color: 'var(--color-error)',
+              cursor: 'pointer',
+            }}
+          >
+            Wyloguj się
+          </button>
+        </div>
 
-        {/* Konto */}
-        <SectionLabel>Konto</SectionLabel>
-        <ListCard>
-          <ListRow
-            icon={<IconCard />}
-            label="Zarządzaj subskrypcją"
-            onClick={() => console.log('→ web, poza aplikacją')}
-          />
-          <ListRow
-            icon={<IconHelp />}
-            label="Pomoc i wsparcie"
-            isLast
-            onClick={() => console.log('pomoc')}
-          />
-        </ListCard>
-
-        {/* Wyloguj */}
-        <button
-          onClick={() => console.log('wyloguj')}
-          style={{
-            width: '100%',
-            height: '48px',
-            background: 'none',
-            border: '1px solid var(--color-error)',
-            borderRadius: 'var(--radius-full)',
-            fontFamily: 'var(--font-ui)',
-            fontWeight: 600,
-            fontSize: '15px',
-            color: 'var(--color-error)',
-            cursor: 'pointer',
-            marginBottom: '24px',
-          }}
-        >
-          Wyloguj się
-        </button>
-
-        {/* Footer */}
+        {/* ── Footer ────────────────────────────────────────────────── */}
         <p style={{
           fontFamily: 'var(--font-ui)',
           fontSize: '12px',
           color: 'var(--text-tertiary)',
           textAlign: 'center',
-          padding: '0 0 16px',
+          padding: '20px 0 0',
         }}>
-          McMaster Textbook · wersja 0.1.0
+          McMaster Textbook · v0.1.0
         </p>
       </div>
+
+      {/* ── Bottom sheets ──────────────────────────────────────────── */}
+
+      <BottomSheet
+        isOpen={sheet === 'country'}
+        onClose={() => setSheet(null)}
+        title="Kraj praktyki"
+      >
+        <OptionList
+          options={COUNTRIES}
+          selected={country}
+          onSelect={v => { setCountry(v); setSheet(null) }}
+        />
+      </BottomSheet>
+
+      <BottomSheet
+        isOpen={sheet === 'status'}
+        onClose={() => setSheet(null)}
+        title="Status zawodowy"
+      >
+        <OptionList
+          options={PROFESSIONAL_STATUSES}
+          selected={status}
+          onSelect={v => { setStatus(v); setSheet(null) }}
+        />
+      </BottomSheet>
+
     </div>
   )
 }
