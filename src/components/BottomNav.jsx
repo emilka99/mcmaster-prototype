@@ -1,42 +1,10 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useReadingHistory } from '../hooks/useReadingHistory'
 
-const IconGrid = () => (
-  <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-    <rect x="2" y="2" width="8" height="8" rx="1.5" fill="currentColor"/>
-    <rect x="12" y="2" width="8" height="8" rx="1.5" fill="currentColor"/>
-    <rect x="2" y="12" width="8" height="8" rx="1.5" fill="currentColor"/>
-    <rect x="12" y="12" width="8" height="8" rx="1.5" fill="currentColor"/>
-  </svg>
-)
-
-const IconSearch = () => (
-  <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-    <circle cx="9.5" cy="9.5" r="6" stroke="currentColor" strokeWidth="2"/>
-    <line x1="14" y1="14" x2="20" y2="20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-  </svg>
-)
-
-const IconBook = ({ white }) => (
-  <svg width="26" height="26" viewBox="0 0 26 26" fill="none">
-    <path d="M4 5C4 5 8 4 13 7C18 4 22 5 22 5V20C22 20 18 19 13 22C8 19 4 20 4 20V5Z"
-      stroke={white ? '#fff' : 'currentColor'} strokeWidth="2" strokeLinejoin="round"/>
-    <line x1="13" y1="7" x2="13" y2="22" stroke={white ? '#fff' : 'currentColor'} strokeWidth="2"/>
-  </svg>
-)
-
-const IconStack = () => (
-  <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-    <rect x="3" y="15" width="16" height="3" rx="1" fill="currentColor"/>
-    <rect x="3" y="9.5" width="16" height="3" rx="1" fill="currentColor"/>
-    <rect x="3" y="4" width="16" height="3" rx="1" fill="currentColor"/>
-  </svg>
-)
-
 const NAV_ITEMS = [
-  { path: '/',         label: 'My Space', Icon: IconGrid },
-  { path: '/search',  label: 'Szukaj',   Icon: IconSearch },
-  { path: '/textbook',label: 'Textbook', Icon: IconStack },
+  { path: '/',         label: 'My Space', icon: 'grid_view' },
+  { path: '/search',  label: 'Szukaj',   icon: 'search' },
+  { path: '/textbook',label: 'Textbook', icon: 'menu_book' },
 ]
 
 export default function BottomNav() {
@@ -77,15 +45,14 @@ export default function BottomNav() {
       alignItems: 'center',
       justifyContent: 'space-around',
     }}>
-      {/* Left two items */}
-      {left.map(({ path, label, Icon }) => (
+      {left.map(({ path, label, icon }) => (
         <NavItem
           key={path}
           label={label}
           active={isActive(path)}
           onClick={() => navigate(path)}
         >
-          <Icon />
+          <span className="material-symbols-outlined icon-md">{icon}</span>
         </NavItem>
       ))}
 
@@ -105,21 +72,21 @@ export default function BottomNav() {
           marginTop: '-16px',
           flexShrink: 0,
           boxShadow: '0 4px 16px rgba(122, 0, 60, 0.35)',
+          color: '#fff',
         }}
         aria-label="Continue reading"
       >
-        <IconBook white />
+        <span className="material-symbols-outlined icon-md">book_2</span>
       </button>
 
-      {/* Right item */}
-      {right.map(({ path, label, Icon }) => (
+      {right.map(({ path, label, icon }) => (
         <NavItem
           key={path}
           label={label}
           active={isActive(path)}
           onClick={() => navigate(path)}
         >
-          <Icon />
+          <span className="material-symbols-outlined icon-md">{icon}</span>
         </NavItem>
       ))}
     </nav>

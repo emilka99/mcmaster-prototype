@@ -62,25 +62,6 @@ const MOCK_VIDEOS = {
   },
 }
 
-const IconBack = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-    <path d="M12.5 5L7.5 10L12.5 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-)
-
-const IconPlay = ({ color }) => (
-  <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-    <circle cx="24" cy="24" r="23" fill={color} fillOpacity="0.18" stroke={color} strokeWidth="1.5" strokeOpacity="0.3"/>
-    <path d="M20 16L34 24L20 32V16Z" fill={color}/>
-  </svg>
-)
-
-const IconChapter = () => (
-  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-    <circle cx="7" cy="7" r="6" stroke="currentColor" strokeWidth="1.4"/>
-    <path d="M7 4.5V7.5L9 8.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
-  </svg>
-)
 
 export default function VideoPlayer() {
   const { videoId } = useParams()
@@ -108,7 +89,7 @@ export default function VideoPlayer() {
             padding: '4px', width: '40px', flexShrink: 0,
           }}
         >
-          <IconBack />
+          <span className="material-symbols-outlined icon-md">arrow_back</span>
         </button>
         <span style={{
           flex: 1, textAlign: 'center',
@@ -136,7 +117,7 @@ export default function VideoPlayer() {
           }}
           onClick={() => {}}
         >
-          <IconPlay color={video.color} />
+          <span className="material-symbols-outlined filled" style={{ fontSize: '64px', color: video.color }}>play_circle</span>
         </button>
 
         {/* Duration badge */}
@@ -209,7 +190,7 @@ export default function VideoPlayer() {
               }}
             >
               <span style={{ color: 'var(--text-tertiary)', flexShrink: 0 }}>
-                <IconChapter />
+                <span className="material-symbols-outlined icon-sm">schedule</span>
               </span>
               <span style={{
                 flex: 1,

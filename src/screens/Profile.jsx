@@ -48,20 +48,6 @@ function formatDate(dateStr) {
   return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })
 }
 
-// ── Icons ─────────────────────────────────────────────────────────────────────
-
-const IconBack = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-    <path d="M12.5 5L7.5 10L12.5 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-)
-
-const IconCheck = ({ size = 12 }) => (
-  <svg width={size} height={size} viewBox="0 0 12 12" fill="none">
-    <path d="M2 6L5 9L10 3" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-)
-
 // ── Sub-components ────────────────────────────────────────────────────────────
 
 function SectionLabel({ children }) {
@@ -139,7 +125,7 @@ function ListRow({ label, value, isLast, onClick, disabled }) {
         </span>
       )}
       {!disabled && (
-        <span style={{ color: 'var(--text-tertiary)', fontSize: '18px', flexShrink: 0 }}>›</span>
+        <span style={{ color: 'var(--text-tertiary)', flexShrink: 0 }}><span className="material-symbols-outlined icon-sm">chevron_right</span></span>
       )}
     </button>
   )
@@ -175,7 +161,7 @@ function Checkbox({ checked, disabled, onChange, label, sublabel }) {
         justifyContent: 'center',
         transition: 'background 0.15s',
       }}>
-        {checked && <IconCheck size={12} />}
+        {checked && <span className="material-symbols-outlined filled" style={{ fontSize: '14px', color: '#fff' }}>check</span>}
       </div>
       <div style={{ flex: 1 }}>
         <div style={{
@@ -234,9 +220,7 @@ function OptionList({ options, selected, onSelect }) {
           </span>
           {selected === opt && (
             <span style={{ color: 'var(--interactive-primary)' }}>
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                <path d="M3 9L7.5 13.5L15 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+              <span className="material-symbols-outlined icon-md">check</span>
             </span>
           )}
         </button>
@@ -294,7 +278,7 @@ export default function Profile() {
             flexShrink: 0,
           }}
         >
-          <IconBack />
+          <span className="material-symbols-outlined icon-md">arrow_back</span>
         </button>
         <span style={{
           flex: 1,
@@ -326,10 +310,7 @@ export default function Profile() {
                 gap: '8px',
                 marginBottom: '4px',
               }}>
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M8 1L10 5.5H15L11 8.5L12.5 13.5L8 10.5L3.5 13.5L5 8.5L1 5.5H6L8 1Z"
-                    fill="white" fillOpacity="0.9"/>
-                </svg>
+                <span className="material-symbols-outlined filled icon-sm" style={{ color: 'rgba(255,255,255,0.9)' }}>star</span>
                 <span style={{
                   fontFamily: 'var(--font-ui)',
                   fontWeight: 700,
@@ -363,7 +344,8 @@ export default function Profile() {
                   gap: '4px',
                 }}
               >
-                Odnów subskrypcję →
+                Odnów subskrypcję
+              <span className="material-symbols-outlined icon-sm">arrow_forward</span>
               </button>
             </div>
           </div>
@@ -490,7 +472,7 @@ export default function Profile() {
                   </span>
                 )}
               </div>
-              <span style={{ color: 'var(--text-tertiary)', fontSize: '18px', flexShrink: 0 }}>›</span>
+              <span style={{ color: 'var(--text-tertiary)', flexShrink: 0 }}><span className="material-symbols-outlined icon-sm">chevron_right</span></span>
             </button>
           </ListCard>
         </div>

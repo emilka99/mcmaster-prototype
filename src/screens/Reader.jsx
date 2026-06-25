@@ -320,69 +320,6 @@ const READER_CSS = `
   }
 `
 
-// ── Icons ─────────────────────────────────────────────────────────────────────
-
-const IconBack = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-    <path d="M12.5 5L7.5 10L12.5 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-)
-
-const IconList = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-    <line x1="4" y1="6" x2="16" y2="6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-    <line x1="4" y1="10" x2="16" y2="10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-    <line x1="4" y1="14" x2="12" y2="14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-  </svg>
-)
-
-const IconMore = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-    <circle cx="10" cy="4.5" r="1.5" fill="currentColor"/>
-    <circle cx="10" cy="10" r="1.5" fill="currentColor"/>
-    <circle cx="10" cy="15.5" r="1.5" fill="currentColor"/>
-  </svg>
-)
-
-const IconBookmark = ({ filled }) => (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-    {filled
-      ? <path d="M4 3H14C14.6 3 15 3.4 15 4V16L9 12.5L3 16V4C3 3.4 3.4 3 4 3Z" fill="currentColor" strokeLinejoin="round"/>
-      : <path d="M4 3H14C14.6 3 15 3.4 15 4V16L9 12.5L3 16V4C3 3.4 3.4 3 4 3Z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/>
-    }
-  </svg>
-)
-
-const IconNote = () => (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-    <rect x="2" y="2" width="14" height="14" rx="2" stroke="currentColor" strokeWidth="1.8"/>
-    <line x1="5" y1="6.5" x2="13" y2="6.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
-    <line x1="5" y1="9.5" x2="13" y2="9.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
-    <line x1="5" y1="12.5" x2="9" y2="12.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
-  </svg>
-)
-
-const IconClose = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-    <line x1="4" y1="4" x2="16" y2="16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-    <line x1="16" y1="4" x2="4" y2="16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-  </svg>
-)
-
-const IconChevron = ({ open }) => (
-  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
-    style={{ transform: open ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }}>
-    <path d="M3 5L7 9L11 5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-)
-
-const IconPerson = () => (
-  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-    <circle cx="7" cy="4.5" r="2.5" stroke="currentColor" strokeWidth="1.4"/>
-    <path d="M2 12c0-2.5 2.2-4 5-4s5 1.5 5 4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
-  </svg>
-)
-
 // ── TOC Panel ─────────────────────────────────────────────────────────────────
 
 function TOCPanel({ toc, activeSection, open, onClose }) {
@@ -419,7 +356,7 @@ function TOCPanel({ toc, activeSection, open, onClose }) {
             Spis treści
           </span>
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-tertiary)', display: 'flex', padding: '4px' }}>
-            <IconClose />
+            <span className="material-symbols-outlined icon-md">close</span>
           </button>
         </div>
         <div style={{ overflowY: 'auto', padding: '8px 0' }}>
@@ -523,9 +460,9 @@ function ArticleHeader({ chapter }) {
           color: '#7A003C',
         }}
       >
-        <IconPerson />
+        <span className="material-symbols-outlined icon-sm">person</span>
         Contributors
-        <IconChevron open={showContributors} />
+        <span className="material-symbols-outlined icon-sm" style={{ transform: showContributors ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }}>expand_more</span>
       </button>
 
       {/* Expanded contributors */}
@@ -591,7 +528,7 @@ function ReferencesSection({ references }) {
           References
         </span>
         <span style={{ color: '#7A003C' }}>
-          <IconChevron open={showReferences} />
+          <span className="material-symbols-outlined icon-sm" style={{ transform: showReferences ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }}>expand_more</span>
         </span>
       </button>
 
@@ -703,7 +640,7 @@ export default function Reader() {
           style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-brand)', display: 'flex', alignItems: 'center', padding: '4px', flexShrink: 0 }}
           aria-label="Wróć"
         >
-          <IconBack />
+          <span className="material-symbols-outlined icon-md">arrow_back</span>
         </button>
 
         <span style={{
@@ -721,14 +658,14 @@ export default function Reader() {
             style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', display: 'flex', padding: '6px', borderRadius: 'var(--radius-sm)' }}
             aria-label="Spis treści"
           >
-            <IconList />
+            <span className="material-symbols-outlined icon-md">format_list_bulleted</span>
           </button>
           <button
             onClick={() => console.log('więcej opcji')}
             style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', display: 'flex', padding: '6px', borderRadius: 'var(--radius-sm)' }}
             aria-label="Więcej opcji"
           >
-            <IconMore />
+            <span className="material-symbols-outlined icon-md">more_vert</span>
           </button>
         </div>
       </header>
@@ -771,7 +708,7 @@ export default function Reader() {
               transition: 'color 0.15s',
             }}
           >
-            <IconBookmark filled={saved} />
+            <span className={`material-symbols-outlined icon-sm${saved ? ' filled' : ''}`}>bookmark</span>
             {saved ? 'Zapisano' : 'Zapisz'}
           </button>
 
@@ -796,7 +733,7 @@ export default function Reader() {
               padding: '0', flexShrink: 0,
             }}
           >
-            <IconNote />
+            <span className="material-symbols-outlined icon-sm">edit_note</span>
             Notatka
           </button>
         </div>

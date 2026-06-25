@@ -79,35 +79,11 @@ const MOCK_SPECIALTIES = [
 
 // ── Specialty icons ───────────────────────────────────────────────────────────
 
-const SpecialtyIcons = {
-  cardiology: () => (
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-      <path d="M14 24S3 17 3 10a6 6 0 0 1 11-3.3A6 6 0 0 1 25 10c0 7-11 14-11 14Z"
-        stroke="var(--interactive-primary)" strokeWidth="2" strokeLinejoin="round"/>
-      <path d="M8 12h3l2-4 2 8 2-4h3" stroke="var(--interactive-primary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    </svg>
-  ),
-  neurology: () => (
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-      <circle cx="14" cy="12" r="7" stroke="var(--interactive-primary)" strokeWidth="2"/>
-      <path d="M14 19v6M10 23h8" stroke="var(--interactive-primary)" strokeWidth="2" strokeLinecap="round"/>
-      <path d="M10 9c0-2 2-3 4-2M14 7v2M18 10c0 2-1.5 3-4 3" stroke="var(--interactive-primary)" strokeWidth="1.5" strokeLinecap="round"/>
-    </svg>
-  ),
-  endocrinology: () => (
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-      <ellipse cx="14" cy="14" rx="5" ry="8" stroke="var(--interactive-primary)" strokeWidth="2"/>
-      <path d="M9 14h10M14 6V4M14 24v-2" stroke="var(--interactive-primary)" strokeWidth="1.8" strokeLinecap="round"/>
-      <circle cx="14" cy="14" r="2" fill="var(--interactive-primary)"/>
-    </svg>
-  ),
-  pulmonology: () => (
-    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-      <path d="M14 5v10M14 5C14 5 8 6 7 10c-1.5 5 1 9 4 10M14 5c0 0 6 1 7 5 1.5 5-1 9-4 10"
-        stroke="var(--interactive-primary)" strokeWidth="2" strokeLinecap="round"/>
-      <path d="M7 15c-2 1-3 4-2 6M21 15c2 1 3 4 2 6" stroke="var(--interactive-primary)" strokeWidth="1.8" strokeLinecap="round"/>
-    </svg>
-  ),
+const SPECIALTY_ICONS = {
+  cardiology:    'favorite',
+  neurology:     'neurology',
+  endocrinology: 'science',
+  pulmonology:   'air',
 }
 
 // ── Type config ───────────────────────────────────────────────────────────────
@@ -138,15 +114,6 @@ function useSlide(view) {
   return visible
 }
 
-// ── Icons ─────────────────────────────────────────────────────────────────────
-
-const IconSearch = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-    <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" strokeWidth="1.6"/>
-    <line x1="10.5" y1="10.5" x2="15" y2="15" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
-  </svg>
-)
-
 // ── Sub-components ────────────────────────────────────────────────────────────
 
 function BackButton({ label, onClick }) {
@@ -168,7 +135,8 @@ function BackButton({ label, onClick }) {
         marginBottom: '16px',
       }}
     >
-      ← {label}
+      <span className="material-symbols-outlined icon-sm">arrow_back</span>
+      {label}
     </button>
   )
 }
@@ -226,7 +194,7 @@ function SearchShortcut({ onClick }) {
       }}
     >
       <span style={{ color: 'var(--text-tertiary)', position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }}>
-        <IconSearch />
+        <span className="material-symbols-outlined icon-sm">search</span>
       </span>
       Szukaj w Textbook...
     </button>
@@ -269,8 +237,8 @@ function SpecialtiesViewOnly({ onSelect }) {
               textAlign: 'center',
             }}
           >
-            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 32, height: 32 }}>
-              {SpecialtyIcons[specialty.icon] ? SpecialtyIcons[specialty.icon]() : null}
+            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--interactive-primary)' }}>
+              <span className="material-symbols-outlined icon-md">{SPECIALTY_ICONS[specialty.icon] || 'stethoscope'}</span>
             </span>
             <span style={{
               fontFamily: 'var(--font-ui)',
@@ -355,7 +323,7 @@ function TopicsView({ specialty, onBack, onSelect }) {
                 {topicTypeSummary(topic.content)}
               </div>
             </div>
-            <span style={{ color: 'var(--text-tertiary)', fontSize: '18px', flexShrink: 0 }}>›</span>
+            <span style={{ color: 'var(--text-tertiary)', flexShrink: 0 }}><span className="material-symbols-outlined icon-sm">chevron_right</span></span>
           </button>
         ))}
       </div>
@@ -442,7 +410,7 @@ function ContentView({ specialty, topic, onBack, navigate }) {
                 fontWeight: 500,
                 color: item.type === 'video' ? 'var(--text-brand)' : 'var(--interactive-primary)',
               }}>
-                {meta.cta} →
+                {meta.cta} <span className="material-symbols-outlined icon-sm">arrow_forward</span>
               </div>
             </button>
           )
@@ -485,25 +453,6 @@ const MOCK_CALCULATORS = [
   { id: 'gfr', title: 'Kalkulator eGFR', subtitle: 'CKD-EPI — funkcja nerek', specialty: 'Nefrologia' },
 ]
 
-const IconPlay = ({ size = 28, color = 'currentColor' }) => (
-  <svg width={size} height={size} viewBox="0 0 28 28" fill="none">
-    <circle cx="14" cy="14" r="13" fill={color} fillOpacity="0.15"/>
-    <path d="M11 9.5L20 14L11 18.5V9.5Z" fill={color}/>
-  </svg>
-)
-
-const IconCalc = ({ size = 20 }) => (
-  <svg width={size} height={size} viewBox="0 0 20 20" fill="none">
-    <rect x="3" y="2" width="14" height="16" rx="2" stroke="currentColor" strokeWidth="1.7"/>
-    <rect x="5.5" y="4.5" width="9" height="3" rx="1" fill="currentColor" opacity="0.5"/>
-    <circle cx="6.5" cy="11" r="1" fill="currentColor"/>
-    <circle cx="10" cy="11" r="1" fill="currentColor"/>
-    <circle cx="13.5" cy="11" r="1" fill="currentColor"/>
-    <circle cx="6.5" cy="14.5" r="1" fill="currentColor"/>
-    <circle cx="10" cy="14.5" r="1" fill="currentColor"/>
-    <circle cx="13.5" cy="14.5" r="1" fill="currentColor"/>
-  </svg>
-)
 
 function ELearningView({ navigate }) {
   return (
@@ -538,7 +487,7 @@ function ELearningView({ navigate }) {
                 height: '112px', background: v.color + '26',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
-                <IconPlay size={36} color={v.color} />
+                <span className="material-symbols-outlined filled" style={{ fontSize: '36px', color: v.color }}>play_circle</span>
               </div>
               <div style={{ padding: '10px 12px 12px' }}>
                 <div style={{
@@ -581,7 +530,7 @@ function ELearningView({ navigate }) {
               }}
             >
               <span style={{ color: 'var(--interactive-primary)', flexShrink: 0 }}>
-                <IconCalc size={20} />
+                <span className="material-symbols-outlined icon-sm">calculate</span>
               </span>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{
@@ -596,7 +545,7 @@ function ELearningView({ navigate }) {
                   {c.specialty} · {c.subtitle}
                 </div>
               </div>
-              <span style={{ color: 'var(--text-tertiary)', fontSize: '18px' }}>›</span>
+              <span style={{ color: 'var(--text-tertiary)' }}><span className="material-symbols-outlined icon-sm">chevron_right</span></span>
             </button>
           ))}
         </div>

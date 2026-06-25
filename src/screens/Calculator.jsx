@@ -347,12 +347,6 @@ function GfrForm() {
 
 const CALC_FORMS = { score2: Score2Form, hba1c: Hba1cForm, bmi: BmiForm, gfr: GfrForm }
 
-const IconBack = () => (
-  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-    <path d="M12.5 5L7.5 10L12.5 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-)
-
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 export default function Calculator() {
@@ -382,7 +376,7 @@ export default function Calculator() {
             padding: '4px', width: '40px', flexShrink: 0,
           }}
         >
-          <IconBack />
+          <span className="material-symbols-outlined icon-md">arrow_back</span>
         </button>
         <span style={{
           flex: 1, textAlign: 'center',
