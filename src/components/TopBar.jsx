@@ -2,6 +2,8 @@ import { useNavigate } from 'react-router-dom'
 
 export default function TopBar() {
   const navigate = useNavigate()
+  const user = JSON.parse(localStorage.getItem('user') || 'null')
+  const initials = user?.initials || user?.name?.substring(0, 2).toUpperCase() || '?'
 
   return (
     <header style={{
@@ -47,7 +49,7 @@ export default function TopBar() {
           flexShrink: 0,
         }}
       >
-        JK
+        {initials}
       </button>
     </header>
   )

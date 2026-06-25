@@ -123,20 +123,36 @@ function EmptyState({ navigate }) {
       </div>
 
       {/* CTA */}
-      <button
-        onClick={() => navigate('/textbook')}
-        style={{
-          width: '100%', height: '52px',
-          background: 'var(--interactive-primary)', color: '#fff',
-          border: 'none', borderRadius: 'var(--radius-full)',
-          fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '16px',
-          cursor: 'pointer', letterSpacing: '0.01em',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
-        }}
-      >
-        Przeglądaj Textbook
-        <span className="material-symbols-outlined icon-sm">arrow_forward</span>
-      </button>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <button
+          onClick={() => navigate('/textbook')}
+          style={{
+            width: '100%', height: '52px',
+            background: 'var(--interactive-primary)', color: '#fff',
+            border: 'none', borderRadius: 'var(--radius-full)',
+            fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '16px',
+            cursor: 'pointer', letterSpacing: '0.01em',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+          }}
+        >
+          Przeglądaj Textbook
+          <span className="material-symbols-outlined icon-sm">arrow_forward</span>
+        </button>
+        <button
+          onClick={() => navigate('/auth')}
+          style={{
+            width: '100%', height: '52px',
+            background: 'none', color: 'var(--interactive-primary)',
+            border: '1.5px solid var(--interactive-primary)', borderRadius: 'var(--radius-full)',
+            fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '16px',
+            cursor: 'pointer',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+          }}
+        >
+          <span className="material-symbols-outlined icon-sm">login</span>
+          Zaloguj się
+        </button>
+      </div>
     </div>
   )
 }

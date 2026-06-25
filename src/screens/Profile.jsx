@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomSheet from '../components/BottomSheet'
 import { useOffline } from '../hooks/useOffline'
+import { useAuth } from '../hooks/useAuth'
 
 // ── Mock data ─────────────────────────────────────────────────────────────────
 
@@ -235,9 +236,12 @@ function OptionList({ options, selected, onSelect }) {
 export default function Profile() {
   const navigate = useNavigate()
 
-  const [country, setCountry] = useState(MOCK_USER.country)
-  const [status, setStatus] = useState(MOCK_USER.professionalStatus)
-  const [consents, setConsents] = useState(MOCK_USER.consents)
+  const { user: authUser, logout } = useAuth()
+  const storedUser = authUser || {}
+
+  const [country, setCountry] = useState(storedUser.country || MOCK_USER.country)
+  const [status, setStatus] = useState(storedUser.professionalStatus || MOCK_USER.professionalStatus)
+  const [consents, setConsents] = useState(storedUser.consents || MOCK_USER.consents)
   const { isDownloaded, offlineState } = useOffline()
 
   const [sheet, setSheet] = useState(null) // 'country' | 'status' | null
@@ -380,7 +384,7 @@ export default function Profile() {
               flexShrink: 0,
               marginBottom: '4px',
             }}>
-              {MOCK_USER.initials}
+              {storedUser.initials || MOCK_USER.initials}
             </div>
             <div style={{
               fontFamily: 'var(--font-ui)',
@@ -388,14 +392,14 @@ export default function Profile() {
               fontSize: '17px',
               color: 'var(--text-primary)',
             }}>
-              {MOCK_USER.name}
+              {storedUser.name || MOCK_USER.name}
             </div>
             <div style={{
               fontFamily: 'var(--font-ui)',
               fontSize: '14px',
               color: 'var(--text-secondary)',
             }}>
-              {MOCK_USER.email}
+              {storedUser.email || MOCK_USER.email}
             </div>
           </div>
 
@@ -541,7 +545,7 @@ export default function Profile() {
         {/* ── Wyloguj ───────────────────────────────────────────────── */}
         <div style={{ padding: '28px 16px 0' }}>
           <button
-            onClick={() => console.log('wyloguj')}
+            onClick={logout}
             style={{
               width: '100%',
               height: '48px',
