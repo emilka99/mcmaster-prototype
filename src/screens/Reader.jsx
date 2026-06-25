@@ -92,8 +92,8 @@ const IconClose = () => (
 
 const READER_CSS = `
   .reader-content h2 {
-    font-family: var(--font-display);
-    font-size: 20px;
+    font-family: var(--font-ui);
+    font-size: 18px;
     font-weight: 600;
     color: var(--text-primary);
     margin: 32px 0 12px;

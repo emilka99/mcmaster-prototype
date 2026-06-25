@@ -522,7 +522,7 @@ export default function Search() {
         {hasResults && mode === 'explore' && (
           <section>
             <h2 style={{
-              fontFamily: 'var(--font-display)',
+              fontFamily: 'var(--font-ui)',
               fontWeight: 600,
               fontSize: '22px',
               color: 'var(--text-primary)',

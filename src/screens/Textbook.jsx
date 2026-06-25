@@ -8,7 +8,7 @@ const MOCK_SPECIALTIES = [
     id: 'cardiology',
     name: 'Kardiologia',
     chapterCount: 24,
-    icon: '❤️',
+    icon: 'cardiology',
     topics: [
       {
         id: 'cardiology-heart-failure',
@@ -32,7 +32,7 @@ const MOCK_SPECIALTIES = [
     id: 'neurology',
     name: 'Neurologia',
     chapterCount: 18,
-    icon: '🧠',
+    icon: 'neurology',
     topics: [
       {
         id: 'neurology-stroke',
@@ -48,7 +48,7 @@ const MOCK_SPECIALTIES = [
     id: 'endocrinology',
     name: 'Endokrynologia',
     chapterCount: 15,
-    icon: '⚗️',
+    icon: 'endocrinology',
     topics: [
       {
         id: 'endocrinology-diabetes',
@@ -64,7 +64,7 @@ const MOCK_SPECIALTIES = [
     id: 'pulmonology',
     name: 'Pulmonologia',
     chapterCount: 12,
-    icon: '🫁',
+    icon: 'pulmonology',
     topics: [
       {
         id: 'pulmonology-asthma',
@@ -76,6 +76,39 @@ const MOCK_SPECIALTIES = [
     ],
   },
 ]
+
+// ── Specialty icons ───────────────────────────────────────────────────────────
+
+const SpecialtyIcons = {
+  cardiology: () => (
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <path d="M14 24S3 17 3 10a6 6 0 0 1 11-3.3A6 6 0 0 1 25 10c0 7-11 14-11 14Z"
+        stroke="var(--interactive-primary)" strokeWidth="2" strokeLinejoin="round"/>
+      <path d="M8 12h3l2-4 2 8 2-4h3" stroke="var(--interactive-primary)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  ),
+  neurology: () => (
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="12" r="7" stroke="var(--interactive-primary)" strokeWidth="2"/>
+      <path d="M14 19v6M10 23h8" stroke="var(--interactive-primary)" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M10 9c0-2 2-3 4-2M14 7v2M18 10c0 2-1.5 3-4 3" stroke="var(--interactive-primary)" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  ),
+  endocrinology: () => (
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <ellipse cx="14" cy="14" rx="5" ry="8" stroke="var(--interactive-primary)" strokeWidth="2"/>
+      <path d="M9 14h10M14 6V4M14 24v-2" stroke="var(--interactive-primary)" strokeWidth="1.8" strokeLinecap="round"/>
+      <circle cx="14" cy="14" r="2" fill="var(--interactive-primary)"/>
+    </svg>
+  ),
+  pulmonology: () => (
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+      <path d="M14 5v10M14 5C14 5 8 6 7 10c-1.5 5 1 9 4 10M14 5c0 0 6 1 7 5 1.5 5-1 9-4 10"
+        stroke="var(--interactive-primary)" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M7 15c-2 1-3 4-2 6M21 15c2 1 3 4 2 6" stroke="var(--interactive-primary)" strokeWidth="1.8" strokeLinecap="round"/>
+    </svg>
+  ),
+}
 
 // ── Type config ───────────────────────────────────────────────────────────────
 
@@ -229,7 +262,9 @@ function SpecialtiesView({ onSelect, navigate }) {
               textAlign: 'center',
             }}
           >
-            <span style={{ fontSize: '32px', lineHeight: 1 }}>{specialty.icon}</span>
+            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 32, height: 32 }}>
+              {SpecialtyIcons[specialty.icon] ? SpecialtyIcons[specialty.icon]() : null}
+            </span>
             <span style={{
               fontFamily: 'var(--font-ui)',
               fontWeight: 600,
@@ -463,8 +498,8 @@ export default function Textbook() {
       {view === 'specialties' && (
         <SlidePane viewKey="specialties">
           <h1 style={{
-            fontFamily: 'var(--font-display)',
-            fontWeight: 600,
+            fontFamily: 'var(--font-ui)',
+            fontWeight: 700,
             fontSize: '28px',
             color: 'var(--text-primary)',
             marginBottom: '16px',
