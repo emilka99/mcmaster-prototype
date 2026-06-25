@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useReadingHistory } from '../hooks/useReadingHistory'
 import { useSavedChapters } from '../hooks/useSavedChapters'
+import { useOffline } from '../hooks/useOffline'
 import BottomSheet from '../components/BottomSheet'
 
 // ── Mock data ─────────────────────────────────────────────────────────────────
@@ -565,6 +566,7 @@ export default function Reader() {
   const { setLastRead } = useReadingHistory()
 
   const { isSaved, saveChapter, removeChapter, addNote } = useSavedChapters()
+  const { offlineState } = useOffline()
 
   const [showTOC, setShowTOC] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -669,6 +671,21 @@ export default function Reader() {
           </button>
         </div>
       </header>
+
+      {/* ── Sync outdated banner ── */}
+      {offlineState.syncStatus === 'outdated' && (
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: '8px',
+          padding: '8px 20px',
+          background: 'var(--color-background-warning, #FFFBEB)',
+          borderBottom: '1px solid var(--border-subtle)',
+        }}>
+          <span className="material-symbols-outlined icon-sm" style={{ color: 'var(--color-text-warning, #B45309)', flexShrink: 0 }}>sync_problem</span>
+          <span style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--color-text-warning, #B45309)', lineHeight: 1.4 }}>
+            Ta treść może być nieaktualna · ostatnia sync {offlineState.lastSync ? new Date(offlineState.lastSync).toLocaleDateString('pl-PL') : '—'}
+          </span>
+        </div>
+      )}
 
       {/* ── Article header (beige, outside main padding) ── */}
       <ArticleHeader chapter={MOCK_CHAPTER} />

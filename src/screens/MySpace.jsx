@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useSavedChapters } from '../hooks/useSavedChapters'
+import { useOffline } from '../hooks/useOffline'
 
 const MOCK_USER = {
   hasHistory: false,
@@ -226,7 +227,7 @@ function FilledState({ user, savedCount, foldersCount, notesCount, navigate }) {
       </section>
 
       {/* Offline */}
-      <OfflineCard ready={user.offlineReady} />
+      <OfflineCard navigate={navigate} />
     </div>
   )
 }
@@ -256,38 +257,64 @@ function ElearningListRow({ icon, title, meta, isLast, onClick }) {
   )
 }
 
-function OfflineCard({ ready }) {
+function OfflineCard({ navigate }) {
+  const { isDownloaded, offlineState } = useOffline()
+  const { syncStatus, totalSizeMB, lastSync } = offlineState
+
+  const isOutdated = syncStatus === 'outdated'
+  const isOk = isDownloaded && !isOutdated
+
+  let bg = 'var(--bg-subtle)'
+  let icon = 'wifi_off'
+  let iconColor = 'var(--text-tertiary)'
+  let title = 'Pobierz Textbook offline'
+  let sub = 'Czytaj bez internetu — 487 MB'
+  let btnLabel = 'Pobierz'
+
+  if (isOutdated) {
+    bg = 'var(--color-background-warning, #FFFBEB)'
+    icon = 'sync_problem'
+    iconColor = 'var(--color-text-warning, #B45309)'
+    title = 'Treści mogą być nieaktualne'
+    sub = lastSync ? `Ostatnia sync: ${new Date(lastSync).toLocaleDateString('pl-PL')}` : ''
+    btnLabel = 'Zaktualizuj'
+  } else if (isOk) {
+    bg = 'var(--color-background-success, #F0FDF4)'
+    icon = 'check_circle'
+    iconColor = 'var(--color-text-success, #15803D)'
+    title = 'Offline aktywny'
+    sub = `${totalSizeMB} MB · ${lastSync ? new Date(lastSync).toLocaleDateString('pl-PL') : ''}`
+    btnLabel = 'Zarządzaj'
+  }
+
   return (
     <section>
       <div style={{
-        background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)',
-        borderRadius: 'var(--radius-lg)', padding: '16px', boxShadow: 'var(--shadow-box)',
-        display: 'flex', alignItems: 'center', gap: '14px',
+        background: bg, border: '1px solid var(--border-subtle)',
+        borderRadius: 'var(--radius-lg)', padding: '14px 16px',
+        display: 'flex', alignItems: 'center', gap: '12px',
       }}>
-        <span style={{ color: ready ? 'var(--color-success)' : 'var(--text-tertiary)', flexShrink: 0 }}>
-          <span className="material-symbols-outlined icon-md">{ready ? 'check_circle' : 'wifi_off'}</span>
-        </span>
-        <div style={{ flex: 1 }}>
+        <span className={`material-symbols-outlined icon-md${isOk ? ' filled' : ''}`} style={{ color: iconColor, flexShrink: 0 }}>{icon}</span>
+        <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '14px', color: 'var(--text-primary)', marginBottom: '2px' }}>
-            {ready ? 'Textbook pobrany' : 'Pobierz Textbook na telefon'}
+            {title}
           </div>
           <div style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--text-secondary)' }}>
-            {ready ? 'Ostatnia sync: dziś' : 'Dostęp bez internetu'}
+            {sub}
           </div>
         </div>
-        {!ready && (
-          <button
-            onClick={() => console.log('offline download')}
-            style={{
-              background: 'none', border: '1.5px solid var(--interactive-primary)',
-              borderRadius: 'var(--radius-pill-sm)', color: 'var(--interactive-primary)',
-              fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '13px',
-              padding: '6px 14px', cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap',
-            }}
-          >
-            Pobierz
-          </button>
-        )}
+        <button
+          onClick={() => navigate('/offline')}
+          style={{
+            background: 'none', border: '1px solid var(--border-default)',
+            borderRadius: 'var(--radius-pill-sm)',
+            fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '12px',
+            color: 'var(--text-secondary)',
+            padding: '6px 14px', cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap',
+          }}
+        >
+          {btnLabel}
+        </button>
       </div>
     </section>
   )

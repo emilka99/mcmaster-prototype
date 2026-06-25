@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BottomSheet from '../components/BottomSheet'
+import { useOffline } from '../hooks/useOffline'
 
 // ── Mock data ─────────────────────────────────────────────────────────────────
 
@@ -237,6 +238,7 @@ export default function Profile() {
   const [country, setCountry] = useState(MOCK_USER.country)
   const [status, setStatus] = useState(MOCK_USER.professionalStatus)
   const [consents, setConsents] = useState(MOCK_USER.consents)
+  const { isDownloaded, offlineState } = useOffline()
 
   const [sheet, setSheet] = useState(null) // 'country' | 'status' | null
 
@@ -418,6 +420,36 @@ export default function Profile() {
               onClick={() => console.log('→ zamówienia')}
             />
           </ListCard>
+        </div>
+
+        {/* ── SEKCJA 2b: Ustawienia ─────────────────────────────────── */}
+        <div style={{ padding: '28px 0 0' }}>
+          <SectionLabel>Ustawienia</SectionLabel>
+          <div style={{ background: 'var(--bg-surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-box)', overflow: 'hidden', margin: '0 16px' }}>
+            <button
+              onClick={() => navigate('/offline')}
+              style={{
+                width: '100%', height: '52px', padding: '0 16px',
+                background: 'none', border: 'none', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'left',
+              }}
+            >
+              <span className="material-symbols-outlined icon-sm" style={{ color: 'var(--text-secondary)', flexShrink: 0 }}>wifi_off</span>
+              <span style={{ flex: 1, fontFamily: 'var(--font-ui)', fontSize: '15px', color: 'var(--text-primary)' }}>
+                Tryb offline
+              </span>
+              <span style={{
+                fontFamily: 'var(--font-ui)', fontSize: '14px', marginRight: '4px',
+                color: isDownloaded ? 'var(--color-text-success, #15803D)' : 'var(--text-tertiary)',
+                maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: 'right',
+              }}>
+                {isDownloaded ? `Pobrano · ${offlineState.totalSizeMB} MB` : 'Nie pobrano'}
+              </span>
+              <span style={{ color: 'var(--text-tertiary)', flexShrink: 0 }}>
+                <span className="material-symbols-outlined icon-sm">chevron_right</span>
+              </span>
+            </button>
+          </div>
         </div>
 
         {/* ── SEKCJA 3: Dostęp ──────────────────────────────────────── */}
