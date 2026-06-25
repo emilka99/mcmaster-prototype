@@ -451,17 +451,17 @@ function RegisterTab({ onSuccess }) {
 
           <ConsentCheckbox required checked={consentTerms} onChange={() => setConsentTerms(v => !v)}>
             Zapoznałem/am się i akceptuję{' '}
-            <button onClick={e => { e.stopPropagation(); console.log('→ regulamin') }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--interactive-primary)', fontFamily: 'inherit', fontSize: 'inherit', fontWeight: 600, padding: 0 }}>
+            <span onClick={e => { e.stopPropagation(); console.log('→ regulamin') }} style={{ color: 'var(--interactive-primary)', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}>
               regulamin
-            </button>
+            </span>
             .
           </ConsentCheckbox>
 
           <ConsentCheckbox required checked={consentPrivacy} onChange={() => setConsentPrivacy(v => !v)}>
             Zapoznałem/am się z{' '}
-            <button onClick={e => { e.stopPropagation(); console.log('→ polityka') }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--interactive-primary)', fontFamily: 'inherit', fontSize: 'inherit', fontWeight: 600, padding: 0 }}>
+            <span onClick={e => { e.stopPropagation(); console.log('→ polityka') }} style={{ color: 'var(--interactive-primary)', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}>
               polityką prywatności
-            </button>
+            </span>
             , w tym ze sposobem gromadzenia i przetwarzania moich danych osobowych.
           </ConsentCheckbox>
 
