@@ -4,6 +4,7 @@ import MySpace from './screens/MySpace'
 import Search from './screens/Search'
 import Textbook from './screens/Textbook'
 import Reader from './screens/Reader'
+import Profile from './screens/Profile'
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
         <Route path="/search" element={<AppShell><Search /></AppShell>} />
         <Route path="/textbook" element={<AppShell><Textbook /></AppShell>} />
         <Route path="/reader/:chapterId" element={<Reader />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </BrowserRouter>
   )

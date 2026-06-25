@@ -1,4 +1,8 @@
+import { useNavigate } from 'react-router-dom'
+
 export default function TopBar() {
+  const navigate = useNavigate()
+
   return (
     <header style={{
       position: 'sticky',
@@ -25,7 +29,7 @@ export default function TopBar() {
       </span>
 
       <button
-        onClick={() => console.log('profil')}
+        onClick={() => navigate('/profile')}
         style={{
           width: '36px',
           height: '36px',
