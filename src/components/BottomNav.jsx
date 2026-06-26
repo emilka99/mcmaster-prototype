@@ -2,29 +2,38 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { useReadingHistory } from '../hooks/useReadingHistory'
 
 const NAV_ITEMS = [
-  { path: '/',         label: 'My Space', icon: 'grid_view' },
+  { path: '/',         label: 'Home',     icon: 'home' },
   { path: '/search',  label: 'Search',   icon: 'search' },
+  { path: '/library', label: 'Library',  icon: 'bookmark' },
   { path: '/textbook',label: 'Textbook', icon: 'menu_book' },
 ]
+
+const SPECIALTY_ICONS = {
+  'Cardiology':         { icon: 'cardiology',    color: '#7A003C' },
+  'Neurology':          { icon: 'neurology',     color: '#185FA5' },
+  'Endocrinology':      { icon: 'science',       color: '#0F6E56' },
+  'Pulmonology':        { icon: 'air',           color: '#854F0B' },
+  'Nephrology':         { icon: 'water_drop',    color: '#534AB7' },
+  'Gastroenterology':   { icon: 'gastroenterology', color: '#185FA5' },
+  'Rheumatology':       { icon: 'accessibility', color: '#7A003C' },
+  'Infectious diseases':{ icon: 'coronavirus',   color: '#C0392B' },
+}
 
 export default function BottomNav() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const { lastRead } = useReadingHistory()
 
-  function handleFAB() {
-    if (lastRead) {
-      navigate(`/reader/${lastRead.chapterId}`)
-    } else {
-      navigate('/textbook')
-    }
-  }
-
   function isActive(path) {
     return pathname === path
   }
 
   const [left, right] = [NAV_ITEMS.slice(0, 2), NAV_ITEMS.slice(2)]
+
+  const specInfo = lastRead ? SPECIALTY_ICONS[lastRead.specialty] : null
+  const fabTitle = lastRead
+    ? (lastRead.title.length > 14 ? lastRead.title.slice(0, 14) + '…' : lastRead.title)
+    : null
 
   return (
     <nav style={{
@@ -35,15 +44,15 @@ export default function BottomNav() {
       width: '100%',
       maxWidth: '430px',
       zIndex: 100,
-      height: '64px',
       paddingBottom: 'env(safe-area-inset-bottom)',
       background: 'var(--glass-bg)',
       backdropFilter: 'blur(20px)',
       WebkitBackdropFilter: 'blur(20px)',
       borderTop: '1px solid var(--glass-border)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-around',
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr',
+      alignItems: 'flex-end',
+      padding: '8px 0 calc(10px + env(safe-area-inset-bottom))',
     }}>
       {left.map(({ path, label, icon }) => (
         <NavItem
@@ -56,28 +65,82 @@ export default function BottomNav() {
         </NavItem>
       ))}
 
-      {/* FAB */}
-      <button
-        onClick={handleFAB}
-        style={{
-          width: '52px',
-          height: '52px',
-          borderRadius: '50%',
-          background: 'var(--interactive-primary)',
-          border: 'none',
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginTop: '-16px',
-          flexShrink: 0,
-          boxShadow: '0 4px 16px rgba(122, 0, 60, 0.35)',
-          color: '#fff',
-        }}
-        aria-label="Continue reading"
-      >
-        <span className="material-symbols-outlined icon-md">book_2</span>
-      </button>
+      {/* FAB column */}
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
+        {!lastRead ? (
+          <button
+            onClick={() => navigate('/textbook')}
+            aria-label="Browse textbook"
+            style={{
+              width: '48px',
+              height: '48px',
+              borderRadius: '50%',
+              background: 'var(--interactive-primary)',
+              color: 'white',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginTop: '-16px',
+              flexShrink: 0,
+              boxShadow: '0 4px 12px rgba(122, 0, 60, 0.35)',
+              transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: '22px' }}>book_2</span>
+          </button>
+        ) : (
+          <button
+            onClick={() => navigate(`/reader/${lastRead.chapterId}`)}
+            aria-label={`Continue reading ${lastRead.title}`}
+            style={{
+              height: '44px',
+              borderRadius: '22px',
+              padding: '0 14px 0 10px',
+              gap: '6px',
+              maxWidth: '140px',
+              background: 'var(--interactive-primary)',
+              color: 'white',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              marginTop: '-16px',
+              flexShrink: 0,
+              boxShadow: '0 4px 12px rgba(122, 0, 60, 0.35)',
+              transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+            }}
+          >
+            <span
+              className="material-symbols-outlined"
+              style={{ fontSize: '20px', flexShrink: 0, color: specInfo?.color || 'white' }}
+            >
+              {specInfo?.icon || 'book_2'}
+            </span>
+            <span style={{
+              fontFamily: 'var(--font-ui)',
+              fontSize: '12px',
+              fontWeight: 600,
+              color: 'white',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}>
+              {fabTitle}
+            </span>
+          </button>
+        )}
+        <span style={{
+          fontFamily: 'var(--font-ui)',
+          fontSize: '9px',
+          color: 'var(--nav-inactive)',
+          marginTop: '2px',
+          textAlign: 'center',
+        }}>
+          {lastRead ? 'Continue' : 'Read'}
+        </span>
+      </div>
 
       {right.map(({ path, label, icon }) => (
         <NavItem
@@ -106,9 +169,8 @@ function NavItem({ label, active, onClick, children }) {
         alignItems: 'center',
         gap: '3px',
         color: active ? 'var(--nav-active)' : 'var(--nav-inactive)',
-        padding: '6px 12px',
+        padding: '4px 0',
         position: 'relative',
-        minWidth: '60px',
       }}
     >
       {active && (
