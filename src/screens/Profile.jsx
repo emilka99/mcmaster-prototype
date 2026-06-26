@@ -7,8 +7,8 @@ import { useAuth } from '../hooks/useAuth'
 // ── Mock data ─────────────────────────────────────────────────────────────────
 
 const MOCK_USER = {
-  name: 'Emilka Kowalska',
-  initials: 'EK',
+  name: 'Emma Walker',
+  initials: 'EW',
   email: 'emi@rozkw.it',
   emailChangeUrl: 'mailto:support@ebm.one',
   country: 'Poland',
@@ -294,7 +294,7 @@ export default function Profile() {
           fontSize: '16px',
           color: 'var(--text-primary)',
         }}>
-          Profil
+          Profile
         </span>
         <div style={{ width: '40px' }} />
       </header>
@@ -332,7 +332,7 @@ export default function Profile() {
                 color: 'rgba(255,255,255,0.8)',
                 marginBottom: '12px',
               }}>
-                Ważny do {formatDate(sub.validTo)}
+                Valid until {formatDate(sub.validTo)}
               </div>
               <button
                 onClick={() => console.log('→ web store')}
@@ -350,7 +350,7 @@ export default function Profile() {
                   gap: '4px',
                 }}
               >
-                Odnów subskrypcję
+                Renew subscription
               <span className="material-symbols-outlined icon-sm">arrow_forward</span>
               </button>
             </div>
@@ -359,7 +359,7 @@ export default function Profile() {
 
         {/* ── SEKCJA 2: Moje konto ───────────────────────────────────── */}
         <div style={{ padding: '28px 0 0' }}>
-          <SectionLabel>Moje konto</SectionLabel>
+          <SectionLabel>My account</SectionLabel>
 
           {/* Avatar + user info */}
           <div style={{
@@ -405,30 +405,30 @@ export default function Profile() {
 
           <ListCard>
             <ListRow
-              label="Kraj praktyki"
+              label="Country of practice"
               value={country}
               onClick={() => setSheet('country')}
             />
             <ListRow
-              label="Status zawodowy"
+              label="Professional status"
               value={status}
               onClick={() => setSheet('status')}
             />
             <ListRow
-              label="Zmień hasło"
-              onClick={() => console.log('zmień hasło')}
+              label="Change password"
+              onClick={() => console.log('change password')}
             />
             <ListRow
-              label="Zamówienia"
+              label="Orders"
               isLast
-              onClick={() => console.log('→ zamówienia')}
+              onClick={() => console.log('→ orders')}
             />
           </ListCard>
         </div>
 
         {/* ── SEKCJA 2b: Ustawienia ─────────────────────────────────── */}
         <div style={{ padding: '28px 0 0' }}>
-          <SectionLabel>Ustawienia</SectionLabel>
+          <SectionLabel>Settings</SectionLabel>
           <div style={{ background: 'var(--bg-surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-box)', overflow: 'hidden', margin: '0 16px' }}>
             <button
               onClick={() => navigate('/offline')}
@@ -440,14 +440,14 @@ export default function Profile() {
             >
               <span className="material-symbols-outlined icon-sm" style={{ color: 'var(--text-secondary)', flexShrink: 0 }}>wifi_off</span>
               <span style={{ flex: 1, fontFamily: 'var(--font-ui)', fontSize: '15px', color: 'var(--text-primary)' }}>
-                Tryb offline
+                Offline mode
               </span>
               <span style={{
                 fontFamily: 'var(--font-ui)', fontSize: '14px', marginRight: '4px',
                 color: isDownloaded ? 'var(--color-text-success, #15803D)' : 'var(--text-tertiary)',
                 maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: 'right',
               }}>
-                {isDownloaded ? `Pobrano · ${offlineState.totalSizeMB} MB` : 'Nie pobrano'}
+                {isDownloaded ? `Downloaded · ${offlineState.totalSizeMB} MB` : 'Not downloaded'}
               </span>
               <span style={{ color: 'var(--text-tertiary)', flexShrink: 0 }}>
                 <span className="material-symbols-outlined icon-sm">chevron_right</span>
@@ -458,7 +458,7 @@ export default function Profile() {
 
         {/* ── SEKCJA 3: Dostęp ──────────────────────────────────────── */}
         <div style={{ padding: '28px 0 0' }}>
-          <SectionLabel>Mój dostęp</SectionLabel>
+          <SectionLabel>My access</SectionLabel>
           <ListCard>
             <button
               onClick={() => console.log('szczegóły dostępu')}
@@ -515,29 +515,29 @@ export default function Profile() {
 
         {/* ── SEKCJA 4: Zgody ───────────────────────────────────────── */}
         <div style={{ padding: '28px 0 0' }}>
-          <SectionLabel>Zgody i komunikacja</SectionLabel>
+          <SectionLabel>Consents & communication</SectionLabel>
           <ListCard>
             <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
               <Checkbox
                 checked={consents.dataProcessing}
                 disabled
-                label="Przetwarzanie danych osobowych"
-                sublabel="Wymagane do korzystania z usługi"
+                label="Personal data processing"
+                sublabel="Required to use the service"
               />
             </div>
             <div style={{ borderBottom: '1px solid var(--border-subtle)' }}>
               <Checkbox
                 checked={consents.marketing}
                 onChange={() => toggleConsent('marketing')}
-                label="Marketing i komunikacja"
-                sublabel="Zgoda na materiały promocyjne"
+                label="Marketing & communication"
+                sublabel="Consent to promotional materials"
               />
             </div>
             <Checkbox
               checked={consents.newsletter}
               onChange={() => toggleConsent('newsletter')}
               label="Newsletter"
-              sublabel="Aktualności i nowości medyczne"
+              sublabel="Medical news and updates"
             />
           </ListCard>
         </div>
@@ -559,7 +559,7 @@ export default function Profile() {
               cursor: 'pointer',
             }}
           >
-            Wyloguj się
+            Log out
           </button>
         </div>
 
@@ -580,7 +580,7 @@ export default function Profile() {
       <BottomSheet
         isOpen={sheet === 'country'}
         onClose={() => setSheet(null)}
-        title="Kraj praktyki"
+        title="Country of practice"
       >
         <OptionList
           options={COUNTRIES}
@@ -592,7 +592,7 @@ export default function Profile() {
       <BottomSheet
         isOpen={sheet === 'status'}
         onClose={() => setSheet(null)}
-        title="Status zawodowy"
+        title="Professional status"
       >
         <OptionList
           options={PROFESSIONAL_STATUSES}

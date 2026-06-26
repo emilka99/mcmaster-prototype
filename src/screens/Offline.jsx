@@ -4,20 +4,20 @@ import { useOffline } from '../hooks/useOffline'
 import BottomSheet from '../components/BottomSheet'
 
 const SPECIALTIES_WITH_SIZE = [
-  { id: 'cardiology',      name: 'Kardiologia',         sizeMB: 52, chapterCount: 24 },
-  { id: 'neurology',       name: 'Neurologia',           sizeMB: 48, chapterCount: 18 },
-  { id: 'endocrinology',   name: 'Endokrynologia',       sizeMB: 38, chapterCount: 15 },
-  { id: 'pulmonology',     name: 'Pulmonologia',         sizeMB: 31, chapterCount: 12 },
-  { id: 'nephrology',      name: 'Nefrologia',           sizeMB: 35, chapterCount: 14 },
-  { id: 'gastroenterology',name: 'Gastroenterologia',    sizeMB: 44, chapterCount: 17 },
-  { id: 'rheumatology',    name: 'Reumatologia',         sizeMB: 29, chapterCount: 11 },
-  { id: 'infectiology',    name: 'Choroby zakaźne',      sizeMB: 41, chapterCount: 16 },
+  { id: 'cardiology',      name: 'Cardiology',          sizeMB: 52, chapterCount: 24 },
+  { id: 'neurology',       name: 'Neurology',            sizeMB: 48, chapterCount: 18 },
+  { id: 'endocrinology',   name: 'Endocrinology',        sizeMB: 38, chapterCount: 15 },
+  { id: 'pulmonology',     name: 'Pulmonology',          sizeMB: 31, chapterCount: 12 },
+  { id: 'nephrology',      name: 'Nephrology',           sizeMB: 35, chapterCount: 14 },
+  { id: 'gastroenterology',name: 'Gastroenterology',     sizeMB: 44, chapterCount: 17 },
+  { id: 'rheumatology',    name: 'Rheumatology',         sizeMB: 29, chapterCount: 11 },
+  { id: 'infectiology',    name: 'Infectious diseases',  sizeMB: 41, chapterCount: 16 },
 ]
 
 const FREQ_OPTIONS = [
-  { value: '6h',     label: 'Co 6 godzin', hint: 'zalecane' },
-  { value: '24h',    label: 'Co 24 godziny', hint: null },
-  { value: 'manual', label: 'Tylko ręcznie', hint: null },
+  { value: '6h',     label: 'Every 6 hours', hint: 'recommended' },
+  { value: '24h',    label: 'Every 24 hours', hint: null },
+  { value: 'manual', label: 'Manual only', hint: null },
 ]
 
 function formatLastSync(iso) {
@@ -27,10 +27,10 @@ function formatLastSync(iso) {
   const diffMs = now - d
   const diffDays = Math.floor(diffMs / 86400000)
   if (diffDays === 0) {
-    return `dziś, ${d.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' })}`
+    return `today, ${d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`
   }
-  if (diffDays === 1) return 'wczoraj'
-  return `${diffDays} dni temu`
+  if (diffDays === 1) return 'yesterday'
+  return `${diffDays} days ago`
 }
 
 // ── Toggle ────────────────────────────────────────────────────────────────────
@@ -141,10 +141,10 @@ function StatusCard({ offlineState, startDownload }) {
         <span className="material-symbols-outlined icon-md" style={{ color: 'var(--text-tertiary)', flexShrink: 0 }}>wifi_off</span>
         <div>
           <div style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)', marginBottom: '2px' }}>
-            Tryb offline niedostępny
+            Offline mode unavailable
           </div>
           <div style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', color: 'var(--text-secondary)' }}>
-            Pobierz treści żeby czytać offline
+            Download content to read offline
           </div>
         </div>
       </div>
@@ -161,10 +161,10 @@ function StatusCard({ offlineState, startDownload }) {
           <span className="material-symbols-outlined icon-md" style={{ color: 'var(--interactive-primary)', flexShrink: 0, animation: 'spin 1.2s linear infinite' }}>sync</span>
           <div>
             <div style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)' }}>
-              Synchronizowanie...
+              Syncing...
             </div>
             <div style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--text-secondary)' }}>
-              Nie zamykaj aplikacji
+              Please keep the app open
             </div>
           </div>
         </div>
@@ -190,10 +190,10 @@ function StatusCard({ offlineState, startDownload }) {
           <span className="material-symbols-outlined icon-md" style={{ color: 'var(--color-text-warning, #B45309)', flexShrink: 0 }}>sync_problem</span>
           <div>
             <div style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)', marginBottom: '2px' }}>
-              Treści mogą być nieaktualne
+              Content may be outdated
             </div>
             <div style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', color: 'var(--text-secondary)' }}>
-              Ostatnia sync: {formatLastSync(lastSync)} · Zaktualizuj kiedy masz Wi-Fi
+              Last synced: {formatLastSync(lastSync)} · Update when connected to Wi-Fi
             </div>
           </div>
         </div>
@@ -206,7 +206,7 @@ function StatusCard({ offlineState, startDownload }) {
             fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '13px', cursor: 'pointer',
           }}
         >
-          Synchronizuj teraz
+          Sync now
         </button>
       </div>
     )
@@ -222,11 +222,11 @@ function StatusCard({ offlineState, startDownload }) {
       <span className="material-symbols-outlined filled icon-md" style={{ color: 'var(--color-text-success, #15803D)', flexShrink: 0 }}>check_circle</span>
       <div>
         <div style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)', marginBottom: '2px' }}>
-          Treści zsynchronizowane
+          Content up to date
         </div>
         <div style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', color: 'var(--text-secondary)' }}>
-          Ostatnia sync: {formatLastSync(lastSync)} · {totalSizeMB} MB ·{' '}
-          {downloadedSpecialties.includes('all') ? 'Textbook pełny' : `${downloadedSpecialties.length} specjalności`}
+          Last synced: {formatLastSync(lastSync)} · {totalSizeMB} MB ·{' '}
+          {downloadedSpecialties.includes('all') ? 'Full textbook' : `${downloadedSpecialties.length} specialties`}
         </div>
       </div>
     </div>
@@ -275,7 +275,7 @@ export default function Offline() {
           <span className="material-symbols-outlined icon-md">arrow_back</span>
         </button>
         <span style={{ flex: 1, textAlign: 'center', fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '16px', color: 'var(--text-primary)' }}>
-          Tryb offline
+          Offline mode
         </span>
         <div style={{ width: '40px' }} />
       </header>
@@ -296,10 +296,10 @@ export default function Offline() {
               <span className="material-symbols-outlined icon-md" style={{ color: 'var(--interactive-primary)', flexShrink: 0 }}>download</span>
               <div>
                 <div style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)', marginBottom: '3px' }}>
-                  Cały Textbook
+                  Full Textbook
                 </div>
                 <div style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', color: 'var(--text-secondary)' }}>
-                  487 MB · 127 rozdziałów
+                  487 MB · 127 chapters
                 </div>
               </div>
             </div>
@@ -307,7 +307,7 @@ export default function Offline() {
             {isAll && !isSyncing ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <span style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', color: 'var(--text-secondary)', fontWeight: 500 }}>
-                  Pobrano
+                  Downloaded
                 </span>
                 <button
                   onClick={() => setShowClearConfirm(true)}
@@ -320,7 +320,7 @@ export default function Offline() {
                   }}
                 >
                   <span className="material-symbols-outlined icon-sm">delete</span>
-                  Usuń
+                  Remove
                 </button>
               </div>
             ) : (
@@ -337,7 +337,7 @@ export default function Offline() {
                 }}
               >
                 <span className="material-symbols-outlined icon-sm">download</span>
-                Pobierz wszystko
+                Download all
               </button>
             )}
           </div>
@@ -350,7 +350,7 @@ export default function Offline() {
             color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em',
             marginBottom: '10px',
           }}>
-            Lub wybierz specjalności
+            Or select specialties
           </h3>
           <div style={{ background: 'var(--bg-surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-box)', overflow: 'hidden' }}>
             {SPECIALTIES_WITH_SIZE.map((sp, i) => (
@@ -372,7 +372,7 @@ export default function Offline() {
             color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em',
             marginBottom: '10px',
           }}>
-            Ustawienia synchronizacji
+            Sync settings
           </h3>
           <div style={{ background: 'var(--bg-surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-box)', overflow: 'hidden' }}>
             {/* Auto sync */}
@@ -381,7 +381,7 @@ export default function Offline() {
               borderBottom: '1px solid var(--border-subtle)',
             }}>
               <span style={{ flex: 1, fontFamily: 'var(--font-ui)', fontSize: '15px', color: 'var(--text-primary)', textAlign: 'left' }}>
-                Automatyczna sync
+                Auto sync
               </span>
               <Toggle checked={settings.autoSync} onChange={() => updateSettings({ autoSync: !settings.autoSync })} />
             </div>
@@ -391,7 +391,7 @@ export default function Offline() {
               borderBottom: '1px solid var(--border-subtle)',
             }}>
               <span style={{ flex: 1, fontFamily: 'var(--font-ui)', fontSize: '15px', color: 'var(--text-primary)', textAlign: 'left' }}>
-                Tylko przez Wi-Fi
+                Wi-Fi only
               </span>
               <Toggle checked={settings.wifiOnly} onChange={() => updateSettings({ wifiOnly: !settings.wifiOnly })} />
             </div>
@@ -405,7 +405,7 @@ export default function Offline() {
               }}
             >
               <span style={{ flex: 1, fontFamily: 'var(--font-ui)', fontSize: '15px', color: 'var(--text-primary)' }}>
-                Częstotliwość
+                Frequency
               </span>
               <span style={{ fontFamily: 'var(--font-ui)', fontSize: '14px', color: 'var(--text-secondary)', marginRight: '4px' }}>
                 {FREQ_OPTIONS.find(f => f.value === settings.frequency)?.label}
@@ -420,7 +420,7 @@ export default function Offline() {
             fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--text-tertiary)',
             lineHeight: 1.6, marginTop: '12px', padding: '0 4px',
           }}>
-            Automatyczna synchronizacja działa tylko gdy masz połączenie z internetem. Dla użytkowników z ograniczonym transferem danych zalecamy sync tylko przez Wi-Fi i częstotliwość ręczną.
+            Auto sync only works when you have an internet connection. For users with limited data plans, we recommend Wi-Fi only sync and manual frequency.
           </p>
         </section>
 
@@ -449,13 +449,13 @@ export default function Offline() {
             }}
           >
             <span className="material-symbols-outlined icon-sm">download</span>
-            Pobierz wybrane ({selected.length}) · ~{selectedSizeMB} MB
+            Download selected ({selected.length}) · ~{selectedSizeMB} MB
           </button>
         </div>
       )}
 
       {/* Frequency bottom sheet */}
-      <BottomSheet isOpen={showFreqSheet} onClose={() => setShowFreqSheet(false)} title="Częstotliwość synchronizacji">
+      <BottomSheet isOpen={showFreqSheet} onClose={() => setShowFreqSheet(false)} title="Sync frequency">
         <div>
           {FREQ_OPTIONS.map((opt, i) => (
             <button
@@ -483,10 +483,10 @@ export default function Offline() {
       </BottomSheet>
 
       {/* Clear confirm bottom sheet */}
-      <BottomSheet isOpen={showClearConfirm} onClose={() => setShowClearConfirm(false)} title="Usuń pobrane treści">
+      <BottomSheet isOpen={showClearConfirm} onClose={() => setShowClearConfirm(false)} title="Remove downloaded content">
         <div style={{ padding: '12px 20px 20px' }}>
           <p style={{ fontFamily: 'var(--font-ui)', fontSize: '15px', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '20px' }}>
-            Usunięcie usuwa wszystkie pobrane treści z urządzenia. Treści online nadal będą dostępne.
+            This will remove all downloaded content from your device. Online content will remain accessible.
           </p>
           <button
             onClick={() => { clearDownload(); setShowClearConfirm(false) }}
@@ -497,7 +497,7 @@ export default function Offline() {
               fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '15px', cursor: 'pointer',
             }}
           >
-            Usuń pobrane treści
+            Remove downloaded content
           </button>
           <button
             onClick={() => setShowClearConfirm(false)}
@@ -508,7 +508,7 @@ export default function Offline() {
               color: 'var(--text-secondary)', cursor: 'pointer',
             }}
           >
-            Anuluj
+            Cancel
           </button>
         </div>
       </BottomSheet>

@@ -18,7 +18,7 @@ const PROFESSIONAL_STATUSES = [
   'Other',
 ]
 
-const RODO_TEXT = `Administratorem Twoich danych osobowych jest ebm.one sp. z o.o. z siedzibą w Polsce. Twoje dane przetwarzamy w celu świadczenia usług edukacyjnych (art. 6 ust. 1 lit. b RODO), realizacji obowiązków prawnych (art. 6 ust. 1 lit. c RODO) oraz na podstawie Twojej zgody (art. 6 ust. 1 lit. a RODO) w zakresie komunikacji marketingowej. Dane przechowujemy przez czas trwania umowy oraz przez okres wymagany przepisami prawa. Masz prawo do dostępu, sprostowania, usunięcia, ograniczenia przetwarzania oraz przeniesienia swoich danych, a także prawo wniesienia sprzeciwu i skargi do Prezesa UODO. Podanie danych oznaczonych * jest dobrowolne, lecz niezbędne do korzystania z platformy.`
+const GDPR_TEXT = `The data controller for your personal data is ebm.one sp. z o.o. based in Poland. We process your data for the purpose of providing educational services (Art. 6(1)(b) GDPR), fulfilling legal obligations (Art. 6(1)(c) GDPR), and on the basis of your consent (Art. 6(1)(a) GDPR) for marketing communications. Data is retained for the duration of the contract and for the period required by law. You have the right to access, rectify, erase, restrict processing, and port your data, as well as the right to object and to lodge a complaint with the supervisory authority. Fields marked * are optional but necessary to use the platform.`
 
 // ── Shared field components ───────────────────────────────────────────────────
 
@@ -151,7 +151,7 @@ function LoginTab({ onSuccess }) {
   function handleLogin() {
     setError(null)
     if (!email || !password) {
-      setError('Wprowadź adres e-mail i hasło.')
+      setError('Please enter your email address and password.')
       return
     }
     setLoading(true)
@@ -159,8 +159,8 @@ function LoginTab({ onSuccess }) {
       localStorage.setItem('isLoggedIn', 'true')
       localStorage.setItem('user', JSON.stringify({
         email,
-        name: 'Jan Kowalski',
-        initials: 'JK',
+        name: 'John Smith',
+        initials: 'JS',
       }))
       onSuccess()
     }, 1000)
@@ -170,11 +170,11 @@ function LoginTab({ onSuccess }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       <div>
         <Label required>E-mail</Label>
-        <Input type="email" value={email} onChange={setEmail} placeholder="adres@email.com" />
+        <Input type="email" value={email} onChange={setEmail} placeholder="address@email.com" />
       </div>
 
       <div>
-        <Label required>Hasło</Label>
+        <Label required>Password</Label>
         <div style={{ position: 'relative' }}>
           <Input
             type={showPassword ? 'text' : 'password'}
@@ -213,7 +213,7 @@ function LoginTab({ onSuccess }) {
             {rememberMe && <span className="material-symbols-outlined filled" style={{ fontSize: '12px', color: '#fff' }}>check</span>}
           </div>
           <span style={{ fontFamily: 'var(--font-ui)', fontSize: '14px', color: 'var(--text-secondary)' }}>
-            Zapamiętaj mnie
+            Remember me
           </span>
         </button>
 
@@ -225,14 +225,14 @@ function LoginTab({ onSuccess }) {
             color: 'var(--interactive-primary)', fontWeight: 500, padding: 0,
           }}
         >
-          Zapomniałeś hasła?
+          Forgotten password?
         </button>
       </div>
 
       <FieldError msg={error} />
 
       <PrimaryBtn onClick={handleLogin} loading={loading}>
-        {loading ? 'Logowanie...' : 'Zaloguj się'}
+        {loading ? 'Logging in...' : 'Log in'}
       </PrimaryBtn>
     </div>
   )
@@ -242,9 +242,9 @@ function LoginTab({ onSuccess }) {
 
 function StepIndicator({ step }) {
   const steps = [
-    { n: 1, label: 'Dane' },
+    { n: 1, label: 'Details' },
     { n: 2, label: 'Status' },
-    { n: 3, label: 'Zgody' },
+    { n: 3, label: 'Consents' },
   ]
   return (
     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'center', gap: '0', marginBottom: '24px' }}>
@@ -312,8 +312,8 @@ function RegisterTab({ onSuccess }) {
   const [loading, setLoading] = useState(false)
 
   function goStep2() {
-    if (!email || !country) { setStep1Error('Uzupełnij wszystkie wymagane pola.'); return }
-    if (!/\S+@\S+\.\S+/.test(email)) { setStep1Error('Podaj prawidłowy adres e-mail.'); return }
+    if (!email || !country) { setStep1Error('Please fill in all required fields.'); return }
+    if (!/\S+@\S+\.\S+/.test(email)) { setStep1Error('Please enter a valid email address.'); return }
     setStep1Error(null)
     setStep(2)
   }
@@ -345,12 +345,12 @@ function RegisterTab({ onSuccess }) {
       {step === 1 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div>
-            <Label required>Adres e-mail</Label>
-            <Input type="email" value={email} onChange={setEmail} placeholder="adres@email.com" />
+            <Label required>Email address</Label>
+            <Input type="email" value={email} onChange={setEmail} placeholder="address@email.com" />
           </div>
 
           <div>
-            <Label required>Kraj praktyki</Label>
+            <Label required>Country of practice</Label>
             <div style={{ position: 'relative' }}>
               <select
                 value={country}
@@ -376,7 +376,7 @@ function RegisterTab({ onSuccess }) {
           <FieldError msg={step1Error} />
 
           <PrimaryBtn onClick={goStep2}>
-            Dalej <span className="material-symbols-outlined icon-sm">arrow_forward</span>
+            Next <span className="material-symbols-outlined icon-sm">arrow_forward</span>
           </PrimaryBtn>
         </div>
       )}
@@ -386,10 +386,10 @@ function RegisterTab({ onSuccess }) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div style={{ marginBottom: '4px' }}>
             <h2 style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '20px', color: 'var(--text-primary)', marginBottom: '6px' }}>
-              Kim jesteś?
+              What is your role?
             </h2>
             <p style={{ fontFamily: 'var(--font-ui)', fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-              Potrzebujemy tej informacji do celów statystycznych.
+              We need this information for statistical purposes.
             </p>
           </div>
 
@@ -431,11 +431,11 @@ function RegisterTab({ onSuccess }) {
 
           <div style={{ display: 'flex', gap: '12px', marginTop: '8px' }}>
             <OutlineBtn onClick={() => setStep(1)}>
-              <span className="material-symbols-outlined icon-sm">arrow_back</span> Wróć
+              <span className="material-symbols-outlined icon-sm">arrow_back</span> Back
             </OutlineBtn>
             <div style={{ flex: 1 }}>
               <PrimaryBtn onClick={() => setStep(3)} disabled={!profStatus}>
-                Dalej <span className="material-symbols-outlined icon-sm">arrow_forward</span>
+                Next <span className="material-symbols-outlined icon-sm">arrow_forward</span>
               </PrimaryBtn>
             </div>
           </div>
@@ -446,27 +446,27 @@ function RegisterTab({ onSuccess }) {
       {step === 3 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
           <h3 style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)', marginBottom: '4px' }}>
-            Wymagane zgody
+            Required consents
           </h3>
 
           <ConsentCheckbox required checked={consentTerms} onChange={() => setConsentTerms(v => !v)}>
-            Zapoznałem/am się i akceptuję{' '}
+            I have read and accept the{' '}
             <span onClick={e => { e.stopPropagation(); console.log('→ regulamin') }} style={{ color: 'var(--interactive-primary)', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}>
-              regulamin
+              terms of service
             </span>
             .
           </ConsentCheckbox>
 
           <ConsentCheckbox required checked={consentPrivacy} onChange={() => setConsentPrivacy(v => !v)}>
-            Zapoznałem/am się z{' '}
+            I have read the{' '}
             <span onClick={e => { e.stopPropagation(); console.log('→ polityka') }} style={{ color: 'var(--interactive-primary)', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}>
-              polityką prywatności
+              privacy policy
             </span>
-            , w tym ze sposobem gromadzenia i przetwarzania moich danych osobowych.
+            , including how my personal data is collected and processed.
           </ConsentCheckbox>
 
           <ConsentCheckbox required checked={consentTruth} onChange={() => setConsentTruth(v => !v)}>
-            Potwierdzam, że wszystkie podane przeze mnie informacje są prawdziwe i dokładne. Rozumiem, że platforma jest zasobem edukacyjnym dla pracowników ochrony zdrowia.
+            I confirm that all information I have provided is true and accurate. I understand that this platform is an educational resource for healthcare professionals.
           </ConsentCheckbox>
 
           {/* Opcjonalne */}
@@ -480,7 +480,7 @@ function RegisterTab({ onSuccess }) {
               }}
             >
               <span style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '14px', color: 'var(--text-secondary)' }}>
-                Komunikacja i newslettery
+                Communication & newsletters
               </span>
               <span className="material-symbols-outlined icon-sm" style={{ color: 'var(--text-tertiary)', transform: showOptional ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
                 expand_more
@@ -490,13 +490,13 @@ function RegisterTab({ onSuccess }) {
             {showOptional && (
               <>
                 <ConsentCheckbox checked={optMarketing} onChange={() => setOptMarketing(v => !v)}>
-                  Chcę otrzymywać okazjonalne oferty marketingowe od ebm.one.
+                  I would like to receive occasional marketing offers from ebm.one.
                 </ConsentCheckbox>
                 <ConsentCheckbox checked={optNewsletter} onChange={() => setOptNewsletter(v => !v)}>
-                  Chcę otrzymywać komunikaty od platformy ebm.one.
+                  I would like to receive platform communications from ebm.one.
                 </ConsentCheckbox>
                 <ConsentCheckbox checked={optMcMaster} onChange={() => setOptMcMaster(v => !v)}>
-                  Chcę otrzymywać aktualności o McMaster Textbook (EN).
+                  I would like to receive updates about McMaster Textbook.
                 </ConsentCheckbox>
               </>
             )}
@@ -512,7 +512,7 @@ function RegisterTab({ onSuccess }) {
               }}
             >
               <span style={{ fontFamily: 'var(--font-ui)', fontWeight: 500, fontSize: '12px', color: 'var(--text-tertiary)' }}>
-                Informacja o przetwarzaniu danych
+                Data processing information
               </span>
               <span className="material-symbols-outlined icon-sm" style={{ color: 'var(--text-tertiary)', transform: showRodo ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}>
                 expand_more
@@ -520,18 +520,18 @@ function RegisterTab({ onSuccess }) {
             </button>
             {showRodo && (
               <p style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--text-tertiary)', lineHeight: 1.6, marginTop: '8px' }}>
-                {RODO_TEXT}
+                {GDPR_TEXT}
               </p>
             )}
           </div>
 
           <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
             <OutlineBtn onClick={() => setStep(2)}>
-              <span className="material-symbols-outlined icon-sm">arrow_back</span> Wróć
+              <span className="material-symbols-outlined icon-sm">arrow_back</span> Back
             </OutlineBtn>
             <div style={{ flex: 1 }}>
               <PrimaryBtn onClick={handleRegister} disabled={!requiredOk} loading={loading}>
-                {loading ? 'Tworzenie konta...' : 'Utwórz konto'}
+                {loading ? 'Creating account...' : 'Create account'}
               </PrimaryBtn>
             </div>
           </div>
@@ -549,15 +549,15 @@ function RedeemTab({ onSwitchToRegister, onSuccess }) {
   const [loading, setLoading] = useState(false)
 
   function handleRedeem() {
-    if (!code.trim()) { setError('Wprowadź kod dostępu.'); return }
+    if (!code.trim()) { setError('Please enter an access code.'); return }
     setError(null)
     setLoading(true)
     setTimeout(() => {
       localStorage.setItem('isLoggedIn', 'true')
       localStorage.setItem('user', JSON.stringify({
         email: '',
-        name: 'Użytkownik',
-        initials: 'UK',
+        name: 'User',
+        initials: 'US',
         activatedCode: code.trim().toUpperCase(),
       }))
       onSuccess()
@@ -567,11 +567,11 @@ function RedeemTab({ onSwitchToRegister, onSuccess }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       <p style={{ fontFamily: 'var(--font-ui)', fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
-        Masz kod dostępu? Wpisz go poniżej żeby aktywować subskrypcję.
+        Have an access code? Enter it below to activate your subscription.
       </p>
 
       <div>
-        <Label>Kod dostępu</Label>
+        <Label>Access code</Label>
         <input
           type="text"
           value={code}
@@ -592,7 +592,7 @@ function RedeemTab({ onSwitchToRegister, onSuccess }) {
       </div>
 
       <PrimaryBtn onClick={handleRedeem} loading={loading}>
-        {loading ? 'Aktywowanie...' : 'Aktywuj kod'}
+        {loading ? 'Activating...' : 'Activate code'}
       </PrimaryBtn>
 
       <div style={{ textAlign: 'center' }}>
@@ -604,7 +604,7 @@ function RedeemTab({ onSwitchToRegister, onSuccess }) {
             color: 'var(--interactive-primary)', fontWeight: 500,
           }}
         >
-          Nie masz kodu? Zarejestruj się
+          Don't have a code? Register
         </button>
       </div>
     </div>
@@ -624,9 +624,9 @@ export default function Auth() {
   }
 
   const TABS = [
-    { id: 'login',    label: 'Zaloguj się' },
-    { id: 'register', label: 'Zarejestruj się' },
-    { id: 'redeem',   label: 'Kod dostępu', icon: 'card_giftcard' },
+    { id: 'login',    label: 'Log in' },
+    { id: 'register', label: 'Register' },
+    { id: 'redeem',   label: 'Access code', icon: 'card_giftcard' },
   ]
 
   return (

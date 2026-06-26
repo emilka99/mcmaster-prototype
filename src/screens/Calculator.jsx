@@ -18,10 +18,10 @@ function calcScore2({ age, sex, smoker, systolic, totalChol, hdl }) {
   const risk = Math.max(1, Math.min(40, Math.round(base * 1.8)))
 
   let category, color, advice
-  if (risk < 5) { category = 'Niskie'; color = '#16A34A'; advice = 'Styl życia — aktywność fizyczna, dieta, niepalenie.' }
-  else if (risk < 10) { category = 'Umiarkowane'; color = '#CA8A04'; advice = 'Rozważ leczenie farmakologiczne; ścisła modyfikacja stylu życia.' }
-  else if (risk < 20) { category = 'Wysokie'; color = '#EA580C'; advice = 'Leczenie hipolipemizujące zalecane. Cel LDL < 1,8 mmol/l.' }
-  else { category = 'Bardzo wysokie'; color = '#DC2626'; advice = 'Intensywna terapia statynami + ezetymib. Cel LDL < 1,4 mmol/l.' }
+  if (risk < 5) { category = 'Low'; color = '#16A34A'; advice = 'Lifestyle modification — physical activity, diet, smoking cessation.' }
+  else if (risk < 10) { category = 'Moderate'; color = '#CA8A04'; advice = 'Consider pharmacological treatment; strict lifestyle modification.' }
+  else if (risk < 20) { category = 'High'; color = '#EA580C'; advice = 'Lipid-lowering therapy recommended. LDL target < 1.8 mmol/l.' }
+  else { category = 'Very high'; color = '#DC2626'; advice = 'Intensive statin therapy + ezetimibe. LDL target < 1.4 mmol/l.' }
 
   return { risk, category, color, advice }
 }
@@ -34,10 +34,10 @@ function calcBMI({ weight, height }) {
   if (!w || !h) return null
   const bmi = w / (h * h)
   let category, color
-  if (bmi < 18.5) { category = 'Niedowaga'; color = '#2563EB' }
-  else if (bmi < 25) { category = 'Norma'; color = '#16A34A' }
-  else if (bmi < 30) { category = 'Nadwaga'; color = '#CA8A04' }
-  else { category = 'Otyłość'; color = '#DC2626' }
+  if (bmi < 18.5) { category = 'Underweight'; color = '#2563EB' }
+  else if (bmi < 25) { category = 'Normal'; color = '#16A34A' }
+  else if (bmi < 30) { category = 'Overweight'; color = '#CA8A04' }
+  else { category = 'Obese'; color = '#DC2626' }
   return { bmi: bmi.toFixed(1), category, color }
 }
 
@@ -68,22 +68,22 @@ function calcGFR({ creatinine, age, sex }) {
   const val = 142 * Math.pow(Math.min(crRatio, 1), alpha) * Math.pow(Math.max(crRatio, 1), -1.200) * Math.pow(0.9938, a) * sexFactor
   const egfr = Math.round(val)
   let stage, color
-  if (egfr >= 90) { stage = 'G1 — prawidłowa'; color = '#16A34A' }
-  else if (egfr >= 60) { stage = 'G2 — nieznacznie obniżona'; color = '#65A30D' }
-  else if (egfr >= 45) { stage = 'G3a — umiarkowanie obniżona'; color = '#CA8A04' }
-  else if (egfr >= 30) { stage = 'G3b — znacznie obniżona'; color = '#EA580C' }
-  else if (egfr >= 15) { stage = 'G4 — ciężko obniżona'; color = '#DC2626' }
-  else { stage = 'G5 — schyłkowa niewydolność'; color = '#7F1D1D' }
+  if (egfr >= 90) { stage = 'G1 — Normal'; color = '#16A34A' }
+  else if (egfr >= 60) { stage = 'G2 — Mildly decreased'; color = '#65A30D' }
+  else if (egfr >= 45) { stage = 'G3a — Moderately decreased'; color = '#CA8A04' }
+  else if (egfr >= 30) { stage = 'G3b — Severely decreased'; color = '#EA580C' }
+  else if (egfr >= 15) { stage = 'G4 — Kidney failure'; color = '#DC2626' }
+  else { stage = 'G5 — End-stage kidney disease'; color = '#7F1D1D' }
   return { egfr, stage, color }
 }
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
 const CALC_META = {
-  score2: { title: 'Kalkulator SCORE2', subtitle: 'Ryzyko sercowo-naczyniowe 10-letnie', specialty: 'Kardiologia' },
-  hba1c:  { title: 'Przelicznik HbA1c', subtitle: 'mmol/mol ↔ %', specialty: 'Endokrynologia' },
-  bmi:    { title: 'Kalkulator BMI', subtitle: 'Body Mass Index + interpretacja', specialty: 'Ogólne' },
-  gfr:    { title: 'Kalkulator eGFR', subtitle: 'CKD-EPI — funkcja nerek', specialty: 'Nefrologia' },
+  score2: { title: 'SCORE2 Calculator', subtitle: '10-year cardiovascular risk', specialty: 'Cardiology' },
+  hba1c:  { title: 'HbA1c Converter', subtitle: 'mmol/mol ↔ %', specialty: 'Endocrinology' },
+  bmi:    { title: 'BMI Calculator', subtitle: 'Body Mass Index + interpretation', specialty: 'General' },
+  gfr:    { title: 'eGFR Calculator', subtitle: 'CKD-EPI — kidney function', specialty: 'Nephrology' },
 }
 
 // ── Form field ────────────────────────────────────────────────────────────────
@@ -186,12 +186,12 @@ function Score2Form() {
 
   return (
     <div>
-      <Field label="Wiek" unit="lata" value={age} onChange={setAge} min={40} max={75} placeholder="np. 55" />
-      <SegmentControl label="Płeć" options={[{ value: 'M', label: 'Mężczyzna' }, { value: 'F', label: 'Kobieta' }]} value={sex} onChange={setSex} />
-      <SegmentControl label="Palenie" options={[{ value: 'N', label: 'Nie' }, { value: 'Y', label: 'Tak' }]} value={smoker} onChange={setSmoker} />
-      <Field label="Ciśnienie skurczowe" unit="mmHg" value={systolic} onChange={setSystolic} placeholder="np. 130" />
-      <Field label="Cholesterol całkowity" unit="mmol/l" value={totalChol} onChange={setTotalChol} placeholder="np. 5.5" />
-      <Field label="HDL-cholesterol" unit="mmol/l" value={hdl} onChange={setHdl} placeholder="np. 1.4" />
+      <Field label="Age" unit="years" value={age} onChange={setAge} min={40} max={75} placeholder="e.g. 55" />
+      <SegmentControl label="Sex" options={[{ value: 'M', label: 'Male' }, { value: 'F', label: 'Female' }]} value={sex} onChange={setSex} />
+      <SegmentControl label="Smoking" options={[{ value: 'N', label: 'No' }, { value: 'Y', label: 'Yes' }]} value={smoker} onChange={setSmoker} />
+      <Field label="Systolic BP" unit="mmHg" value={systolic} onChange={setSystolic} placeholder="e.g. 130" />
+      <Field label="Total cholesterol" unit="mmol/l" value={totalChol} onChange={setTotalChol} placeholder="e.g. 5.5" />
+      <Field label="HDL cholesterol" unit="mmol/l" value={hdl} onChange={setHdl} placeholder="e.g. 1.4" />
 
       {result && (
         <ResultCard>
@@ -206,7 +206,7 @@ function Score2Form() {
               fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '14px',
               color: result.color, marginTop: '4px',
             }}>
-              {result.category} ryzyko
+              {result.category} risk
             </div>
           </div>
           <p style={{
@@ -219,7 +219,7 @@ function Score2Form() {
             fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--text-tertiary)',
             textAlign: 'center', marginTop: '12px',
           }}>
-            Wynik szacunkowy — nie do użytku klinicznego
+            Estimated result — not for clinical use
           </p>
         </ResultCard>
       )}
@@ -234,8 +234,8 @@ function BmiForm() {
 
   return (
     <div>
-      <Field label="Masa ciała" unit="kg" value={weight} onChange={setWeight} placeholder="np. 75" />
-      <Field label="Wzrost" unit="cm" value={height} onChange={setHeight} placeholder="np. 175" />
+      <Field label="Weight" unit="kg" value={weight} onChange={setWeight} placeholder="e.g. 75" />
+      <Field label="Height" unit="cm" value={height} onChange={setHeight} placeholder="e.g. 175" />
       {result && (
         <ResultCard>
           <div style={{ textAlign: 'center' }}>
@@ -272,16 +272,16 @@ function Hba1cForm() {
   return (
     <div>
       <SegmentControl
-        label="Jednostka wejściowa"
+        label="Input unit"
         options={[{ value: 'percent', label: '% (NGSP)' }, { value: 'mmol', label: 'mmol/mol' }]}
         value={unit}
         onChange={u => { setUnit(u); setValue('') }}
       />
       <Field
-        label={unit === 'percent' ? 'HbA1c w %' : 'HbA1c w mmol/mol'}
+        label={unit === 'percent' ? 'HbA1c in %' : 'HbA1c in mmol/mol'}
         value={value}
         onChange={setValue}
-        placeholder={unit === 'percent' ? 'np. 7.5' : 'np. 58'}
+        placeholder={unit === 'percent' ? 'e.g. 7.5' : 'e.g. 58'}
       />
       {result && (
         <ResultCard>
@@ -320,9 +320,9 @@ function GfrForm() {
 
   return (
     <div>
-      <Field label="Kreatynina" unit="mg/dl" value={creatinine} onChange={setCreatinine} placeholder="np. 1.1" />
-      <Field label="Wiek" unit="lata" value={age} onChange={setAge} placeholder="np. 60" />
-      <SegmentControl label="Płeć" options={[{ value: 'M', label: 'Mężczyzna' }, { value: 'F', label: 'Kobieta' }]} value={sex} onChange={setSex} />
+      <Field label="Creatinine" unit="mg/dl" value={creatinine} onChange={setCreatinine} placeholder="e.g. 1.1" />
+      <Field label="Age" unit="years" value={age} onChange={setAge} placeholder="e.g. 60" />
+      <SegmentControl label="Sex" options={[{ value: 'M', label: 'Male' }, { value: 'F', label: 'Female' }]} value={sex} onChange={setSex} />
       {result && (
         <ResultCard>
           <div style={{ textAlign: 'center' }}>
@@ -333,7 +333,7 @@ function GfrForm() {
               {result.egfr}
             </div>
             <div style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', color: 'var(--text-tertiary)', marginBottom: '6px' }}>
-              ml/min/1,73 m²
+              ml/min/1.73 m²
             </div>
             <div style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '14px', color: result.color }}>
               {result.stage}
@@ -383,7 +383,7 @@ export default function Calculator() {
           fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '15px',
           color: 'var(--text-primary)',
         }}>
-          Kalkulator
+          Calculator
         </span>
         <div style={{ width: '40px' }} />
       </header>

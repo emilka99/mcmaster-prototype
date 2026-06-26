@@ -3,62 +3,62 @@ import { useNavigate, useParams } from 'react-router-dom'
 const MOCK_VIDEOS = {
   v1: {
     id: 'v1',
-    title: 'Niewydolność serca — przegląd',
-    specialty: 'Kardiologia',
+    title: 'Heart Failure — Overview',
+    specialty: 'Cardiology',
     duration: '18 min',
     color: '#7A003C',
     chapters: [
-      { time: '0:00', label: 'Definicja i epidemiologia' },
-      { time: '3:20', label: 'Patofizjologia' },
-      { time: '7:45', label: 'Objawy kliniczne' },
-      { time: '11:10', label: 'Diagnostyka' },
-      { time: '14:30', label: 'Leczenie farmakologiczne' },
-      { time: '16:50', label: 'Rokowanie' },
+      { time: '0:00', label: 'Definition and epidemiology' },
+      { time: '3:20', label: 'Pathophysiology' },
+      { time: '7:45', label: 'Clinical presentation' },
+      { time: '11:10', label: 'Diagnosis' },
+      { time: '14:30', label: 'Pharmacological treatment' },
+      { time: '16:50', label: 'Prognosis' },
     ],
-    description: 'Kompleksowy przegląd niewydolności serca — od patofizjologii po nowoczesne strategie leczenia. Materiał oparty na wytycznych ESC 2023.',
+    description: 'A comprehensive overview of heart failure — from pathophysiology to modern management strategies. Based on ESC 2023 guidelines.',
   },
   v2: {
     id: 'v2',
-    title: 'Udar mózgu — diagnostyka',
-    specialty: 'Neurologia',
+    title: 'Stroke — Diagnosis',
+    specialty: 'Neurology',
     duration: '24 min',
     color: '#185FA5',
     chapters: [
-      { time: '0:00', label: 'Klasyfikacja udarów' },
-      { time: '5:00', label: 'Objawy i skale kliniczne' },
-      { time: '10:00', label: 'Diagnostyka obrazowa' },
-      { time: '16:00', label: 'Postępowanie w fazie ostrej' },
-      { time: '20:00', label: 'Profilaktyka wtórna' },
+      { time: '0:00', label: 'Stroke classification' },
+      { time: '5:00', label: 'Symptoms and clinical scales' },
+      { time: '10:00', label: 'Neuroimaging' },
+      { time: '16:00', label: 'Acute phase management' },
+      { time: '20:00', label: 'Secondary prevention' },
     ],
-    description: 'Diagnostyka różnicowa udaru mózgu z naciskiem na neuroobrازowanie i leczenie trombolityczne.',
+    description: 'Differential diagnosis of stroke with emphasis on neuroimaging and thrombolytic treatment.',
   },
   v3: {
     id: 'v3',
-    title: 'Cukrzyca typu 2',
-    specialty: 'Endokrynologia',
+    title: 'Type 2 Diabetes',
+    specialty: 'Endocrinology',
     duration: '15 min',
     color: '#0F6E56',
     chapters: [
-      { time: '0:00', label: 'Patogeneza' },
-      { time: '4:00', label: 'Kryteria rozpoznania' },
-      { time: '7:30', label: 'Farmakoterapia — algorytm' },
-      { time: '11:00', label: 'Powikłania i monitoring' },
+      { time: '0:00', label: 'Pathogenesis' },
+      { time: '4:00', label: 'Diagnostic criteria' },
+      { time: '7:30', label: 'Pharmacotherapy — algorithm' },
+      { time: '11:00', label: 'Complications and monitoring' },
     ],
-    description: 'Aktualne wytyczne diagnostyki i leczenia cukrzycy typu 2 z uwzględnieniem nowych grup leków.',
+    description: 'Current guidelines for diagnosis and treatment of type 2 diabetes including newer drug classes.',
   },
   v4: {
     id: 'v4',
-    title: 'Astma oskrzelowa',
-    specialty: 'Pulmonologia',
+    title: 'Bronchial Asthma',
+    specialty: 'Pulmonology',
     duration: '12 min',
     color: '#854F0B',
     chapters: [
-      { time: '0:00', label: 'Definicja i fenotopy' },
-      { time: '3:00', label: 'Diagnostyka — spirometria' },
-      { time: '7:00', label: 'Stopniowanie leczenia GINA' },
-      { time: '10:00', label: 'Zaostrzenia i postępowanie' },
+      { time: '0:00', label: 'Definition and phenotypes' },
+      { time: '3:00', label: 'Diagnosis — spirometry' },
+      { time: '7:00', label: 'GINA stepwise treatment' },
+      { time: '10:00', label: 'Exacerbations and management' },
     ],
-    description: 'Astma w ujęciu praktycznym — od fenotypowania po dobór terapii zgodnie z wytycznymi GINA 2023.',
+    description: 'Asthma in clinical practice — from phenotyping to therapy selection per GINA 2023 guidelines.',
   },
 }
 
@@ -98,7 +98,7 @@ export default function VideoPlayer() {
           overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
           padding: '0 8px',
         }}>
-          Wideo
+          Video
         </span>
         <div style={{ width: '40px' }} />
       </header>
@@ -170,7 +170,7 @@ export default function VideoPlayer() {
           color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em',
           marginBottom: '10px',
         }}>
-          Spis treści
+          Chapters
         </h2>
         <div style={{
           background: 'var(--bg-surface)',

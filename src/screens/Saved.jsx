@@ -9,8 +9,8 @@ function Tabs({ active, onChange }) {
   return (
     <div style={{ display: 'flex', background: 'var(--bg-surface)', borderBottom: '1px solid var(--border-subtle)' }}>
       {[
-        { id: 'all', label: 'Wszystkie' },
-        { id: 'folders', label: 'Foldery' },
+        { id: 'all', label: 'All' },
+        { id: 'folders', label: 'Folders' },
       ].map(tab => (
         <button
           key={tab.id}
@@ -38,10 +38,10 @@ function EmptyAll({ navigate }) {
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '64px 32px', textAlign: 'center' }}>
       <span className="material-symbols-outlined icon-xl" style={{ color: 'var(--text-tertiary)', marginBottom: '16px' }}>bookmark</span>
       <p style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '16px', color: 'var(--text-primary)', marginBottom: '8px' }}>
-        Nie masz jeszcze zapisanych rozdziałów
+        No saved chapters yet
       </p>
       <p style={{ fontFamily: 'var(--font-ui)', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '28px', lineHeight: 1.5 }}>
-        Podczas czytania kliknij ikonę zakładki
+        Tap the bookmark icon while reading
       </p>
       <button
         onClick={() => navigate('/textbook')}
@@ -53,7 +53,7 @@ function EmptyAll({ navigate }) {
           display: 'flex', alignItems: 'center', gap: '6px',
         }}
       >
-        Przeglądaj Textbook
+        Browse Textbook
         <span className="material-symbols-outlined icon-sm">arrow_forward</span>
       </button>
     </div>
@@ -63,7 +63,7 @@ function EmptyAll({ navigate }) {
 // ── Saved card ────────────────────────────────────────────────────────────────
 
 function SavedCard({ item, onOpen, onRemove }) {
-  const date = new Date(item.savedAt).toLocaleDateString('pl-PL', { day: 'numeric', month: 'short', year: 'numeric' })
+  const date = new Date(item.savedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
 
   return (
     <div style={{
@@ -83,7 +83,7 @@ function SavedCard({ item, onOpen, onRemove }) {
           {item.title}
         </div>
         <span style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--text-secondary)' }}>
-          Rozdział {item.chapterNum} · {item.readTime}
+          Chapter {item.chapterNum} · {item.readTime}
         </span>
 
         {item.note && (
@@ -96,13 +96,13 @@ function SavedCard({ item, onOpen, onRemove }) {
         )}
 
         <span style={{ display: 'block', fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--text-tertiary)', marginTop: '8px' }}>
-          Zapisano {date}
+          Saved {date}
         </span>
       </button>
 
       <button
         onClick={onRemove}
-        aria-label="Usuń z zapisanych"
+        aria-label="Remove from saved"
         style={{ width: '44px', alignSelf: 'stretch', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-tertiary)', flexShrink: 0 }}
       >
         <span className="material-symbols-outlined icon-sm">close</span>
@@ -132,7 +132,7 @@ function FolderCard({ folder, count, onClick }) {
         {folder.name}
       </span>
       <span style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', color: 'var(--text-secondary)' }}>
-        {count} rozdz.
+        {count} ch.
       </span>
     </button>
   )
@@ -196,7 +196,7 @@ export default function Saved() {
             }}
           >
             <span className="material-symbols-outlined icon-sm">add</span>
-            Nowy folder
+            New folder
           </button>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
@@ -216,11 +216,11 @@ export default function Saved() {
       )}
 
       {/* Create folder sheet */}
-      <BottomSheet isOpen={showCreateFolder} onClose={() => setShowCreateFolder(false)} title="Nowy folder">
+      <BottomSheet isOpen={showCreateFolder} onClose={() => setShowCreateFolder(false)} title="New folder">
         <div style={{ padding: '12px 20px 20px' }}>
           <input
             type="text"
-            placeholder="Nazwa folderu"
+            placeholder="Folder name"
             value={newFolderName}
             onChange={e => setNewFolderName(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleCreateFolder()}
@@ -241,7 +241,7 @@ export default function Saved() {
               fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '15px', cursor: 'pointer',
             }}
           >
-            Utwórz folder
+            Create folder
           </button>
         </div>
       </BottomSheet>

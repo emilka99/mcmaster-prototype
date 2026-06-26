@@ -3,7 +3,7 @@ import { useReadingHistory } from '../hooks/useReadingHistory'
 
 const NAV_ITEMS = [
   { path: '/',         label: 'My Space', icon: 'grid_view' },
-  { path: '/search',  label: 'Szukaj',   icon: 'search' },
+  { path: '/search',  label: 'Search',   icon: 'search' },
   { path: '/textbook',label: 'Textbook', icon: 'menu_book' },
 ]
 

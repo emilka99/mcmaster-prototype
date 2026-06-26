@@ -9,16 +9,16 @@ import BottomSheet from '../components/BottomSheet'
 
 const MOCK_CHAPTER = {
   id: 'cardiology-3-2',
-  title: 'Niewydolność serca',
-  specialty: 'Kardiologia',
+  title: 'Heart Failure',
+  specialty: 'Cardiology',
   chapter: '3.2',
   readTime: '12 min',
   lastReviewed: '15 Nov 2024',
   lastUpdated: '3 Feb 2025',
   contributors: [
-    { name: 'Prof. Jan Kowalski', role: 'Author', institution: 'Uniwersytet Jagielloński' },
-    { name: 'Dr Anna Nowak', role: 'Reviewer', institution: 'Gdański Uniwersytet Medyczny' },
-    { name: 'Dr Piotr Wiśniewski', role: 'Editor', institution: 'Warszawski Uniwersytet Medyczny' },
+    { name: 'Prof. James Walker', role: 'Author', institution: 'McMaster University' },
+    { name: 'Dr Sarah Mitchell', role: 'Reviewer', institution: 'University of Toronto' },
+    { name: 'Dr David Chen', role: 'Editor', institution: 'McGill University' },
   ],
   references: [
     '1. McDonagh TA, et al. 2021 ESC Guidelines for the diagnosis and treatment of acute and chronic heart failure. Eur Heart J. 2021;42(36):3599-3726.',
@@ -26,176 +26,176 @@ const MOCK_CHAPTER = {
     '3. Yancy CW, et al. 2017 ACC/AHA/HFSA Focused Update of the 2013 ACCF/AHA Guideline for the Management of Heart Failure. J Am Coll Cardiol. 2017;70(6):776-803.',
   ],
   toc: [
-    { id: 'def',   title: 'Definicja i klasyfikacja' },
-    { id: 'etio',  title: 'Etiologia' },
-    { id: 'path',  title: 'Patofizjologia' },
-    { id: 'diag',  title: 'Diagnostyka' },
-    { id: 'treat', title: 'Leczenie' },
-    { id: 'prog',  title: 'Rokowanie' },
+    { id: 'def',   title: 'Definition and Classification' },
+    { id: 'etio',  title: 'Etiology' },
+    { id: 'path',  title: 'Pathophysiology' },
+    { id: 'diag',  title: 'Diagnosis' },
+    { id: 'treat', title: 'Treatment' },
+    { id: 'prog',  title: 'Prognosis' },
   ],
   content: `
     <section id="def">
-      <h2>Definicja i klasyfikacja</h2>
-      <p>Niewydolność serca (<abbr title="heart failure">NS</abbr>) jest zespołem klinicznym, w którym serce nie jest w stanie pompować wystarczającej ilości krwi, aby zaspokoić metaboliczne potrzeby organizmu, lub może to robić jedynie przy nieprawidłowo wysokim ciśnieniu napełniania.</p>
-      <p>Klasyfikacja <abbr title="European Society of Cardiology">ESC</abbr> 2021 według <abbr title="left ventricular ejection fraction">LVEF</abbr>:</p>
+      <h2>Definition and Classification</h2>
+      <p>Heart failure (<abbr title="heart failure">HF</abbr>) is a clinical syndrome in which the heart is unable to pump sufficient blood to meet the metabolic needs of the body, or can only do so at an abnormally elevated filling pressure.</p>
+      <p><abbr title="European Society of Cardiology">ESC</abbr> 2021 classification by <abbr title="left ventricular ejection fraction">LVEF</abbr>:</p>
       <ol>
-        <li>Niewydolność serca z obniżoną frakcją wyrzutową (<abbr title="heart failure with reduced ejection fraction">HFrEF</abbr>): LVEF ≤ 40%
+        <li>Heart failure with reduced ejection fraction (<abbr title="heart failure with reduced ejection fraction">HFrEF</abbr>): LVEF ≤ 40%
           <ol>
-            <li>Kryterium podstawowe: objawy podmiotowe ± przedmiotowe</li>
-            <li>Kryterium dodatkowe: LVEF ≤ 40% w badaniu obrazowym
+            <li>Primary criterion: symptoms ± signs of HF</li>
+            <li>Additional criterion: LVEF ≤ 40% on imaging
               <ol>
-                <li>Echokardiografia przezklatkowa (badanie z wyboru)</li>
-                <li>Rezonans magnetyczny serca (złoty standard)</li>
-                <li>Wentrykulografia izotopowa (alternatywa)</li>
+                <li>Transthoracic echocardiography (investigation of choice)</li>
+                <li>Cardiac MRI (gold standard)</li>
+                <li>Radionuclide ventriculography (alternative)</li>
               </ol>
             </li>
           </ol>
         </li>
-        <li>Niewydolność serca z łagodnie obniżoną frakcją wyrzutową (<abbr title="heart failure with mildly reduced ejection fraction">HFmrEF</abbr>): LVEF 41–49%</li>
-        <li>Niewydolność serca z zachowaną frakcją wyrzutową (<abbr title="heart failure with preserved ejection fraction">HFpEF</abbr>): LVEF ≥ 50%</li>
+        <li>Heart failure with mildly reduced ejection fraction (<abbr title="heart failure with mildly reduced ejection fraction">HFmrEF</abbr>): LVEF 41–49%</li>
+        <li>Heart failure with preserved ejection fraction (<abbr title="heart failure with preserved ejection fraction">HFpEF</abbr>): LVEF ≥ 50%</li>
       </ol>
 
-      <h3>Klasyfikacja czynnościowa</h3>
-      <p>Klasyfikacja <abbr title="New York Heart Association">NYHA</abbr> ocenia nasilenie objawów i tolerancję wysiłku:</p>
+      <h3>Functional Classification</h3>
+      <p>The <abbr title="New York Heart Association">NYHA</abbr> classification assesses symptom severity and exercise tolerance:</p>
       <ul>
-        <li><strong>Klasa I:</strong> bez ograniczenia aktywności fizycznej</li>
-        <li><strong>Klasa II:</strong> niewielkie ograniczenie — duszność przy umiarkowanym wysiłku</li>
-        <li><strong>Klasa III:</strong> znaczne ograniczenie — duszność przy minimalnym wysiłku</li>
-        <li><strong>Klasa IV:</strong> objawy spoczynkowe lub przy najmniejszym wysiłku</li>
+        <li><strong>Class I:</strong> no limitation of physical activity</li>
+        <li><strong>Class II:</strong> slight limitation — dyspnoea on moderate exertion</li>
+        <li><strong>Class III:</strong> marked limitation — dyspnoea on minimal exertion</li>
+        <li><strong>Class IV:</strong> symptoms at rest or on minimal effort</li>
       </ul>
 
-      <h4>Staging według ACC/AHA</h4>
-      <p>Uzupełniający podział uwzględnia pacjentów bezobjawowych z grupy ryzyka (stadia A i B), co umożliwia wdrożenie prewencji przed rozwojem pełnoobjawowej choroby.</p>
+      <h4>ACC/AHA Staging</h4>
+      <p>This complementary framework includes asymptomatic at-risk patients (Stages A and B), enabling preventive intervention before the development of overt symptomatic disease.</p>
     </section>
 
     <section id="etio">
-      <h2>Etiologia</h2>
-      <p>Najczęstszą przyczyną niewydolności serca w krajach wysokorozwiniętych jest choroba wieńcowa (<abbr title="coronary artery disease">CAD</abbr>), odpowiedzialna za około 60–70% przypadków HFrEF.</p>
+      <h2>Etiology</h2>
+      <p>The most common cause of heart failure in high-income countries is coronary artery disease (<abbr title="coronary artery disease">CAD</abbr>), accounting for approximately 60–70% of HFrEF cases.</p>
 
-      <h3>Przyczyny kardiologiczne</h3>
-      <p>Kardiologiczne podłoże obejmuje:</p>
+      <h3>Cardiac Causes</h3>
+      <p>Cardiac aetiology includes:</p>
       <ul>
-        <li>Chorobę niedokrwienną serca (zawał, przewlekłe niedokrwienie)</li>
-        <li>Nadciśnienie tętnicze — prowadzi do przerostu lewej komory</li>
-        <li>Kardiomiopatie: rozstrzeniowa, przerostowa, restrykcyjna, arytmogenna</li>
-        <li>Wady zastawkowe: niedomykalność/zwężenie zastawki mitralnej lub aortalnej</li>
-        <li>Zaburzenia rytmu serca: utrwalone migotanie przedsionków (<abbr title="atrial fibrillation">AF</abbr>), tachykardiomiopatia</li>
+        <li>Ischaemic heart disease (myocardial infarction, chronic ischaemia)</li>
+        <li>Arterial hypertension — leading to left ventricular hypertrophy</li>
+        <li>Cardiomyopathies: dilated, hypertrophic, restrictive, arrhythmogenic</li>
+        <li>Valvular disease: regurgitation/stenosis of the mitral or aortic valve</li>
+        <li>Arrhythmias: persistent atrial fibrillation (<abbr title="atrial fibrillation">AF</abbr>), tachycardiomyopathy</li>
       </ul>
 
-      <h3>Przyczyny pozasercowe</h3>
+      <h3>Non-Cardiac Causes</h3>
       <ul>
-        <li>Nadczynność/niedoczynność tarczycy</li>
-        <li>Niedokrwistość ciężkiego stopnia</li>
-        <li>Choroby układowe (sarkoidoza, amyloidoza)</li>
-        <li>Kardiotoksyczność leków (antracykliny, trastuzumab)</li>
+        <li>Hyper- or hypothyroidism</li>
+        <li>Severe anaemia</li>
+        <li>Systemic diseases (sarcoidosis, amyloidosis)</li>
+        <li>Cardiotoxic drugs (anthracyclines, trastuzumab)</li>
       </ul>
 
-      <h4>Czynniki wyzwalające zaostrzenie</h4>
-      <p>U pacjentów ze stabilną NS zaostrzenie mogą wywołać: infekcje (zwłaszcza płucne), nieprzestrzeganie diety niskosodowej i zaleceń dotyczących płynów, odstawienie leków oraz epizody tachyarytmii.</p>
+      <h4>Precipitating Factors</h4>
+      <p>In patients with stable HF, decompensation may be triggered by: infections (particularly pulmonary), non-adherence to a low-sodium diet and fluid restrictions, withdrawal of medications, and episodes of tachyarrhythmia.</p>
     </section>
 
     <section id="path">
-      <h2>Patofizjologia</h2>
-      <p>W odpowiedzi na zmniejszony rzut serca aktywowane są mechanizmy kompensacyjne: układ renina-angiotensyna-aldosteron (<abbr title="renin-angiotensin-aldosterone system">RAA</abbr>), układ współczulny oraz wydzielanie peptydów natriuretycznych.</p>
-      <p>Długotrwała aktywacja tych układów prowadzi do niekorzystnej przebudowy mięśnia sercowego (remodeling), nasilając dysfunkcję serca i tworząc błędne koło niewydolności.</p>
+      <h2>Pathophysiology</h2>
+      <p>In response to reduced cardiac output, compensatory mechanisms are activated: the renin–angiotensin–aldosterone system (<abbr title="renin-angiotensin-aldosterone system">RAAS</abbr>), the sympathetic nervous system, and release of natriuretic peptides.</p>
+      <p>Sustained activation of these systems leads to adverse cardiac remodelling, further impairing cardiac function and creating a vicious cycle of worsening failure.</p>
 
-      <h3>Mechanizmy neurohormonalne</h3>
-      <p>Aktywacja układu <abbr title="renin-angiotensin-aldosterone">RAA</abbr> i układu współczulnego jest początkowo korzystna (podtrzymuje ciśnienie tętnicze i perfuzję narządów), jednak przewlekłe pobudzenie:</p>
+      <h3>Neurohormonal Mechanisms</h3>
+      <p>Activation of the <abbr title="renin-angiotensin-aldosterone">RAAS</abbr> and sympathetic nervous system is initially beneficial (maintaining blood pressure and organ perfusion), but chronic stimulation:</p>
       <ul>
-        <li>Zwiększa obciążenie wstępne i następcze serca</li>
-        <li>Powoduje retencję sodu i wody → obrzęki</li>
-        <li>Nasila włóknienie i apoptozę kardiomiocytów</li>
-        <li>Sprzyja arytmiom komorowym</li>
+        <li>Increases cardiac preload and afterload</li>
+        <li>Causes sodium and water retention → oedema</li>
+        <li>Promotes cardiomyocyte fibrosis and apoptosis</li>
+        <li>Predisposes to ventricular arrhythmias</li>
       </ul>
 
-      <h3>Peptydy natriuretyczne</h3>
-      <p><abbr title="B-type natriuretic peptide">BNP</abbr> i <abbr title="N-terminal proBNP">NT-proBNP</abbr> są wydzielane przez kardiomiocyty pod wpływem zwiększonego napięcia ścian komór. Wywołują efekty przeciwstawne do układu RAA: diurezę, natriurezę i rozkurcz naczyń.</p>
+      <h3>Natriuretic Peptides</h3>
+      <p><abbr title="B-type natriuretic peptide">BNP</abbr> and <abbr title="N-terminal proBNP">NT-proBNP</abbr> are released by cardiomyocytes in response to increased ventricular wall stress. They exert effects opposing the RAAS: promoting diuresis, natriuresis, and vasodilation.</p>
     </section>
 
     <section id="diag">
-      <h2>Diagnostyka</h2>
-      <p>Rozpoznanie NS opiera się na triasie: objawach podmiotowych, przedmiotowych oraz dowodach na dysfunkcję serca w badaniach dodatkowych.</p>
+      <h2>Diagnosis</h2>
+      <p>The diagnosis of HF rests on a triad of: symptoms, signs, and evidence of cardiac dysfunction on investigation.</p>
 
-      <h3>Objawy podmiotowe i przedmiotowe</h3>
+      <h3>Symptoms and Signs</h3>
       <ul>
-        <li>Duszność (dyspnoe) — szczególnie wysiłkowa, orthopnoe, duszność napadowa nocna (<abbr title="paroxysmal nocturnal dyspnea">PND</abbr>)</li>
-        <li>Obrzęki kończyn dolnych (symetryczne, nasilające się wieczorem)</li>
-        <li>Zmęczenie i nietolerancja wysiłku</li>
-        <li>Trzeszczenia u podstawy płuc, rytm cwałowy S3</li>
-        <li>Przepełnienie żył szyjnych (podwyższone <abbr title="jugular venous pressure">JVP</abbr>)</li>
+        <li>Dyspnoea — particularly on exertion, orthopnoea, paroxysmal nocturnal dyspnoea (<abbr title="paroxysmal nocturnal dyspnea">PND</abbr>)</li>
+        <li>Bilateral ankle oedema (symmetrical, worsening in the evening)</li>
+        <li>Fatigue and exercise intolerance</li>
+        <li>Basal lung crepitations, third heart sound (S3 gallop)</li>
+        <li>Elevated jugular venous pressure (<abbr title="jugular venous pressure">JVP</abbr>)</li>
       </ul>
 
-      <h3>Badania dodatkowe</h3>
-      <h4>Echokardiografia</h4>
-      <p>Badanie z wyboru w pierwszym etapie diagnostyki. Ocenia:</p>
+      <h3>Investigations</h3>
+      <h4>Echocardiography</h4>
+      <p>The investigation of choice in the initial diagnostic workup. Assesses:</p>
       <ul>
-        <li>LVEF — kluczowy parametr klasyfikacyjny</li>
-        <li>Geometrię i kurczliwość lewej komory</li>
-        <li>Parametry napełniania (E/e' — wskaźnik ciśnienia rozkurczowego)</li>
-        <li>Wady zastawkowe i ciśnienie w tętnicy płucnej</li>
+        <li>LVEF — the key classification parameter</li>
+        <li>Left ventricular geometry and contractility</li>
+        <li>Filling pressures (E/e' — index of diastolic pressure)</li>
+        <li>Valvular disease and pulmonary artery pressure</li>
       </ul>
 
-      <h4>Peptydy natriuretyczne</h4>
-      <p>Stężenie BNP &gt; 35 pg/ml lub NT-proBNP &gt; 125 pg/ml ma wysoką wartość diagnostyczną i prognostyczną. Wartości prawidłowe w dużym stopniu wykluczają NS jako przyczynę duszności.</p>
+      <h4>Natriuretic Peptides</h4>
+      <p>BNP &gt; 35 pg/ml or NT-proBNP &gt; 125 pg/ml has high diagnostic and prognostic value. Normal values largely exclude HF as a cause of dyspnoea.</p>
 
-      <h4>Badania uzupełniające</h4>
-      <p><abbr title="electrocardiogram">EKG</abbr>, RTG klatki piersiowej, morfologia, elektrolity, kreatynina, TSH, ferrytyna — umożliwiają identyfikację przyczyny i współistniejących chorób.</p>
+      <h4>Additional Tests</h4>
+      <p><abbr title="electrocardiogram">ECG</abbr>, chest X-ray, full blood count, electrolytes, creatinine, TSH, ferritin — allow identification of the underlying cause and comorbidities.</p>
     </section>
 
     <section id="treat">
-      <h2>Leczenie</h2>
-      <p>Podstawę leczenia HFrEF stanowi farmakoterapia oparta na czterech filarach o udowodnionym wpływie na przeżycie i redukcję hospitalizacji.</p>
+      <h2>Treatment</h2>
+      <p>The cornerstone of HFrEF management is pharmacotherapy based on four evidence-based pillars with proven mortality benefit and reduction in hospitalisation.</p>
 
-      <h3>Cztery filary farmakoterapii HFrEF</h3>
+      <h3>Four Pillars of HFrEF Pharmacotherapy</h3>
       <ol>
-        <li><strong>Inhibitory <abbr title="angiotensin-converting enzyme">ACE</abbr> lub <abbr title="angiotensin receptor-neprilysin inhibitor">ARNI</abbr></strong> (sakubitryl/walsartan — preferowany przy tolerancji)
+        <li><strong><abbr title="angiotensin-converting enzyme">ACE</abbr> inhibitors or <abbr title="angiotensin receptor-neprilysin inhibitor">ARNI</abbr></strong> (sacubitril/valsartan — preferred if tolerated)
           <ol>
-            <li>Sakubitryl/walsartan: redukcja ryzyka śmierci CV o 20% vs enalapril (PARADIGM-HF)</li>
-            <li>Inhibitory ACE: enalapril, ramipril, lizynopril — jeśli ARNI niedostępny</li>
+            <li>Sacubitril/valsartan: 20% reduction in CV mortality vs enalapril (PARADIGM-HF)</li>
+            <li>ACE inhibitors: enalapril, ramipril, lisinopril — if ARNI unavailable</li>
           </ol>
         </li>
-        <li><strong>Beta-adrenolityki</strong> — bisoprolol, karwedilol, metoprolol CR/XL
+        <li><strong>Beta-blockers</strong> — bisoprolol, carvedilol, metoprolol CR/XL
           <ol>
-            <li>Titracja do maksymalnej tolerowanej dawki</li>
-            <li>Nie odstawiać w zaostrzeniu — zmniejszyć dawkę lub utrzymać</li>
+            <li>Titrate to maximum tolerated dose</li>
+            <li>Do not withdraw in decompensation — reduce or maintain dose</li>
           </ol>
         </li>
-        <li><strong>Antagoniści aldosteronu</strong> (<abbr title="mineralocorticoid receptor antagonist">MRA</abbr>): eplerenon, spironolakton</li>
-        <li><strong>Inhibitory <abbr title="sodium-glucose co-transporter 2">SGLT2</abbr></strong>: dapagliflozyna, empagliflozyna — redukcja hospitalizacji i śmiertelności niezależnie od cukrzycy</li>
+        <li><strong>Mineralocorticoid receptor antagonists</strong> (<abbr title="mineralocorticoid receptor antagonist">MRA</abbr>): eplerenone, spironolactone</li>
+        <li><strong><abbr title="sodium-glucose co-transporter 2">SGLT2</abbr> inhibitors</strong>: dapagliflozin, empagliflozin — reduce hospitalisation and mortality regardless of diabetes status</li>
       </ol>
 
-      <h3>Leczenie urządzeniami</h3>
-      <h4>ICD — wszczepialny kardiowerter-defibrylator</h4>
-      <p>Wskazany przy LVEF ≤ 35% po ≥ 3 miesiącach optymalnej farmakoterapii, gdy oczekiwana długość życia &gt; 1 rok (prewencja nagłego zgonu sercowego).</p>
+      <h3>Device Therapy</h3>
+      <h4>ICD — Implantable Cardioverter-Defibrillator</h4>
+      <p>Indicated when LVEF ≤ 35% after ≥ 3 months of optimal medical therapy, with expected survival &gt; 1 year (primary prevention of sudden cardiac death).</p>
 
-      <h4>CRT — terapia resynchronizująca</h4>
-      <p>Wskazana przy LVEF ≤ 35%, bloku lewej odnogi pęczka Hisa (<abbr title="left bundle branch block">LBBB</abbr>) i QRS ≥ 150 ms — poprawia LVEF i zmniejsza objawy.</p>
+      <h4>CRT — Cardiac Resynchronisation Therapy</h4>
+      <p>Indicated when LVEF ≤ 35%, left bundle branch block (<abbr title="left bundle branch block">LBBB</abbr>) and QRS ≥ 150 ms — improves LVEF and reduces symptoms.</p>
 
-      <h3>Leczenie niefarmakologiczne</h3>
+      <h3>Non-Pharmacological Management</h3>
       <ul>
-        <li>Ograniczenie spożycia sodu (&lt; 2 g/dobę) i płynów (1,5–2 l/dobę w zaawansowanej NS)</li>
-        <li>Kontrola masy ciała — codzienny pomiar, alert przy przyroście &gt; 2 kg w 3 dni</li>
-        <li>Rehabilitacja kardiologiczna (klasy NYHA I–III) — poprawa wydolności i jakości życia</li>
-        <li>Szczepienia: grypa (corocznie), pneumokoki, COVID-19</li>
+        <li>Sodium restriction (&lt; 2 g/day) and fluid restriction (1.5–2 L/day in advanced HF)</li>
+        <li>Daily weight monitoring — alert if weight increases &gt; 2 kg over 3 days</li>
+        <li>Cardiac rehabilitation (NYHA Class I–III) — improves exercise capacity and quality of life</li>
+        <li>Vaccinations: influenza (annual), pneumococcal, COVID-19</li>
       </ul>
     </section>
 
     <section id="prog">
-      <h2>Rokowanie</h2>
-      <p>Rokowanie w niewydolności serca pozostaje poważne pomimo postępów terapeutycznych. Roczna śmiertelność w zaawansowanej NS (<abbr title="New York Heart Association">NYHA</abbr> IV) wynosi 50–75%.</p>
+      <h2>Prognosis</h2>
+      <p>The prognosis of heart failure remains serious despite therapeutic advances. Annual mortality in advanced HF (<abbr title="New York Heart Association">NYHA</abbr> Class IV) is 50–75%.</p>
 
-      <h3>Czynniki prognostyczne</h3>
-      <p>Niekorzystne rokowanie wiąże się z:</p>
+      <h3>Prognostic Factors</h3>
+      <p>Poor prognosis is associated with:</p>
       <ul>
-        <li>Niską LVEF (szczególnie &lt; 20%)</li>
-        <li>Wysokim stężeniem NT-proBNP</li>
-        <li>Częstymi hospitalizacjami z powodu zaostrzeń</li>
-        <li>Współistniejącą przewlekłą chorobą nerek</li>
-        <li>Niedokrwistością i hiponatremią</li>
+        <li>Low LVEF (especially &lt; 20%)</li>
+        <li>Elevated NT-proBNP concentration</li>
+        <li>Frequent hospitalisations for decompensation</li>
+        <li>Comorbid chronic kidney disease</li>
+        <li>Anaemia and hyponatraemia</li>
       </ul>
 
-      <h3>Wpływ leczenia na rokowanie</h3>
-      <p>Wdrożenie czterech filarów farmakoterapii HFrEF (ARNI + beta-bloker + MRA + SGLT2i) poprawia LVEF (reverse remodeling u 30–40% chorych), zmniejsza liczbę hospitalizacji o ~50% i wydłuża życie o kilka lat w porównaniu z samym inhibitorem ACE.</p>
+      <h3>Impact of Treatment on Prognosis</h3>
+      <p>Implementation of the four-pillar HFrEF regimen (ARNI + beta-blocker + MRA + SGLT2i) improves LVEF (reverse remodelling in 30–40% of patients), reduces hospitalisations by ~50%, and extends life by several years compared with ACE inhibitor alone.</p>
     </section>
   `,
 }
@@ -354,7 +354,7 @@ function TOCPanel({ toc, activeSection, open, onClose }) {
           padding: '20px 20px 16px', borderBottom: '1px solid var(--border-subtle)', flexShrink: 0,
         }}>
           <span style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '16px', color: 'var(--text-primary)' }}>
-            Spis treści
+            Table of contents
           </span>
           <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-tertiary)', display: 'flex', padding: '4px' }}>
             <span className="material-symbols-outlined icon-md">close</span>
@@ -415,7 +415,7 @@ function ArticleHeader({ chapter }) {
         letterSpacing: '0.08em',
         marginBottom: '10px',
       }}>
-        {chapter.specialty} · Rozdział {chapter.chapter}
+        {chapter.specialty} · Chapter {chapter.chapter}
       </span>
 
       {/* Title */}
@@ -640,7 +640,7 @@ export default function Reader() {
         <button
           onClick={() => navigate(-1)}
           style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-brand)', display: 'flex', alignItems: 'center', padding: '4px', flexShrink: 0 }}
-          aria-label="Wróć"
+          aria-label="Back"
         >
           <span className="material-symbols-outlined icon-md">arrow_back</span>
         </button>
@@ -658,14 +658,14 @@ export default function Reader() {
           <button
             onClick={() => setShowTOC(true)}
             style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', display: 'flex', padding: '6px', borderRadius: 'var(--radius-sm)' }}
-            aria-label="Spis treści"
+            aria-label="Table of contents"
           >
             <span className="material-symbols-outlined icon-md">format_list_bulleted</span>
           </button>
           <button
             onClick={() => console.log('więcej opcji')}
             style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', display: 'flex', padding: '6px', borderRadius: 'var(--radius-sm)' }}
-            aria-label="Więcej opcji"
+            aria-label="More options"
           >
             <span className="material-symbols-outlined icon-md">more_vert</span>
           </button>
@@ -682,7 +682,7 @@ export default function Reader() {
         }}>
           <span className="material-symbols-outlined icon-sm" style={{ color: 'var(--color-text-warning, #B45309)', flexShrink: 0 }}>sync_problem</span>
           <span style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--color-text-warning, #B45309)', lineHeight: 1.4 }}>
-            Ta treść może być nieaktualna · ostatnia sync {offlineState.lastSync ? new Date(offlineState.lastSync).toLocaleDateString('pl-PL') : '—'}
+            This content may be outdated · last synced {offlineState.lastSync ? new Date(offlineState.lastSync).toLocaleDateString('en-GB') : '—'}
           </span>
         </div>
       )}
@@ -726,7 +726,7 @@ export default function Reader() {
             }}
           >
             <span className={`material-symbols-outlined icon-sm${saved ? ' filled' : ''}`}>bookmark</span>
-            {saved ? 'Zapisano' : 'Zapisz'}
+            {saved ? 'Saved' : 'Save'}
           </button>
 
           {/* Progress */}
@@ -751,7 +751,7 @@ export default function Reader() {
             }}
           >
             <span className="material-symbols-outlined icon-sm">edit_note</span>
-            Notatka
+            Note
           </button>
         </div>
       </div>
@@ -760,13 +760,13 @@ export default function Reader() {
       <BottomSheet
         isOpen={showNoteInput}
         onClose={() => setShowNoteInput(false)}
-        title="Dodaj notatkę"
+        title="Add note"
       >
         <div style={{ padding: '12px 20px 20px' }}>
           <textarea
             value={noteText}
             onChange={e => setNoteText(e.target.value)}
-            placeholder="Twoje przemyślenia do tego rozdziału..."
+            placeholder="Your notes for this chapter..."
             autoFocus
             style={{
               width: '100%',
@@ -804,7 +804,7 @@ export default function Reader() {
               cursor: 'pointer',
             }}
           >
-            Zapisz notatkę
+            Save note
           </button>
         </div>
       </BottomSheet>

@@ -4,21 +4,21 @@ import { useNavigate } from 'react-router-dom'
 // ── Mock data ─────────────────────────────────────────────────────────────────
 
 const MOCK_RESULTS_PRECISE = [
-  { id: 'cardiology-3-2', type: 'chapter', title: 'Niewydolność serca', specialty: 'Kardiologia', chapter: '3.2', readTime: '12 min' },
-  { id: 'cardiology-3-1', type: 'chapter', title: 'Diagnostyka kardiologiczna', specialty: 'Kardiologia', chapter: '3.1', readTime: '8 min' },
-  { id: 'cardiology-4-1', type: 'chapter', title: 'Nadciśnienie tętnicze', specialty: 'Kardiologia', chapter: '4.1', readTime: '15 min' },
+  { id: 'cardiology-3-2', type: 'chapter', title: 'Heart Failure', specialty: 'Cardiology', chapter: '3.2', readTime: '12 min' },
+  { id: 'cardiology-3-1', type: 'chapter', title: 'Cardiac Diagnostics', specialty: 'Cardiology', chapter: '3.1', readTime: '8 min' },
+  { id: 'cardiology-4-1', type: 'chapter', title: 'Arterial Hypertension', specialty: 'Cardiology', chapter: '4.1', readTime: '15 min' },
 ]
 
 const MOCK_RESULTS_EXPLORE = [
-  { id: 'cardiology-3-2', type: 'chapter', title: 'Niewydolność serca', specialty: 'Kardiologia', chapter: '3.2', readTime: '12 min' },
-  { id: 'cardiology-video-1', type: 'video', title: 'Kardiologia — przegląd', duration: '18 min' },
-  { id: 'cardiology-calc-1', type: 'calculator', title: 'Kalkulator ryzyka sercowego (SCORE2)' },
-  { id: 'cardiology-3-1', type: 'chapter', title: 'Diagnostyka kardiologiczna', specialty: 'Kardiologia', chapter: '3.1', readTime: '8 min' },
+  { id: 'cardiology-3-2', type: 'chapter', title: 'Heart Failure', specialty: 'Cardiology', chapter: '3.2', readTime: '12 min' },
+  { id: 'cardiology-video-1', type: 'video', title: 'Cardiology — Overview', duration: '18 min' },
+  { id: 'cardiology-calc-1', type: 'calculator', title: 'Cardiac Risk Calculator (SCORE2)' },
+  { id: 'cardiology-3-1', type: 'chapter', title: 'Cardiac Diagnostics', specialty: 'Cardiology', chapter: '3.1', readTime: '8 min' },
 ]
 
-const MOCK_SUGGESTIONS = ['Kardiologia', 'Niewydolność serca', 'Nadciśnienie', 'Neurologia', 'Cukrzyca typu 2']
+const MOCK_SUGGESTIONS = ['Cardiology', 'Heart Failure', 'Hypertension', 'Neurology', 'Type 2 Diabetes']
 
-const POPULAR_TOPICS = ['Kardiologia', 'Neurologia', 'Endokrynologia', 'Pulmonologia', 'Nefrologia']
+const POPULAR_TOPICS = ['Cardiology', 'Neurology', 'Endocrinology', 'Pulmonology', 'Nephrology']
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -57,16 +57,16 @@ function highlightMatch(text, query) {
 
 function describeResults(results) {
   const types = [...new Set(results.map(r => r.type))]
-  const labels = { chapter: 'rozdział', video: 'wideo', calculator: 'kalkulator' }
-  return `${results.length} wynik${results.length === 1 ? '' : 'i'} · ${types.map(t => labels[t]).join(', ')}`
+  const labels = { chapter: 'chapter', video: 'video', calculator: 'calculator' }
+  return `${results.length} result${results.length === 1 ? '' : 's'} · ${types.map(t => labels[t]).join(', ')}`
 }
 
 // ── Type tag ──────────────────────────────────────────────────────────────────
 
 const TYPE_CONFIG = {
-  chapter:    { label: 'ROZDZIAŁ',   bg: 'var(--bg-subtle)',        color: 'var(--text-secondary)' },
-  video:      { label: 'WIDEO',      bg: 'var(--color-brand-100)',  color: 'var(--text-brand)'     },
-  calculator: { label: 'KALKULATOR', bg: 'var(--color-neutral-100)',color: 'var(--text-secondary)' },
+  chapter:    { label: 'CHAPTER',    bg: 'var(--bg-subtle)',        color: 'var(--text-secondary)' },
+  video:      { label: 'VIDEO',      bg: 'var(--color-brand-100)',  color: 'var(--text-brand)'     },
+  calculator: { label: 'CALCULATOR', bg: 'var(--color-neutral-100)',color: 'var(--text-secondary)' },
 }
 
 function TypeTag({ type }) {
@@ -111,7 +111,7 @@ function SearchBar({ query, onChange, onSearch, onClear, inputRef, focused, onFo
         onFocus={onFocus}
         onBlur={onBlur}
         onKeyDown={handleKeyDown}
-        placeholder="Szukaj w McMaster Textbook..."
+        placeholder="Search McMaster Textbook..."
         autoComplete="off"
         style={{
           width: '100%', height: '48px',
@@ -158,7 +158,7 @@ function PreciseCard({ result, onClick }) {
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--text-secondary)' }}>
-          {result.specialty} · Rozdział {result.chapter}
+          {result.specialty} · Chapter {result.chapter}
         </span>
         <span style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--text-tertiary)' }}>
           {result.readTime}
@@ -168,7 +168,7 @@ function PreciseCard({ result, onClick }) {
         {result.title}
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontFamily: 'var(--font-ui)', fontSize: '14px', color: 'var(--interactive-primary)', fontWeight: 500 }}>
-        Czytaj
+        Read
         <span className="material-symbols-outlined icon-sm">arrow_forward</span>
       </div>
     </button>
@@ -310,7 +310,7 @@ export default function Search() {
           <>
             {history.length > 0 && (
               <section>
-                <SectionLabel>Ostatnie wyszukiwania</SectionLabel>
+                <SectionLabel>Recent searches</SectionLabel>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                   {history.slice(0, 3).map(item => (
                     <button
@@ -331,7 +331,7 @@ export default function Search() {
             )}
 
             <section>
-              <SectionLabel>Popularne tematy</SectionLabel>
+              <SectionLabel>Popular topics</SectionLabel>
               <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 {POPULAR_TOPICS.map(topic => (
                   <button
@@ -355,7 +355,7 @@ export default function Search() {
         {/* TYPING — no suggestions */}
         {isTyping && suggestions.length === 0 && (
           <p style={{ fontFamily: 'var(--font-ui)', fontSize: '14px', color: 'var(--text-tertiary)', textAlign: 'center', paddingTop: '24px' }}>
-            Brak podpowiedzi dla „{query}"
+            No suggestions for "{query}"
           </p>
         )}
 
@@ -363,7 +363,7 @@ export default function Search() {
         {hasResults && mode === 'precise' && (
           <section>
             <p style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', fontWeight: 500, color: 'var(--text-secondary)', marginBottom: '14px' }}>
-              Wyniki dla: <strong style={{ color: 'var(--text-primary)' }}>{submittedQuery}</strong>
+              Results for: <strong style={{ color: 'var(--text-primary)' }}>{submittedQuery}</strong>
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {MOCK_RESULTS_PRECISE.map(r => (

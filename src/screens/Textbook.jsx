@@ -6,71 +6,71 @@ import { useNavigate } from 'react-router-dom'
 const MOCK_SPECIALTIES = [
   {
     id: 'cardiology',
-    name: 'Kardiologia',
+    name: 'Cardiology',
     chapterCount: 24,
     icon: 'cardiology',
     topics: [
       {
         id: 'cardiology-heart-failure',
-        name: 'Niewydolność serca',
+        name: 'Heart Failure',
         content: [
-          { id: 'cardiology-3-2', type: 'chapter', title: 'Niewydolność serca', chapter: '3.2', readTime: '12 min' },
-          { id: 'cardiology-video-1', type: 'video', title: 'Przegląd — Kardiologia', duration: '18 min' },
-          { id: 'cardiology-calc-1', type: 'calculator', title: 'Kalkulator SCORE2' },
+          { id: 'cardiology-3-2', type: 'chapter', title: 'Heart Failure', chapter: '3.2', readTime: '12 min' },
+          { id: 'cardiology-video-1', type: 'video', title: 'Cardiology — Overview', duration: '18 min' },
+          { id: 'cardiology-calc-1', type: 'calculator', title: 'SCORE2 Calculator' },
         ],
       },
       {
         id: 'cardiology-hypertension',
-        name: 'Nadciśnienie tętnicze',
+        name: 'Arterial Hypertension',
         content: [
-          { id: 'cardiology-4-1', type: 'chapter', title: 'Nadciśnienie tętnicze', chapter: '4.1', readTime: '15 min' },
+          { id: 'cardiology-4-1', type: 'chapter', title: 'Arterial Hypertension', chapter: '4.1', readTime: '15 min' },
         ],
       },
     ],
   },
   {
     id: 'neurology',
-    name: 'Neurologia',
+    name: 'Neurology',
     chapterCount: 18,
     icon: 'neurology',
     topics: [
       {
         id: 'neurology-stroke',
-        name: 'Udar mózgu',
+        name: 'Stroke',
         content: [
-          { id: 'neurology-2-1', type: 'chapter', title: 'Udar niedokrwienny', chapter: '2.1', readTime: '20 min' },
-          { id: 'neurology-2-2', type: 'chapter', title: 'Udar krwotoczny', chapter: '2.2', readTime: '14 min' },
+          { id: 'neurology-2-1', type: 'chapter', title: 'Ischaemic Stroke', chapter: '2.1', readTime: '20 min' },
+          { id: 'neurology-2-2', type: 'chapter', title: 'Haemorrhagic Stroke', chapter: '2.2', readTime: '14 min' },
         ],
       },
     ],
   },
   {
     id: 'endocrinology',
-    name: 'Endokrynologia',
+    name: 'Endocrinology',
     chapterCount: 15,
     icon: 'endocrinology',
     topics: [
       {
         id: 'endocrinology-diabetes',
-        name: 'Cukrzyca',
+        name: 'Diabetes',
         content: [
-          { id: 'endocrinology-1-1', type: 'chapter', title: 'Cukrzyca typu 2', chapter: '1.1', readTime: '18 min' },
-          { id: 'endocrinology-calc-1', type: 'calculator', title: 'Kalkulator HbA1c' },
+          { id: 'endocrinology-1-1', type: 'chapter', title: 'Type 2 Diabetes', chapter: '1.1', readTime: '18 min' },
+          { id: 'endocrinology-calc-1', type: 'calculator', title: 'HbA1c Converter' },
         ],
       },
     ],
   },
   {
     id: 'pulmonology',
-    name: 'Pulmonologia',
+    name: 'Pulmonology',
     chapterCount: 12,
     icon: 'pulmonology',
     topics: [
       {
         id: 'pulmonology-asthma',
-        name: 'Astma',
+        name: 'Asthma',
         content: [
-          { id: 'pulmonology-1-1', type: 'chapter', title: 'Astma oskrzelowa', chapter: '1.1', readTime: '10 min' },
+          { id: 'pulmonology-1-1', type: 'chapter', title: 'Bronchial Asthma', chapter: '1.1', readTime: '10 min' },
         ],
       },
     ],
@@ -89,12 +89,12 @@ const SPECIALTY_ICONS = {
 // ── Type config ───────────────────────────────────────────────────────────────
 
 const TYPE_META = {
-  chapter:    { label: 'ROZDZIAŁ',   cta: 'Czytaj',   bg: 'var(--bg-surface)',       border: '1px solid var(--border-subtle)' },
-  video:      { label: 'WIDEO',      cta: 'Oglądaj',  bg: 'var(--bg-brand-subtle)',  border: '1px solid rgba(122,0,60,0.25)' },
-  calculator: { label: 'KALKULATOR', cta: 'Otwórz',   bg: 'var(--bg-subtle)',        border: '1px solid var(--border-subtle)' },
+  chapter:    { label: 'CHAPTER',    cta: 'Read',   bg: 'var(--bg-surface)',       border: '1px solid var(--border-subtle)' },
+  video:      { label: 'VIDEO',      cta: 'Watch',  bg: 'var(--bg-brand-subtle)',  border: '1px solid rgba(122,0,60,0.25)' },
+  calculator: { label: 'CALCULATOR', cta: 'Open',   bg: 'var(--bg-subtle)',        border: '1px solid var(--border-subtle)' },
 }
 
-const TYPE_LABELS = { chapter: 'rozdział', video: 'wideo', calculator: 'kalkulator' }
+const TYPE_LABELS = { chapter: 'chapter', video: 'video', calculator: 'calculator' }
 
 // ── Transition hook ───────────────────────────────────────────────────────────
 
@@ -196,7 +196,7 @@ function SearchShortcut({ onClick }) {
       <span style={{ color: 'var(--text-tertiary)', position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }}>
         <span className="material-symbols-outlined icon-sm">search</span>
       </span>
-      Szukaj w Textbook...
+      Search Textbook...
     </button>
   )
 }
@@ -254,7 +254,7 @@ function SpecialtiesViewOnly({ onSelect }) {
               fontSize: '12px',
               color: 'var(--text-secondary)',
             }}>
-              {specialty.chapterCount} rozdziałów
+              {specialty.chapterCount} chapters
             </span>
           </button>
         ))}
@@ -275,7 +275,7 @@ function TopicsView({ specialty, onBack, onSelect }) {
       <BackButton label="Textbook" onClick={onBack} />
       <SectionHeading
         title={specialty.name}
-        sub={`${specialty.chapterCount} rozdziałów`}
+        sub={`${specialty.chapterCount} chapters`}
       />
 
       <div style={{
@@ -440,17 +440,17 @@ function SlidePane({ viewKey, children }) {
 // ── E-learning data ───────────────────────────────────────────────────────────
 
 const MOCK_VIDEOS = [
-  { id: 'v1', title: 'Niewydolność serca — przegląd', specialty: 'Kardiologia', duration: '18 min', color: '#7A003C' },
-  { id: 'v2', title: 'Udar mózgu — diagnostyka', specialty: 'Neurologia', duration: '24 min', color: '#185FA5' },
-  { id: 'v3', title: 'Cukrzyca typu 2', specialty: 'Endokrynologia', duration: '15 min', color: '#0F6E56' },
-  { id: 'v4', title: 'Astma oskrzelowa', specialty: 'Pulmonologia', duration: '12 min', color: '#854F0B' },
+  { id: 'v1', title: 'Heart Failure — Overview', specialty: 'Cardiology', duration: '18 min', color: '#7A003C' },
+  { id: 'v2', title: 'Stroke — Diagnosis', specialty: 'Neurology', duration: '24 min', color: '#185FA5' },
+  { id: 'v3', title: 'Type 2 Diabetes', specialty: 'Endocrinology', duration: '15 min', color: '#0F6E56' },
+  { id: 'v4', title: 'Bronchial Asthma', specialty: 'Pulmonology', duration: '12 min', color: '#854F0B' },
 ]
 
 const MOCK_CALCULATORS = [
-  { id: 'score2', title: 'Kalkulator ryzyka sercowego', subtitle: 'SCORE2 — ryzyko 10-letnie', specialty: 'Kardiologia' },
-  { id: 'hba1c', title: 'Przelicznik HbA1c', subtitle: 'mmol/mol ↔ %', specialty: 'Endokrynologia' },
-  { id: 'bmi', title: 'Kalkulator BMI', subtitle: 'Body Mass Index + interpretacja', specialty: 'Ogólne' },
-  { id: 'gfr', title: 'Kalkulator eGFR', subtitle: 'CKD-EPI — funkcja nerek', specialty: 'Nefrologia' },
+  { id: 'score2', title: 'Cardiac Risk Calculator', subtitle: 'SCORE2 — 10-year risk', specialty: 'Cardiology' },
+  { id: 'hba1c', title: 'HbA1c Converter', subtitle: 'mmol/mol ↔ %', specialty: 'Endocrinology' },
+  { id: 'bmi', title: 'BMI Calculator', subtitle: 'Body Mass Index + interpretation', specialty: 'General' },
+  { id: 'gfr', title: 'eGFR Calculator', subtitle: 'CKD-EPI — kidney function', specialty: 'Nephrology' },
 ]
 
 
@@ -465,7 +465,7 @@ function ELearningView({ navigate }) {
           color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em',
           marginBottom: '12px',
         }}>
-          Wideo
+          Video
         </h3>
         <div style={{
           display: 'flex', gap: '12px', overflowX: 'auto',
@@ -514,7 +514,7 @@ function ELearningView({ navigate }) {
           color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em',
           marginBottom: '12px',
         }}>
-          Kalkulatory
+          Calculators
         </h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {MOCK_CALCULATORS.map(c => (

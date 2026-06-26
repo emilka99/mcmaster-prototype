@@ -86,14 +86,14 @@ function EmptyState({ navigate }) {
         fontFamily: 'var(--font-display)', fontWeight: 500, fontSize: '22px',
         lineHeight: 1.2, color: 'var(--text-primary)', textAlign: 'center', marginBottom: '12px',
       }}>
-        Zacznij swoją przygodę z McMaster
+        Start your McMaster journey
       </h2>
 
       <p style={{
         fontFamily: 'var(--font-ui)', fontSize: '16px', lineHeight: 1.6,
         color: 'var(--text-secondary)', textAlign: 'center', marginBottom: '32px',
       }}>
-        Przeglądaj podręcznik, zapisuj rozdziały i buduj własną bibliotekę wiedzy medycznej.
+        Browse the textbook, save chapters and build your personal medical library.
       </p>
 
       {/* Promo cards */}
@@ -102,9 +102,9 @@ function EmptyState({ navigate }) {
         marginLeft: 'calc(var(--spacing-6) * -1)', marginRight: 'calc(var(--spacing-6) * -1)',
         padding: '0 var(--spacing-6) 4px', scrollbarWidth: 'none', marginBottom: '24px',
       }}>
-        <PromoCard icon="search" title="Szybkie wyszukiwanie" desc="Znajdź odpowiedź w kilka sekund" onClick={() => navigate('/search')} />
-        <PromoCard icon="menu_book" title="Przeglądaj Textbook" desc="Kardiologia, neurologia i 20+ specjalności" onClick={() => navigate('/textbook')} />
-        <PromoCard icon="wifi_off" title="Tryb offline" desc="Pobierz cały podręcznik na telefon" onClick={() => console.log('offline')} />
+        <PromoCard icon="search" title="Quick search" desc="Find answers in seconds" onClick={() => navigate('/search')} />
+        <PromoCard icon="menu_book" title="Browse Textbook" desc="Cardiology, neurology and 20+ specialties" onClick={() => navigate('/textbook')} />
+        <PromoCard icon="wifi_off" title="Offline mode" desc="Download the full textbook to your device" onClick={() => navigate('/offline')} />
       </div>
 
       {/* E-learning */}
@@ -114,11 +114,11 @@ function EmptyState({ navigate }) {
           color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em',
           marginBottom: '10px',
         }}>
-          Odkryj materiały edukacyjne
+          Explore learning materials
         </h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <ElearningRow icon="play_circle" title="Wideo edukacyjne" subtitle="Kardiologia, neurologia i inne" onClick={() => navigate('/video/v1')} />
-          <ElearningRow icon="calculate" title="Kalkulatory kliniczne" subtitle="SCORE2, BMI, HbA1c, eGFR i inne" onClick={() => navigate('/calculator/score2')} />
+          <ElearningRow icon="play_circle" title="Educational videos" subtitle="Cardiology, neurology and more" onClick={() => navigate('/video/v1')} />
+          <ElearningRow icon="calculate" title="Clinical calculators" subtitle="SCORE2, BMI, HbA1c, eGFR and more" onClick={() => navigate('/calculator/score2')} />
         </div>
       </div>
 
@@ -135,7 +135,7 @@ function EmptyState({ navigate }) {
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
           }}
         >
-          Przeglądaj Textbook
+          Browse Textbook
           <span className="material-symbols-outlined icon-sm">arrow_forward</span>
         </button>
         <button
@@ -150,7 +150,7 @@ function EmptyState({ navigate }) {
           }}
         >
           <span className="material-symbols-outlined icon-sm">login</span>
-          Zaloguj się
+          Log in
         </button>
       </div>
     </div>
@@ -205,7 +205,7 @@ function FilledState({ user, savedCount, foldersCount, notesCount, navigate }) {
             </span>
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ fontFamily: 'var(--font-ui)', fontSize: '11px', fontWeight: 600, color: 'var(--text-brand)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '3px' }}>
-                Kontynuuj czytanie
+                Continue reading
               </div>
               <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '16px', color: 'var(--text-primary)', lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {user.lastRead.title}
@@ -221,24 +221,24 @@ function FilledState({ user, savedCount, foldersCount, notesCount, navigate }) {
       {/* Resources */}
       <section>
         <h3 style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '11px', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' }}>
-          Moje zasoby
+          My library
         </h3>
         <div style={{ background: 'var(--bg-surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-box)', overflow: 'hidden' }}>
-          <ResourceRow icon="folder" label="Moje foldery" value={foldersCount} onClick={() => navigate('/saved?tab=folders')} />
-          <ResourceRow icon="bookmark" label="Zapisane elementy" value={savedCount} onClick={() => navigate('/saved')} />
-          <ResourceRow icon="edit_note" label="Notatki" value={notesCount} onClick={() => navigate('/saved')} />
-          <ResourceRow icon="schedule" label="Czas czytania" value={formatMinutes(user.readingMinutes)} isLast onClick={() => console.log('czas czytania')} />
+          <ResourceRow icon="folder" label="My folders" value={foldersCount} onClick={() => navigate('/saved?tab=folders')} />
+          <ResourceRow icon="bookmark" label="Saved items" value={savedCount} onClick={() => navigate('/saved')} />
+          <ResourceRow icon="edit_note" label="Notes" value={notesCount} onClick={() => navigate('/saved')} />
+          <ResourceRow icon="schedule" label="Reading time" value={formatMinutes(user.readingMinutes)} isLast onClick={() => console.log('reading time')} />
         </div>
       </section>
 
       {/* Ostatnio używane */}
       <section>
         <h3 style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '11px', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px' }}>
-          Ostatnio używane
+          Recently used
         </h3>
         <div style={{ background: 'var(--bg-surface)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-box)', overflow: 'hidden' }}>
-          <ElearningListRow icon="play_circle" title="Niewydolność serca — przegląd" meta="Wideo · Kardiologia" onClick={() => navigate('/video/v1')} />
-          <ElearningListRow icon="calculate" title="Kalkulator SCORE2" meta="Kalkulator · Kardiologia" isLast onClick={() => navigate('/calculator/score2')} />
+          <ElearningListRow icon="play_circle" title="Heart Failure — Overview" meta="Video · Cardiology" onClick={() => navigate('/video/v1')} />
+          <ElearningListRow icon="calculate" title="SCORE2 Calculator" meta="Calculator · Cardiology" isLast onClick={() => navigate('/calculator/score2')} />
         </div>
       </section>
 
@@ -283,24 +283,24 @@ function OfflineCard({ navigate }) {
   let bg = 'var(--bg-subtle)'
   let icon = 'wifi_off'
   let iconColor = 'var(--text-tertiary)'
-  let title = 'Pobierz Textbook offline'
-  let sub = 'Czytaj bez internetu — 487 MB'
-  let btnLabel = 'Pobierz'
+  let title = 'Download Textbook offline'
+  let sub = 'Read without internet — 487 MB'
+  let btnLabel = 'Download'
 
   if (isOutdated) {
     bg = 'var(--color-background-warning, #FFFBEB)'
     icon = 'sync_problem'
     iconColor = 'var(--color-text-warning, #B45309)'
-    title = 'Treści mogą być nieaktualne'
-    sub = lastSync ? `Ostatnia sync: ${new Date(lastSync).toLocaleDateString('pl-PL')}` : ''
-    btnLabel = 'Zaktualizuj'
+    title = 'Content may be outdated'
+    sub = lastSync ? `Last synced: ${new Date(lastSync).toLocaleDateString('en-GB')}` : ''
+    btnLabel = 'Update'
   } else if (isOk) {
     bg = 'var(--color-background-success, #F0FDF4)'
     icon = 'check_circle'
     iconColor = 'var(--color-text-success, #15803D)'
-    title = 'Offline aktywny'
-    sub = `${totalSizeMB} MB · ${lastSync ? new Date(lastSync).toLocaleDateString('pl-PL') : ''}`
-    btnLabel = 'Zarządzaj'
+    title = 'Offline ready'
+    sub = `${totalSizeMB} MB · ${lastSync ? new Date(lastSync).toLocaleDateString('en-GB') : ''}`
+    btnLabel = 'Manage'
   }
 
   return (
@@ -349,7 +349,7 @@ export default function MySpace() {
     ...MOCK_USER,
     hasHistory: mockHasHistory,
     lastRead: mockHasHistory
-      ? { chapterId: 'cardiology-3-2', title: 'Kardiologia 3.2 — Niewydolność serca' }
+      ? { chapterId: 'cardiology-3-2', title: 'Cardiology 3.2 — Heart Failure' }
       : null,
     readingMinutes: mockHasHistory ? 340 : 0,
     offlineReady: false,
@@ -381,7 +381,7 @@ export default function MySpace() {
               color: 'var(--text-tertiary)', cursor: 'pointer',
             }}
           >
-            DEV: przełącz stan ({mockHasHistory ? 'filled' : 'empty'})
+            DEV: toggle state ({mockHasHistory ? 'filled' : 'empty'})
           </button>
         </div>
       )}
