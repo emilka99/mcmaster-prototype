@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import './Demo.css'
 
-const PROTOTYPE_BASE = window.location.origin
+const PROTOTYPE_BASE = window.location.origin + import.meta.env.BASE_URL.replace(/\/$/, '')
 
 const SCREEN_ROUTES = {
   home:      '/',
