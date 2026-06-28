@@ -26,7 +26,7 @@ export default function TopBar() {
       boxShadow: '0 2px 12px rgba(0,0,0,0.07)',
     }}>
       <img
-        src="/mcmaster-logo.png"
+        src={`${import.meta.env.BASE_URL}mcmaster-logo.png`}
         alt="McMaster University"
         onClick={() => navigate('/')}
         style={{ height: '38px', width: 'auto', objectFit: 'contain', cursor: 'pointer' }}
