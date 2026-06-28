@@ -25,12 +25,12 @@ export default function TopBar() {
       borderBottom: '1px solid var(--glass-border)',
       boxShadow: '0 2px 12px rgba(0,0,0,0.07)',
     }}>
-      <img
-        src={`${import.meta.env.BASE_URL}mcmaster-logo.png`}
-        alt="McMaster University"
+      <span
         onClick={() => navigate('/')}
-        style={{ height: '38px', width: 'auto', objectFit: 'contain', cursor: 'pointer' }}
-      />
+        style={{ fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: 500, color: 'var(--text-primary)', cursor: 'pointer', letterSpacing: '-0.3px' }}
+      >
+        McMaster
+      </span>
 
       <button
         onClick={() => navigate('/profile')}
