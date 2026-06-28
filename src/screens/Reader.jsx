@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useReadingHistory } from '../hooks/useReadingHistory'
 import { useSavedChapters } from '../hooks/useSavedChapters'
 import { useOffline } from '../hooks/useOffline'
-import BottomSheet from '../components/BottomSheet'
+import ContentLayout from '../components/ContentLayout'
 
 // ── Mock data ─────────────────────────────────────────────────────────────────
 
@@ -200,9 +200,16 @@ const MOCK_CHAPTER = {
   `,
 }
 
-// ── Reader styles ─────────────────────────────────────────────────────────────
-// Typography values from McMaster Textbook Figma (W39bi52JWJlHJiGRANwHIx, node 1:1018)
-// H2 color override: #8E6D52 (Figma) → #7A003C (brand requirement)
+const RELATED_ELEARNING = [
+  { id: 'v-ebm-founder', type: 'video', title: 'All you need to know about EBM', duration: '32 min' },
+  { id: 'v-doacs-vte', type: 'video', title: 'DOACs for acute VTE', duration: '22 min' },
+  { id: 'score2', type: 'calculator', title: 'SCORE2 Cardiac Risk Calculator' },
+]
+
+const PREV_CHAPTER = { id: 'cardiology-3-1', title: 'Cardiac Diagnostics' }
+const NEXT_CHAPTER = { id: 'cardiology-4-1', title: 'Arterial Hypertension' }
+
+// ── Reader CSS ────────────────────────────────────────────────────────────────
 
 const READER_CSS = `
   .article-body {
@@ -210,7 +217,6 @@ const READER_CSS = `
     color: #222526;
   }
 
-  /* ── H2 ── */
   .article-body h2 {
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 22px;
@@ -225,7 +231,6 @@ const READER_CSS = `
     margin: 56px 0 24px;
   }
 
-  /* ── H3 ── */
   .article-body h3 {
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 19px;
@@ -238,7 +243,6 @@ const READER_CSS = `
     margin: 28px 0 14px;
   }
 
-  /* ── H4 ── */
   .article-body h4 {
     font-family: 'IBM Plex Sans', sans-serif;
     font-size: 16px;
@@ -251,7 +255,6 @@ const READER_CSS = `
     margin: 20px 0 10px;
   }
 
-  /* ── Paragraphs ── */
   .article-body p {
     font-size: 16px;
     line-height: 26px;
@@ -259,7 +262,6 @@ const READER_CSS = `
     margin-bottom: 12px;
   }
 
-  /* ── Lists ── */
   .article-body ul,
   .article-body ol {
     padding-left: 24px;
@@ -269,13 +271,8 @@ const READER_CSS = `
     gap: 8px;
   }
 
-  .article-body ul {
-    list-style-type: disc;
-  }
-
-  .article-body ol {
-    list-style-type: decimal;
-  }
+  .article-body ul { list-style-type: disc; }
+  .article-body ol { list-style-type: decimal; }
 
   .article-body li {
     font-size: 16px;
@@ -283,280 +280,408 @@ const READER_CSS = `
     color: #222526;
   }
 
-  /* Nested lists */
   .article-body li > ol,
   .article-body li > ul {
     margin-top: 6px;
     margin-bottom: 0;
   }
 
-  .article-body ol ol {
-    list-style-type: lower-alpha;
-  }
+  .article-body ol ol { list-style-type: lower-alpha; }
+  .article-body ol ol ol { list-style-type: lower-roman; }
 
-  .article-body ol ol ol {
-    list-style-type: lower-roman;
-  }
-
-  /* ── Medical abbreviations ── */
   .article-body abbr {
     text-decoration: underline dotted;
     text-decoration-color: #A0AAAC;
     cursor: help;
   }
 
-  /* ── Strong ── */
   .article-body strong {
     font-weight: 600;
     color: #222526;
   }
 
-  /* ── Section spacing ── */
-  .article-body section {
+  .article-body section { display: block; }
+  .article-body section:first-child h2 { margin-top: 0; }
+
+  /* Topbar */
+  .reader-topbar {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    z-index: 100;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    transition: transform 0.25s ease;
+  }
+  .reader-topbar.hidden {
+    transform: translateX(-50%) translateY(-100%);
+  }
+  .reader-topbar-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+    padding: 0 8px 0 4px;
+  }
+  .reader-back-btn,
+  .reader-more-btn {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    flex-shrink: 0;
+  }
+  .reader-back-btn:active,
+  .reader-more-btn:active { background: var(--bg-subtle); }
+  .reader-location {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-align: center;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 8px;
+  }
+  .reader-progress-bar {
+    height: 3px;
+    background: var(--border-subtle);
+    width: 100%;
+  }
+  .reader-progress-fill {
+    height: 100%;
+    background: var(--interactive-primary);
+    border-radius: 0 2px 2px 0;
+    transition: width 0.1s linear;
+  }
+
+  /* Floating panel */
+  .reader-floating-panel {
+    position: fixed;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    background: var(--interactive-primary);
+    border-radius: 999px;
+    padding: 6px 10px;
+    box-shadow: 0 4px 20px rgba(122, 0, 60, 0.35);
+  }
+  .floating-action {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: none;
+    background: transparent;
+    color: rgba(255,255,255,0.85);
+    cursor: pointer;
+    transition: background 0.15s;
+    min-width: 56px;
+  }
+  .floating-action:active,
+  .floating-action.active {
+    background: rgba(255,255,255,0.2);
+    color: white;
+  }
+  .floating-action .material-symbols-outlined { font-size: 22px; }
+  .floating-action-label {
+    font-size: 10px;
+    font-weight: 500;
+    font-family: var(--font-ui);
+    white-space: nowrap;
+  }
+
+  /* Drawers */
+  .drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 110;
+  }
+  .reader-drawer {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    background: var(--bg-surface);
+    border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+    z-index: 120;
+    padding-bottom: env(safe-area-inset-bottom);
+    animation: drawerUp 0.25s ease;
+  }
+  @keyframes drawerUp {
+    from { transform: translateX(-50%) translateY(100%); }
+    to   { transform: translateX(-50%) translateY(0); }
+  }
+  .drawer-handle {
+    width: 36px;
+    height: 4px;
+    background: var(--border-default);
+    border-radius: 2px;
+    margin: 12px auto 0;
+  }
+  .drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px 0;
+  }
+  .drawer-title {
+    font-family: var(--font-ui);
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+  .drawer-close {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-subtle);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--text-secondary);
+  }
+  .drawer-content {
+    padding: 12px 20px 24px;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+  .drawer-footer {
+    border-top: 1px solid var(--border-subtle);
+    padding: 12px 20px 20px;
+  }
+
+  /* Save drawer */
+  .folder-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-subtle);
+    text-align: left;
+  }
+  .folder-option:last-child { border-bottom: none; }
+  .folder-option:active { opacity: 0.7; }
+  .folder-option-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .folder-option-name {
+    font-family: var(--font-ui);
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    flex: 1;
+  }
+  .folder-check { font-size: 20px; color: var(--interactive-primary); }
+  .unsave-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-family: var(--font-ui);
+    font-size: 14px;
+    color: #C0392B;
+  }
+
+  /* Note drawer */
+  .note-textarea {
+    width: 100%;
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    padding: 12px;
+    font-family: var(--font-ui);
+    font-size: 15px;
+    line-height: 1.6;
+    resize: none;
+    color: var(--text-primary);
+    background: var(--bg-surface);
+    margin-bottom: 12px;
+    box-sizing: border-box;
+  }
+  .note-textarea:focus {
+    outline: none;
+    border-color: var(--interactive-primary);
+  }
+  .drawer-primary-btn {
+    width: 100%;
+    height: 48px;
+    background: var(--interactive-primary);
+    color: white;
+    border: none;
+    border-radius: 999px;
+    font-family: var(--font-ui);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* TOC drawer */
+  .toc-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-subtle);
+    text-align: left;
+  }
+  .toc-item:last-child { border-bottom: none; }
+  .toc-item.active .toc-item-title {
+    color: var(--interactive-primary);
+    font-weight: 600;
+  }
+  .toc-dot, .toc-active-dot { font-size: 16px; flex-shrink: 0; color: var(--text-tertiary); }
+  .toc-active-dot { color: var(--interactive-primary); }
+  .toc-item-title {
+    font-family: var(--font-ui);
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+
+  /* E-learning drawer */
+  .elearning-drawer-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border-subtle);
+    text-align: left;
+  }
+  .elearning-drawer-item:last-child { border-bottom: none; }
+  .elearning-item-icon { font-size: 22px; color: #185FA5; flex-shrink: 0; }
+  .elearning-item-body { flex: 1; min-width: 0; }
+  .elearning-item-title {
     display: block;
+    font-family: var(--font-ui);
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--text-primary);
+    line-height: 1.3;
+  }
+  .elearning-item-meta {
+    display: block;
+    font-family: var(--font-ui);
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+  .elearning-item-hint {
+    display: block;
+    font-family: var(--font-ui);
+    font-size: 11px;
+    color: var(--text-tertiary);
+    margin-top: 2px;
   }
 
-  .article-body section:first-child h2 {
-    margin-top: 0;
+  /* Settings drawer */
+  .setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border-subtle);
   }
+  .setting-row:last-child { border-bottom: none; }
+  .setting-label {
+    font-family: var(--font-ui);
+    font-size: 15px;
+    color: var(--text-primary);
+  }
+  .font-size-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .font-size-controls button {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--border-default);
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+  }
+  .font-size-value {
+    font-family: var(--font-ui);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    min-width: 36px;
+    text-align: center;
+  }
+  .toggle {
+    width: 48px;
+    height: 28px;
+    border-radius: 999px;
+    background: var(--border-default);
+    cursor: pointer;
+    position: relative;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .toggle::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: white;
+    transition: transform 0.2s;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+  }
+  .toggle.on { background: var(--interactive-primary); }
+  .toggle.on::after { transform: translateX(20px); }
 `
-
-// ── TOC Panel ─────────────────────────────────────────────────────────────────
-
-function TOCPanel({ toc, activeSection, open, onClose }) {
-  function scrollTo(id) {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    onClose()
-  }
-
-  return (
-    <>
-      <div
-        onClick={onClose}
-        style={{
-          position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 200,
-          opacity: open ? 1 : 0, pointerEvents: open ? 'auto' : 'none',
-          transition: 'opacity 0.25s ease',
-        }}
-      />
-      <div style={{
-        position: 'fixed', bottom: 0, left: '50%',
-        transform: `translateX(-50%) translateY(${open ? '0' : '100%'})`,
-        width: '100%', maxWidth: '430px',
-        background: 'var(--bg-surface)',
-        borderRadius: 'var(--radius-2xl) var(--radius-2xl) 0 0',
-        zIndex: 201, transition: 'transform 0.3s cubic-bezier(0.32,0.72,0,1)',
-        maxHeight: '60vh', display: 'flex', flexDirection: 'column',
-        paddingBottom: 'env(safe-area-inset-bottom)',
-      }}>
-        <div style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '20px 20px 16px', borderBottom: '1px solid var(--border-subtle)', flexShrink: 0,
-        }}>
-          <span style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '16px', color: 'var(--text-primary)' }}>
-            Table of contents
-          </span>
-          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-tertiary)', display: 'flex', padding: '4px' }}>
-            <span className="material-symbols-outlined icon-md">close</span>
-          </button>
-        </div>
-        <div style={{ overflowY: 'auto', padding: '8px 0' }}>
-          {toc.map(section => {
-            const isActive = activeSection === section.id
-            return (
-              <button
-                key={section.id}
-                onClick={() => scrollTo(section.id)}
-                style={{
-                  width: '100%', display: 'flex', alignItems: 'center', gap: '12px',
-                  padding: '12px 20px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left',
-                }}
-              >
-                <span style={{
-                  width: '5px', height: '5px', borderRadius: '50%', flexShrink: 0, marginTop: '1px',
-                  background: isActive ? '#7A003C' : 'var(--border-default)',
-                }} />
-                <span style={{
-                  fontFamily: 'var(--font-ui)', fontSize: '15px',
-                  fontWeight: isActive ? 600 : 400,
-                  color: isActive ? '#7A003C' : 'var(--text-primary)',
-                  flex: 1,
-                }}>
-                  {section.title}
-                </span>
-              </button>
-            )
-          })}
-        </div>
-      </div>
-    </>
-  )
-}
-
-// ── Article header ────────────────────────────────────────────────────────────
-
-function ArticleHeader({ chapter }) {
-  const [showContributors, setShowContributors] = useState(false)
-
-  return (
-    <div style={{
-      background: '#F2E4D6',
-      padding: '24px 20px 20px',
-      marginBottom: '0',
-    }}>
-      {/* Specialty tag */}
-      <span style={{
-        display: 'inline-block',
-        fontFamily: 'var(--font-ui)',
-        fontWeight: 600,
-        fontSize: '11px',
-        color: '#7A003C',
-        textTransform: 'uppercase',
-        letterSpacing: '0.08em',
-        marginBottom: '10px',
-      }}>
-        {chapter.specialty} · Chapter {chapter.chapter}
-      </span>
-
-      {/* Title */}
-      <h1 style={{
-        fontFamily: 'var(--font-display)',
-        fontWeight: 500,
-        fontSize: '28px',
-        lineHeight: '1.2',
-        letterSpacing: '-0.5px',
-        color: '#7A003C',
-        marginBottom: '14px',
-      }}>
-        {chapter.title}
-      </h1>
-
-      {/* Last reviewed / updated */}
-      <div style={{
-        fontFamily: 'var(--font-ui)',
-        fontSize: '12px',
-        lineHeight: '18px',
-        color: '#7A003C',
-        marginBottom: '14px',
-        opacity: 0.85,
-      }}>
-        <span><strong>Last reviewed:</strong> {chapter.lastReviewed}</span>
-        <span style={{ display: 'block' }}><strong>Last updated:</strong> {chapter.lastUpdated}</span>
-      </div>
-
-      {/* Contributors toggle */}
-      <button
-        onClick={() => setShowContributors(v => !v)}
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '6px',
-          background: 'none',
-          border: '1px solid #7A003C',
-          borderRadius: '24px',
-          padding: '5px 10px',
-          cursor: 'pointer',
-          fontFamily: 'var(--font-ui)',
-          fontSize: '12px',
-          color: '#7A003C',
-        }}
-      >
-        <span className="material-symbols-outlined icon-sm">person</span>
-        Contributors
-        <span className="material-symbols-outlined icon-sm" style={{ transform: showContributors ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }}>expand_more</span>
-      </button>
-
-      {/* Expanded contributors */}
-      {showContributors && (
-        <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {chapter.contributors.map((c, i) => (
-            <div key={i} style={{
-              background: 'rgba(255,255,255,0.55)',
-              borderRadius: '8px',
-              padding: '10px 12px',
-            }}>
-              <div style={{
-                fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '13px', color: '#7A003C',
-              }}>
-                {c.name}
-              </div>
-              <div style={{
-                fontFamily: 'var(--font-ui)', fontSize: '12px', color: '#594535', marginTop: '2px',
-              }}>
-                {c.role} · {c.institution}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
-
-// ── References section ────────────────────────────────────────────────────────
-
-function ReferencesSection({ references }) {
-  const [showReferences, setShowReferences] = useState(false)
-
-  return (
-    <div style={{
-      marginTop: '48px',
-      borderTop: '2px solid #7A003C',
-      paddingTop: '16px',
-    }}>
-      <button
-        onClick={() => setShowReferences(v => !v)}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          width: '100%',
-          background: 'none',
-          border: 'none',
-          padding: '0',
-          cursor: 'pointer',
-          marginBottom: showReferences ? '16px' : '0',
-        }}
-      >
-        <span style={{
-          fontFamily: 'var(--font-ui)',
-          fontWeight: 700,
-          fontSize: '14px',
-          color: '#7A003C',
-          textTransform: 'uppercase',
-          letterSpacing: '0.06em',
-        }}>
-          References
-        </span>
-        <span style={{ color: '#7A003C' }}>
-          <span className="material-symbols-outlined icon-sm" style={{ transform: showReferences ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s ease' }}>expand_more</span>
-        </span>
-      </button>
-
-      {showReferences && (
-        <ol style={{
-          margin: 0,
-          padding: 0,
-          listStyle: 'none',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '10px',
-        }}>
-          {references.map((ref, i) => (
-            <li key={i} style={{
-              fontFamily: 'var(--font-ui)',
-              fontSize: '13px',
-              lineHeight: '20px',
-              color: '#6B7374',
-            }}>
-              {ref}
-            </li>
-          ))}
-        </ol>
-      )}
-    </div>
-  )
-}
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 
@@ -564,258 +689,341 @@ export default function Reader() {
   const navigate = useNavigate()
   const { chapterId } = useParams()
   const { setLastRead } = useReadingHistory()
-
-  const { isSaved, saveChapter, removeChapter, addNote } = useSavedChapters()
+  const { isSaved, saveChapter, removeChapter, addNote, folders, createFolder } = useSavedChapters()
   const { offlineState } = useOffline()
 
-  const [showTOC, setShowTOC] = useState(false)
+  const [topbarVisible, setTopbarVisible] = useState(true)
+  const [lastScrollY, setLastScrollY] = useState(0)
   const [progress, setProgress] = useState(0)
   const [activeSection, setActiveSection] = useState('def')
-  const [showNoteInput, setShowNoteInput] = useState(false)
+  const [activeDrawer, setActiveDrawer] = useState(null)
+  const [showSettings, setShowSettings] = useState(false)
   const [noteText, setNoteText] = useState('')
+  const [fontSize, setFontSize] = useState(17)
+  const [darkMode, setDarkMode] = useState(false)
 
-  const saved = isSaved(MOCK_CHAPTER.id)
+  const HAS_ELEARNING = RELATED_ELEARNING.length > 0
 
-  // Inject reader CSS
+  // Inject CSS
   useEffect(() => {
     const style = document.createElement('style')
     style.id = 'reader-styles'
     style.textContent = READER_CSS
-    if (!document.getElementById('reader-styles')) {
-      document.head.appendChild(style)
-    }
+    if (!document.getElementById('reader-styles')) document.head.appendChild(style)
     return () => document.getElementById('reader-styles')?.remove()
   }, [])
 
-  // Save reading history
+  // Reading history
   useEffect(() => {
-    setLastRead({
-      chapterId: MOCK_CHAPTER.id,
-      title: MOCK_CHAPTER.title,
-      specialty: MOCK_CHAPTER.specialty,
-    })
+    setLastRead({ chapterId: MOCK_CHAPTER.id, title: MOCK_CHAPTER.title, specialty: MOCK_CHAPTER.specialty })
   }, [])
 
-  // Scroll progress
+  // Scroll: progress + hide/show topbar
   useEffect(() => {
-    function handleScroll() {
-      const scrolled = window.scrollY
+    const handleScroll = () => {
+      const currentY = window.scrollY
       const total = document.body.scrollHeight - window.innerHeight
-      if (total > 0) setProgress(Math.round((scrolled / total) * 100))
+      if (total > 0) setProgress(Math.round((currentY / total) * 100))
+      if (currentY > lastScrollY && currentY > 60) {
+        setTopbarVisible(false)
+      } else {
+        setTopbarVisible(true)
+      }
+      setLastScrollY(currentY)
     }
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [lastScrollY])
 
   // Active section via IntersectionObserver
   useEffect(() => {
     const observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) setActiveSection(entry.target.id)
-        })
-      },
+      entries => { entries.forEach(e => { if (e.isIntersecting) setActiveSection(e.target.id) }) },
       { rootMargin: '-20% 0px -70% 0px' }
     )
-    MOCK_CHAPTER.toc.forEach(section => {
-      const el = document.getElementById(section.id)
-      if (el) observer.observe(el)
-    })
+    MOCK_CHAPTER.toc.forEach(s => { const el = document.getElementById(s.id); if (el) observer.observe(el) })
     return () => observer.disconnect()
   }, [])
 
+  const saved = isSaved(MOCK_CHAPTER.id)
+
+  function closeDrawer() { setActiveDrawer(null) }
+
   return (
-    <div style={{ background: 'var(--bg-app)', minHeight: '100dvh' }}>
+    <div style={{ background: darkMode ? '#1a1a1a' : 'var(--bg-app)', minHeight: '100dvh' }}>
 
-      {/* ── TopBar ── */}
-      <header style={{
-        position: 'sticky', top: 0, zIndex: 100,
-        height: '52px', padding: '0 16px',
-        display: 'flex', alignItems: 'center', gap: '12px',
-        background: 'var(--glass-bg)',
-        backdropFilter: 'blur(20px)',
-        WebkitBackdropFilter: 'blur(20px)',
-        borderBottom: '1px solid var(--glass-border)',
-      }}>
-        <button
-          onClick={() => navigate(-1)}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-brand)', display: 'flex', alignItems: 'center', padding: '4px', flexShrink: 0 }}
-          aria-label="Back"
-        >
-          <span className="material-symbols-outlined icon-md">arrow_back</span>
-        </button>
-
-        <span style={{
-          flex: 1, textAlign: 'center',
-          fontFamily: 'var(--font-ui)', fontWeight: 500, fontSize: '14px',
-          color: 'var(--text-secondary)',
-          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-        }}>
-          {MOCK_CHAPTER.specialty} · {MOCK_CHAPTER.chapter}
-        </span>
-
-        <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
-          <button
-            onClick={() => setShowTOC(true)}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', display: 'flex', padding: '6px', borderRadius: 'var(--radius-sm)' }}
-            aria-label="Table of contents"
-          >
-            <span className="material-symbols-outlined icon-md">format_list_bulleted</span>
+      {/* ── Topbar ── */}
+      <div className={`reader-topbar ${topbarVisible ? '' : 'hidden'}`}>
+        <div className="reader-topbar-main">
+          <button className="reader-back-btn" onClick={() => navigate(-1)} aria-label="Back">
+            <span className="material-symbols-outlined icon-md">arrow_back</span>
           </button>
-          <button
-            onClick={() => console.log('więcej opcji')}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)', display: 'flex', padding: '6px', borderRadius: 'var(--radius-sm)' }}
-            aria-label="More options"
-          >
+          <span className="reader-location">{MOCK_CHAPTER.specialty} · Ch. {MOCK_CHAPTER.chapter}</span>
+          <button className="reader-more-btn" onClick={() => setShowSettings(true)} aria-label="Settings">
             <span className="material-symbols-outlined icon-md">more_vert</span>
           </button>
         </div>
-      </header>
+        <div className="reader-progress-bar">
+          <div className="reader-progress-fill" style={{ width: `${progress}%` }} />
+        </div>
+      </div>
 
-      {/* ── Sync outdated banner ── */}
+      {/* ── Sync banner ── */}
       {offlineState.syncStatus === 'outdated' && (
-        <div className="sync-banner" style={{
-          display: 'flex', alignItems: 'center', gap: '8px',
-          padding: '8px 20px',
-          background: 'var(--color-background-warning, #FFFBEB)',
-          borderBottom: '1px solid var(--border-subtle)',
-        }}>
-          <span className="material-symbols-outlined icon-sm" style={{ color: 'var(--color-text-warning, #B45309)', flexShrink: 0 }}>sync_problem</span>
-          <span style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--color-text-warning, #B45309)', lineHeight: 1.4 }}>
+        <div className="sync-banner" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 20px', marginTop: '55px', background: '#FFFBEB', borderBottom: '1px solid var(--border-subtle)' }}>
+          <span className="material-symbols-outlined icon-sm" style={{ color: '#B45309', flexShrink: 0 }}>sync_problem</span>
+          <span style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: '#B45309', lineHeight: 1.4 }}>
             This content may be outdated · last synced {offlineState.lastSync ? new Date(offlineState.lastSync).toLocaleDateString('en-GB') : '—'}
           </span>
         </div>
       )}
 
-      {/* ── Article header (beige, outside main padding) ── */}
-      <ArticleHeader chapter={MOCK_CHAPTER} />
-
-      {/* ── Separator line ── */}
-      <div style={{ height: '1px', background: '#E5D1C0' }} />
-
-      {/* ── Article body ── */}
-      <main style={{ padding: '8px 20px 140px', maxWidth: '680px', margin: '0 auto' }}>
-        <div
-          className="article-body"
-          dangerouslySetInnerHTML={{ __html: MOCK_CHAPTER.content }}
-        />
-        <ReferencesSection references={MOCK_CHAPTER.references} />
-      </main>
-
-      {/* ── Bottom bar ── */}
-      <div style={{
-        position: 'fixed', bottom: 0, left: '50%', transform: 'translateX(-50%)',
-        width: '100%', maxWidth: '430px', zIndex: 100,
-        background: 'var(--glass-bg)',
-        backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
-        borderTop: '1px solid var(--glass-border)',
-        paddingBottom: 'env(safe-area-inset-bottom)',
-      }}>
-        <div style={{ height: '52px', padding: '0 20px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-          {/* Zapisz */}
-          <button
-            onClick={() => saved ? removeChapter(MOCK_CHAPTER.id) : saveChapter(MOCK_CHAPTER)}
-            style={{
-              background: 'none', border: 'none', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', gap: '6px',
-              color: saved ? 'var(--interactive-primary)' : 'var(--text-secondary)',
-              fontFamily: 'var(--font-ui)', fontSize: '13px',
-              fontWeight: saved ? 600 : 500,
-              padding: '0', flexShrink: 0,
-              transition: 'color 0.15s',
-            }}
-          >
-            <span className={`material-symbols-outlined icon-sm${saved ? ' filled' : ''}`}>bookmark</span>
-            {saved ? 'Saved' : 'Save'}
-          </button>
-
-          {/* Progress */}
-          <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
-            <div style={{ width: '80px', height: '3px', background: 'var(--border-subtle)', borderRadius: '999px', overflow: 'hidden', flexShrink: 0 }}>
-              <div style={{ height: '100%', width: `${progress}%`, background: '#7A003C', borderRadius: '999px', transition: 'width 0.2s ease' }} />
-            </div>
-            <span style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--text-tertiary)', fontWeight: 500, minWidth: '28px' }}>
-              {progress}%
-            </span>
-          </div>
-
-          {/* Notatka */}
-          <button
-            onClick={() => setShowNoteInput(true)}
-            style={{
-              background: 'none', border: 'none', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', gap: '6px',
-              color: 'var(--text-secondary)',
-              fontFamily: 'var(--font-ui)', fontSize: '13px', fontWeight: 500,
-              padding: '0', flexShrink: 0,
-            }}
-          >
-            <span className="material-symbols-outlined icon-sm">edit_note</span>
-            Note
-          </button>
-        </div>
+      {/* ── Article ── */}
+      <div style={{ paddingTop: '55px', paddingBottom: '120px' }}>
+        <ContentLayout
+          badge={{ label: 'Premium', color: 'info' }}
+          category={`${MOCK_CHAPTER.specialty} · Chapter ${MOCK_CHAPTER.chapter}`}
+          title={MOCK_CHAPTER.title}
+          lastReviewed="15 Nov 2024"
+          lastUpdated="3 Feb 2025"
+          authors={MOCK_CHAPTER.contributors}
+          references={MOCK_CHAPTER.references}
+          prevChapter={PREV_CHAPTER}
+          nextChapter={NEXT_CHAPTER}
+        >
+          <div
+            className="article-body"
+            style={{ fontSize: `${fontSize}px`, color: darkMode ? '#e8e8e8' : undefined }}
+            dangerouslySetInnerHTML={{ __html: MOCK_CHAPTER.content }}
+          />
+        </ContentLayout>
       </div>
 
-      {/* ── Note bottom sheet ── */}
-      <BottomSheet
-        isOpen={showNoteInput}
-        onClose={() => setShowNoteInput(false)}
-        title="Add note"
-      >
-        <div style={{ padding: '12px 20px 20px' }}>
-          <textarea
-            value={noteText}
-            onChange={e => setNoteText(e.target.value)}
-            placeholder="Your notes for this chapter..."
-            autoFocus
-            style={{
-              width: '100%',
-              minHeight: '120px',
-              border: '1.5px solid var(--border-default)',
-              borderRadius: 'var(--radius-md)',
-              padding: '12px',
-              fontFamily: 'var(--font-ui)',
-              fontSize: '15px',
-              lineHeight: '1.6',
-              resize: 'none',
-              background: 'var(--bg-app)',
-              color: 'var(--text-primary)',
-              outline: 'none',
-              boxSizing: 'border-box',
-            }}
-          />
-          <button
-            onClick={() => {
-              if (!isSaved(MOCK_CHAPTER.id)) saveChapter(MOCK_CHAPTER)
-              addNote(MOCK_CHAPTER.id, noteText)
-              setShowNoteInput(false)
-            }}
-            style={{
-              marginTop: '12px',
-              width: '100%',
-              height: '48px',
-              background: 'var(--interactive-primary)',
-              color: 'white',
-              border: 'none',
-              borderRadius: 'var(--radius-full)',
-              fontFamily: 'var(--font-ui)',
-              fontSize: '15px',
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
-          >
-            Save note
-          </button>
-        </div>
-      </BottomSheet>
+      {/* ── Floating panel ── */}
+      <div className="reader-floating-panel">
+        <button
+          className={`floating-action ${activeDrawer === 'save' ? 'active' : ''}`}
+          onClick={() => setActiveDrawer(activeDrawer === 'save' ? null : 'save')}
+        >
+          <span className="material-symbols-outlined">{saved ? 'bookmark_added' : 'bookmark'}</span>
+          <span className="floating-action-label">Save</span>
+        </button>
 
-      {/* ── TOC panel ── */}
-      <TOCPanel
-        toc={MOCK_CHAPTER.toc}
-        activeSection={activeSection}
-        open={showTOC}
-        onClose={() => setShowTOC(false)}
-      />
+        <button
+          className={`floating-action ${activeDrawer === 'note' ? 'active' : ''}`}
+          onClick={() => setActiveDrawer(activeDrawer === 'note' ? null : 'note')}
+        >
+          <span className="material-symbols-outlined">edit_note</span>
+          <span className="floating-action-label">Note</span>
+        </button>
+
+        <button
+          className={`floating-action ${activeDrawer === 'toc' ? 'active' : ''}`}
+          onClick={() => setActiveDrawer(activeDrawer === 'toc' ? null : 'toc')}
+        >
+          <span className="material-symbols-outlined">toc</span>
+          <span className="floating-action-label">Contents</span>
+        </button>
+
+        {HAS_ELEARNING && (
+          <button
+            className={`floating-action ${activeDrawer === 'elearning' ? 'active' : ''}`}
+            onClick={() => setActiveDrawer(activeDrawer === 'elearning' ? null : 'elearning')}
+          >
+            <span className="material-symbols-outlined">play_circle</span>
+            <span className="floating-action-label">E-learning</span>
+          </button>
+        )}
+      </div>
+
+      {/* ── Drawer overlay ── */}
+      {(activeDrawer || showSettings) && (
+        <div className="drawer-overlay" onClick={() => { closeDrawer(); setShowSettings(false) }} />
+      )}
+
+      {/* ── Save drawer ── */}
+      {activeDrawer === 'save' && (
+        <div className="reader-drawer">
+          <div className="drawer-handle" />
+          <div className="drawer-header">
+            <span className="drawer-title">Save to folder</span>
+            <button className="drawer-close" onClick={closeDrawer}>
+              <span className="material-symbols-outlined icon-sm">close</span>
+            </button>
+          </div>
+          <div className="drawer-content">
+            {(folders || [{ id: 'default', name: 'My Saved', color: '#7A003C' }]).map(folder => (
+              <button
+                key={folder.id}
+                className="folder-option"
+                onClick={() => { saveChapter(MOCK_CHAPTER, folder.id); closeDrawer() }}
+              >
+                <div className="folder-option-icon" style={{ background: folder.color + '20', color: folder.color }}>
+                  <span className="material-symbols-outlined icon-sm">folder</span>
+                </div>
+                <span className="folder-option-name">{folder.name}</span>
+                {saved && folder.id === 'default' && (
+                  <span className="material-symbols-outlined folder-check">check_circle</span>
+                )}
+              </button>
+            ))}
+            <button
+              className="folder-option"
+              onClick={() => {
+                const name = prompt('Folder name:')
+                if (name && createFolder) {
+                  const folder = createFolder(name)
+                  saveChapter(MOCK_CHAPTER, folder.id)
+                  closeDrawer()
+                }
+              }}
+            >
+              <div className="folder-option-icon" style={{ background: 'var(--bg-subtle)', color: 'var(--text-secondary)' }}>
+                <span className="material-symbols-outlined icon-sm">create_new_folder</span>
+              </div>
+              <span className="folder-option-name" style={{ color: 'var(--text-secondary)' }}>New folder…</span>
+            </button>
+          </div>
+          {saved && (
+            <div className="drawer-footer">
+              <button className="unsave-btn" onClick={() => { removeChapter(MOCK_CHAPTER.id); closeDrawer() }}>
+                <span className="material-symbols-outlined icon-sm">bookmark_remove</span>
+                Remove from saved
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── Note drawer ── */}
+      {activeDrawer === 'note' && (
+        <div className="reader-drawer">
+          <div className="drawer-handle" />
+          <div className="drawer-header">
+            <span className="drawer-title">Add note</span>
+            <button className="drawer-close" onClick={closeDrawer}>
+              <span className="material-symbols-outlined icon-sm">close</span>
+            </button>
+          </div>
+          <div className="drawer-content">
+            <textarea
+              value={noteText}
+              onChange={e => setNoteText(e.target.value)}
+              placeholder="Your notes for this chapter…"
+              className="note-textarea"
+              autoFocus
+              rows={5}
+            />
+            <button
+              className="drawer-primary-btn"
+              onClick={() => {
+                if (!saved) saveChapter(MOCK_CHAPTER)
+                addNote(MOCK_CHAPTER.id, noteText)
+                closeDrawer()
+              }}
+            >
+              Save note
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── TOC drawer ── */}
+      {activeDrawer === 'toc' && (
+        <div className="reader-drawer">
+          <div className="drawer-handle" />
+          <div className="drawer-header">
+            <span className="drawer-title">Table of contents</span>
+            <button className="drawer-close" onClick={closeDrawer}>
+              <span className="material-symbols-outlined icon-sm">close</span>
+            </button>
+          </div>
+          <div className="drawer-content">
+            {MOCK_CHAPTER.toc.map(section => (
+              <button
+                key={section.id}
+                className={`toc-item ${activeSection === section.id ? 'active' : ''}`}
+                onClick={() => {
+                  document.getElementById(section.id)?.scrollIntoView({ behavior: 'smooth' })
+                  closeDrawer()
+                }}
+              >
+                <span className={`material-symbols-outlined ${activeSection === section.id ? 'toc-active-dot' : 'toc-dot'}`}>
+                  {activeSection === section.id ? 'radio_button_checked' : 'radio_button_unchecked'}
+                </span>
+                <span className="toc-item-title">{section.title}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── E-learning drawer ── */}
+      {activeDrawer === 'elearning' && (
+        <div className="reader-drawer">
+          <div className="drawer-handle" />
+          <div className="drawer-header">
+            <span className="drawer-title">Related e-learning</span>
+            <button className="drawer-close" onClick={closeDrawer}>
+              <span className="material-symbols-outlined icon-sm">close</span>
+            </button>
+          </div>
+          <div className="drawer-content">
+            {RELATED_ELEARNING.map(item => (
+              <button
+                key={item.id}
+                className="elearning-drawer-item"
+                onClick={() => {
+                  closeDrawer()
+                  navigate(item.type === 'video' ? `/video/${item.id}` : `/calculator/${item.id}`)
+                }}
+              >
+                <span className={`material-symbols-outlined elearning-item-icon`}>
+                  {item.type === 'video' ? 'play_circle' : 'calculate'}
+                </span>
+                <div className="elearning-item-body">
+                  <span className="elearning-item-title">{item.title}</span>
+                  {item.duration && <span className="elearning-item-meta">{item.duration}</span>}
+                  <span className="elearning-item-hint">Tap back to return to this chapter</span>
+                </div>
+                <span className="material-symbols-outlined" style={{ fontSize: '18px', color: 'var(--text-tertiary)' }}>chevron_right</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* ── Settings drawer ── */}
+      {showSettings && (
+        <div className="reader-drawer">
+          <div className="drawer-handle" />
+          <div className="drawer-header">
+            <span className="drawer-title">Reader settings</span>
+            <button className="drawer-close" onClick={() => setShowSettings(false)}>
+              <span className="material-symbols-outlined icon-sm">close</span>
+            </button>
+          </div>
+          <div className="drawer-content">
+            <div className="setting-row">
+              <span className="setting-label">Text size</span>
+              <div className="font-size-controls">
+                <button onClick={() => setFontSize(s => Math.max(14, s - 1))}>
+                  <span className="material-symbols-outlined icon-sm">text_decrease</span>
+                </button>
+                <span className="font-size-value">{fontSize}px</span>
+                <button onClick={() => setFontSize(s => Math.min(22, s + 1))}>
+                  <span className="material-symbols-outlined icon-sm">text_increase</span>
+                </button>
+              </div>
+            </div>
+            <div className="setting-row">
+              <span className="setting-label">Dark mode</span>
+              <div className={`toggle ${darkMode ? 'on' : ''}`} onClick={() => setDarkMode(d => !d)} />
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }

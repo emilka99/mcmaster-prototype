@@ -4,21 +4,63 @@ import { useNavigate } from 'react-router-dom'
 // ── Mock data ─────────────────────────────────────────────────────────────────
 
 const MOCK_RESULTS_PRECISE = [
-  { id: 'cardiology-3-2', type: 'chapter', title: 'Heart Failure', specialty: 'Cardiology', chapter: '3.2', readTime: '12 min' },
-  { id: 'cardiology-3-1', type: 'chapter', title: 'Cardiac Diagnostics', specialty: 'Cardiology', chapter: '3.1', readTime: '8 min' },
-  { id: 'cardiology-4-1', type: 'chapter', title: 'Arterial Hypertension', specialty: 'Cardiology', chapter: '4.1', readTime: '15 min' },
+  {
+    id: 'cardiology-3-2', type: 'chapter',
+    title: 'Heart Failure', specialty: 'Cardiology', chapter: '3.2', readTime: '12 min',
+    matchContext: 'title', matchSnippet: null,
+  },
+  {
+    id: 'cardiology-3-1', type: 'chapter',
+    title: 'Cardiac Diagnostics', specialty: 'Cardiology', chapter: '3.1', readTime: '8 min',
+    matchContext: 'heading', matchSnippet: null,
+  },
+  {
+    id: 'cardiology-4-1', type: 'chapter',
+    title: 'Arterial Hypertension', specialty: 'Cardiology', chapter: '4.1', readTime: '15 min',
+    matchContext: 'text', matchSnippet: '...management of heart failure includes...',
+  },
 ]
 
 const MOCK_RESULTS_EXPLORE = [
-  { id: 'cardiology-3-2', type: 'chapter', title: 'Heart Failure', specialty: 'Cardiology', chapter: '3.2', readTime: '12 min' },
-  { id: 'cardiology-video-1', type: 'video', title: 'Cardiology — Overview', duration: '18 min' },
-  { id: 'cardiology-calc-1', type: 'calculator', title: 'Cardiac Risk Calculator (SCORE2)' },
-  { id: 'cardiology-3-1', type: 'chapter', title: 'Cardiac Diagnostics', specialty: 'Cardiology', chapter: '3.1', readTime: '8 min' },
+  {
+    id: 'cardiology-3-2', type: 'chapter',
+    title: 'Heart Failure', specialty: 'Cardiology', chapter: '3.2', readTime: '12 min',
+    matchContext: 'title', matchSnippet: null,
+  },
+  {
+    id: 'cardiology-video-1', type: 'video',
+    title: 'Cardiology — Overview', duration: '18 min',
+    matchContext: 'category', matchSnippet: null,
+  },
+  {
+    id: 'cardiology-calc-1', type: 'calculator',
+    title: 'Cardiac Risk Calculator (SCORE2)',
+    matchContext: 'title', matchSnippet: null,
+  },
+  {
+    id: 'cardiology-3-1', type: 'chapter',
+    title: 'Cardiac Diagnostics', specialty: 'Cardiology', chapter: '3.1', readTime: '8 min',
+    matchContext: 'text', matchSnippet: '...cardiac diagnostics in heart failure include echo...',
+  },
 ]
 
-const MOCK_SUGGESTIONS = ['Cardiology', 'Heart Failure', 'Hypertension', 'Neurology', 'Type 2 Diabetes']
+const MOCK_SUGGESTIONS = [
+  { text: 'Cardiology', foundIn: 'both', count: 24 },
+  { text: 'Heart failure', foundIn: 'textbook', count: 3 },
+  { text: 'Heart failure — Overview', foundIn: 'elearning', count: 1 },
+  { text: 'Hypertension', foundIn: 'both', count: 8 },
+  { text: 'Diabetes type 2', foundIn: 'textbook', count: 5 },
+  { text: 'Neurology', foundIn: 'textbook', count: 12 },
+]
 
 const POPULAR_TOPICS = ['Cardiology', 'Neurology', 'Endocrinology', 'Pulmonology', 'Nephrology']
+
+const MATCH_CONTEXT_CONFIG = {
+  title:    { label: 'Title match',  color: '#7A003C', bg: '#F9EEF3', icon: 'title' },
+  heading:  { label: 'In heading',   color: '#185FA5', bg: '#E6F1FB', icon: 'format_h1' },
+  category: { label: 'In category',  color: '#0F6E56', bg: '#E1F5EE', icon: 'label' },
+  text:     { label: 'In full text', color: '#854F0B', bg: '#FAEEDA', icon: 'article' },
+}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -27,11 +69,7 @@ function getSearchMode(query) {
 }
 
 function getHistory() {
-  try {
-    return JSON.parse(localStorage.getItem('searchHistory') || '[]')
-  } catch {
-    return []
-  }
+  try { return JSON.parse(localStorage.getItem('searchHistory') || '[]') } catch { return [] }
 }
 
 function saveToHistory(query) {
@@ -82,6 +120,34 @@ function TypeTag({ type }) {
   )
 }
 
+// ── Match context tag ─────────────────────────────────────────────────────────
+
+function MatchTag({ matchContext, matchSnippet }) {
+  const cfg = MATCH_CONTEXT_CONFIG[matchContext]
+  if (!cfg) return null
+  return (
+    <div>
+      <span style={{
+        display: 'inline-flex', alignItems: 'center', gap: '3px',
+        fontSize: '11px', fontWeight: 500, fontFamily: 'var(--font-ui)',
+        padding: '2px 8px', borderRadius: '999px',
+        color: cfg.color, background: cfg.bg,
+      }}>
+        <span className="material-symbols-outlined" style={{ fontSize: '11px' }}>{cfg.icon}</span>
+        {cfg.label}
+      </span>
+      {matchContext === 'text' && matchSnippet && (
+        <p style={{
+          fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--text-secondary)',
+          fontStyle: 'italic', marginTop: '5px', lineHeight: 1.5,
+        }}>
+          "{matchSnippet}"
+        </p>
+      )}
+    </div>
+  )
+}
+
 // ── Search Bar ────────────────────────────────────────────────────────────────
 
 function SearchBar({ query, onChange, onSearch, onClear, inputRef, focused, onFocus, onBlur }) {
@@ -105,7 +171,7 @@ function SearchBar({ query, onChange, onSearch, onClear, inputRef, focused, onFo
 
       <input
         ref={inputRef}
-        type="search"
+        type="text"
         value={query}
         onChange={e => onChange(e.target.value)}
         onFocus={onFocus}
@@ -115,14 +181,14 @@ function SearchBar({ query, onChange, onSearch, onClear, inputRef, focused, onFo
         autoComplete="off"
         style={{
           width: '100%', height: '48px',
-          padding: '0 44px',
+          padding: query.length > 0 ? '0 44px' : '0 44px 0 44px',
           background: 'var(--bg-surface)',
           border: `1.5px solid ${focused ? 'var(--border-brand)' : 'var(--border-default)'}`,
           borderRadius: '28px',
           fontFamily: 'var(--font-ui)', fontSize: '16px',
           color: 'var(--text-primary)', outline: 'none',
           transition: 'border-color 0.15s',
-          WebkitAppearance: 'none',
+          boxSizing: 'border-box',
         }}
       />
 
@@ -134,9 +200,139 @@ function SearchBar({ query, onChange, onSearch, onClear, inputRef, focused, onFo
             background: 'none', border: 'none', cursor: 'pointer',
             color: 'var(--text-tertiary)', display: 'flex', padding: '4px',
           }}
+          aria-label="Clear search"
         >
           <span className="material-symbols-outlined icon-sm">close</span>
         </button>
+      )}
+    </div>
+  )
+}
+
+// ── Filter bar ────────────────────────────────────────────────────────────────
+
+function FilterBar({ filters, setFilters, showFilters, setShowFilters }) {
+  return (
+    <div style={{ padding: '0 16px 8px', borderBottom: '1px solid var(--border-subtle)' }}>
+
+      {/* Quick chips */}
+      <div style={{
+        display: 'flex', gap: '6px', overflowX: 'auto', padding: '8px 0',
+        scrollbarWidth: 'none', alignItems: 'center',
+      }}>
+        {[
+          { value: 'all', label: 'All' },
+          { value: 'textbook', label: 'Textbook' },
+          { value: 'elearning', label: 'E-learning' },
+        ].map(opt => (
+          <button
+            key={opt.value}
+            onClick={() => setFilters(f => ({ ...f, source: opt.value }))}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '4px',
+              padding: '5px 12px', borderRadius: '999px', flexShrink: 0,
+              border: '1px solid var(--border-default)',
+              fontFamily: 'var(--font-ui)', fontSize: '13px', fontWeight: 500,
+              whiteSpace: 'nowrap', cursor: 'pointer',
+              background: filters.source === opt.value ? 'var(--interactive-primary)' : 'transparent',
+              color: filters.source === opt.value ? '#fff' : 'var(--text-secondary)',
+              borderColor: filters.source === opt.value ? 'var(--interactive-primary)' : 'var(--border-default)',
+            }}
+          >
+            {opt.label}
+          </button>
+        ))}
+
+        <div style={{ width: '1px', height: '20px', background: 'var(--border-default)', flexShrink: 0 }} />
+
+        <button
+          onClick={() => setShowFilters(f => !f)}
+          style={{
+            display: 'flex', alignItems: 'center', gap: '4px',
+            padding: '5px 12px', borderRadius: '999px', flexShrink: 0,
+            border: '1px solid var(--border-default)',
+            fontFamily: 'var(--font-ui)', fontSize: '13px', fontWeight: 500,
+            whiteSpace: 'nowrap', cursor: 'pointer',
+            background: showFilters ? 'var(--interactive-primary)' : 'transparent',
+            color: showFilters ? '#fff' : 'var(--text-secondary)',
+            borderColor: showFilters ? 'var(--interactive-primary)' : 'var(--border-default)',
+          }}
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: '14px' }}>tune</span>
+          Filters {showFilters ? '▴' : '▾'}
+        </button>
+      </div>
+
+      {/* Expanded filters */}
+      {showFilters && (
+        <div style={{ paddingBottom: '8px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+            <span style={{
+              fontSize: '11px', fontWeight: 500, fontFamily: 'var(--font-ui)',
+              color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.04em',
+              whiteSpace: 'nowrap', marginTop: '6px', minWidth: '54px',
+            }}>
+              Match in
+            </span>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+              {[
+                { value: 'all', label: 'All fields' },
+                { value: 'title', label: 'Title' },
+                { value: 'heading', label: 'Heading' },
+                { value: 'category', label: 'Category' },
+                { value: 'text', label: 'Full text' },
+              ].map(opt => (
+                <button
+                  key={opt.value}
+                  onClick={() => setFilters(f => ({ ...f, matchIn: opt.value }))}
+                  style={{
+                    padding: '4px 12px', borderRadius: '999px', cursor: 'pointer',
+                    fontFamily: 'var(--font-ui)', fontSize: '12px',
+                    border: '1px solid var(--border-default)',
+                    background: filters.matchIn === opt.value ? 'var(--bg-brand-subtle)' : 'transparent',
+                    color: filters.matchIn === opt.value ? 'var(--interactive-primary)' : 'var(--text-secondary)',
+                    borderColor: filters.matchIn === opt.value ? 'var(--interactive-primary)' : 'var(--border-default)',
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+            <span style={{
+              fontSize: '11px', fontWeight: 500, fontFamily: 'var(--font-ui)',
+              color: 'var(--text-tertiary)', textTransform: 'uppercase', letterSpacing: '0.04em',
+              whiteSpace: 'nowrap', marginTop: '6px', minWidth: '54px',
+            }}>
+              Sort by
+            </span>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+              {[
+                { value: 'relevance', label: 'Relevance' },
+                { value: 'newest', label: 'Newest first' },
+              ].map(opt => (
+                <button
+                  key={opt.value}
+                  onClick={() => setFilters(f => ({ ...f, sortBy: opt.value }))}
+                  style={{
+                    padding: '4px 12px', borderRadius: '999px', cursor: 'pointer',
+                    fontFamily: 'var(--font-ui)', fontSize: '12px',
+                    border: '1px solid var(--border-default)',
+                    background: filters.sortBy === opt.value ? 'var(--bg-brand-subtle)' : 'transparent',
+                    color: filters.sortBy === opt.value ? 'var(--interactive-primary)' : 'var(--text-secondary)',
+                    borderColor: filters.sortBy === opt.value ? 'var(--interactive-primary)' : 'var(--border-default)',
+                  }}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+        </div>
       )}
     </div>
   )
@@ -156,18 +352,16 @@ function PreciseCard({ result, onClick }) {
         display: 'flex', flexDirection: 'column', gap: '6px',
       }}
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div>
         <span style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--text-secondary)' }}>
           {result.specialty} · Chapter {result.chapter}
-        </span>
-        <span style={{ fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--text-tertiary)' }}>
-          {result.readTime}
         </span>
       </div>
       <div style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '16px', color: 'var(--text-primary)', lineHeight: 1.3 }}>
         {result.title}
       </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontFamily: 'var(--font-ui)', fontSize: '14px', color: 'var(--interactive-primary)', fontWeight: 500 }}>
+      <MatchTag matchContext={result.matchContext} matchSnippet={result.matchSnippet} />
+      <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontFamily: 'var(--font-ui)', fontSize: '14px', color: 'var(--interactive-primary)', fontWeight: 500, marginTop: '2px' }}>
         Read
         <span className="material-symbols-outlined icon-sm">arrow_forward</span>
       </div>
@@ -190,15 +384,12 @@ function ExploreCard({ result, onClick }) {
       }}
     >
       <TypeTag type={result.type} />
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
-        <span style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)', lineHeight: 1.3, flex: 1 }}>
+      <div>
+        <span style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '15px', color: 'var(--text-primary)', lineHeight: 1.3 }}>
           {result.title}
         </span>
-        <span style={{ display: 'flex', alignItems: 'center', gap: '2px', fontFamily: 'var(--font-ui)', fontSize: '12px', color: 'var(--text-tertiary)', flexShrink: 0 }}>
-          {meta}
-          <span className="material-symbols-outlined icon-sm">chevron_right</span>
-        </span>
       </div>
+      <MatchTag matchContext={result.matchContext} matchSnippet={result.matchSnippet} />
     </button>
   )
 }
@@ -213,6 +404,8 @@ export default function Search() {
   const [focused, setFocused] = useState(false)
   const [submittedQuery, setSubmittedQuery] = useState('')
   const [history, setHistory] = useState(getHistory)
+  const [filters, setFilters] = useState({ source: 'all', matchIn: 'all', sortBy: 'relevance' })
+  const [showFilters, setShowFilters] = useState(false)
 
   useEffect(() => {
     const t = setTimeout(() => inputRef.current?.focus(), 100)
@@ -233,6 +426,7 @@ export default function Search() {
   function handleClear() {
     setQuery('')
     setSubmittedQuery('')
+    setShowFilters(false)
     inputRef.current?.focus()
   }
 
@@ -241,7 +435,7 @@ export default function Search() {
   const mode = hasResults ? getSearchMode(submittedQuery) : null
 
   const suggestions = query
-    ? MOCK_SUGGESTIONS.filter(s => s.toLowerCase().includes(query.toLowerCase()))
+    ? MOCK_SUGGESTIONS.filter(s => s.text.toLowerCase().includes(query.toLowerCase()))
     : []
 
   const results = mode === 'precise' ? MOCK_RESULTS_PRECISE : MOCK_RESULTS_EXPLORE
@@ -252,54 +446,87 @@ export default function Search() {
     else if (result.type === 'calculator') navigate(`/calculator/${result.id}`)
   }
 
+  const SOURCE_COLORS = {
+    textbook: { bg: 'var(--bg-brand-subtle)', color: 'var(--interactive-primary)' },
+    elearning: { bg: '#E6F1FB', color: '#185FA5' },
+    both: { bg: 'var(--bg-subtle)', color: 'var(--text-secondary)' },
+  }
+
+  const SOURCE_LABELS = {
+    textbook: 'Textbook',
+    elearning: 'E-learning',
+    both: 'Textbook + E-learning',
+  }
+
   return (
     <div style={{ background: 'var(--bg-app)', minHeight: '100%' }} onScroll={() => inputRef.current?.blur()}>
 
       {/* Sticky search bar */}
       <div style={{
         position: 'sticky', top: 0, zIndex: 10,
-        padding: '12px 16px',
         background: 'var(--glass-bg)',
         backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
-        borderBottom: '1px solid var(--glass-border)',
+        borderBottom: hasResults ? 'none' : '1px solid var(--glass-border)',
       }}>
-        <SearchBar
-          query={query}
-          onChange={q => { setQuery(q); if (submittedQuery) setSubmittedQuery('') }}
-          onSearch={triggerSearch}
-          onClear={handleClear}
-          inputRef={inputRef}
-          focused={focused}
-          onFocus={() => setFocused(true)}
-          onBlur={() => setTimeout(() => setFocused(false), 150)}
-        />
+        <div style={{ padding: '12px 16px', position: 'relative' }}>
+          <SearchBar
+            query={query}
+            onChange={q => { setQuery(q); if (submittedQuery) setSubmittedQuery('') }}
+            onSearch={triggerSearch}
+            onClear={handleClear}
+            inputRef={inputRef}
+            focused={focused}
+            onFocus={() => setFocused(true)}
+            onBlur={() => setTimeout(() => setFocused(false), 150)}
+          />
 
-        {/* Suggestions dropdown */}
-        {isTyping && suggestions.length > 0 && (
-          <div style={{
-            position: 'absolute', left: '16px', right: '16px', top: 'calc(100% - 4px)',
-            background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)',
-            borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-box)',
-            overflow: 'hidden', zIndex: 20,
-          }}>
-            {suggestions.map((s, i) => (
-              <button
-                key={s}
-                onMouseDown={e => { e.preventDefault(); triggerSearch(s) }}
-                style={{
-                  width: '100%', height: '44px', padding: '0 16px',
-                  background: 'none', border: 'none',
-                  borderBottom: i < suggestions.length - 1 ? '1px solid var(--border-subtle)' : 'none',
-                  cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', textAlign: 'left',
-                }}
-              >
-                <span className="material-symbols-outlined icon-sm" style={{ color: 'var(--text-tertiary)' }}>search</span>
-                <span style={{ fontFamily: 'var(--font-ui)', fontSize: '15px', color: 'var(--text-secondary)' }}>
-                  {highlightMatch(s, query)}
-                </span>
-              </button>
-            ))}
-          </div>
+          {/* Suggestions dropdown */}
+          {isTyping && suggestions.length > 0 && (
+            <div style={{
+              position: 'absolute', left: '16px', right: '16px', top: 'calc(100% - 4px)',
+              background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)',
+              borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-box)',
+              overflow: 'hidden', zIndex: 20,
+            }}>
+              {suggestions.map((s, i) => {
+                const src = SOURCE_COLORS[s.foundIn] || SOURCE_COLORS.both
+                return (
+                  <button
+                    key={s.text}
+                    onMouseDown={e => { e.preventDefault(); triggerSearch(s.text) }}
+                    style={{
+                      width: '100%', height: '44px', padding: '0 16px',
+                      background: 'none', border: 'none',
+                      borderBottom: i < suggestions.length - 1 ? '1px solid var(--border-subtle)' : 'none',
+                      cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', textAlign: 'left',
+                    }}
+                  >
+                    <span className="material-symbols-outlined icon-sm" style={{ color: 'var(--text-tertiary)', flexShrink: 0 }}>search</span>
+                    <span style={{ fontFamily: 'var(--font-ui)', fontSize: '15px', color: 'var(--text-secondary)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {highlightMatch(s.text, query)}
+                    </span>
+                    <span style={{
+                      fontSize: '10px', fontFamily: 'var(--font-ui)', fontWeight: 500,
+                      padding: '2px 7px', borderRadius: '999px', flexShrink: 0,
+                      background: src.bg, color: src.color,
+                    }}>
+                      {SOURCE_LABELS[s.foundIn]}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Filter bar — visible when typing or in results */}
+        {(hasResults || isTyping) && (
+          <FilterBar
+            filters={filters}
+            setFilters={setFilters}
+            showFilters={showFilters}
+            setShowFilters={setShowFilters}
+          />
         )}
       </div>
 

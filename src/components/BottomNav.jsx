@@ -170,21 +170,10 @@ function NavItem({ label, active, onClick, children }) {
         gap: '3px',
         color: active ? 'var(--nav-active)' : 'var(--nav-inactive)',
         padding: '4px 0',
-        position: 'relative',
+        minHeight: '52px',
+        justifyContent: 'flex-end',
       }}
     >
-      {active && (
-        <span style={{
-          position: 'absolute',
-          top: 0,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '4px',
-          height: '4px',
-          borderRadius: '50%',
-          background: 'var(--nav-active)',
-        }} />
-      )}
       {children}
       <span style={{
         fontFamily: 'var(--font-ui)',

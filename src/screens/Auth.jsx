@@ -549,7 +549,7 @@ function RedeemTab({ onSwitchToRegister, onSuccess }) {
   const [loading, setLoading] = useState(false)
 
   function handleRedeem() {
-    if (!code.trim()) { setError('Please enter an access code.'); return }
+    if (!code.trim()) { setError('Please enter a redeem code.'); return }
     setError(null)
     setLoading(true)
     setTimeout(() => {
@@ -567,11 +567,11 @@ function RedeemTab({ onSwitchToRegister, onSuccess }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       <p style={{ fontFamily: 'var(--font-ui)', fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
-        Have an access code? Enter it below to activate your subscription.
+        Enter your redeem code below to activate your subscription.
       </p>
 
       <div>
-        <Label>Access code</Label>
+        <Label>Redeem code</Label>
         <input
           type="text"
           value={code}
@@ -626,7 +626,6 @@ export default function Auth() {
   const TABS = [
     { id: 'login',    label: 'Log in' },
     { id: 'register', label: 'Register' },
-    { id: 'redeem',   label: 'Access code', icon: 'card_giftcard' },
   ]
 
   return (
@@ -652,28 +651,25 @@ export default function Auth() {
       <div style={{ display: 'flex', alignItems: 'flex-end', padding: '0 16px', gap: '4px' }}>
         {TABS.map(t => {
           const active = tab === t.id
-          const isRedeem = t.id === 'redeem'
           return (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
               style={{
-                flex: isRedeem ? '0 0 auto' : 1,
-                height: isRedeem ? '38px' : '44px',
-                padding: isRedeem ? '0 12px' : '0 8px',
+                flex: 1,
+                height: '44px',
+                padding: '0 8px',
                 border: 'none', cursor: 'pointer',
                 borderRadius: 'var(--radius-lg) var(--radius-lg) 0 0',
                 fontFamily: 'var(--font-ui)',
                 fontWeight: active ? 600 : 500,
-                fontSize: isRedeem ? '13px' : '14px',
+                fontSize: '14px',
                 background: active ? 'var(--bg-surface)' : 'var(--interactive-primary)',
                 color: active ? 'var(--interactive-primary)' : 'rgba(255,255,255,0.9)',
-                opacity: active ? 1 : (isRedeem ? 0.75 : 0.85),
-                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px',
+                opacity: active ? 1 : 0.85,
                 transition: 'opacity 0.15s',
               }}
             >
-              {isRedeem && <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>card_giftcard</span>}
               {t.label}
             </button>
           )
@@ -684,16 +680,59 @@ export default function Auth() {
       <div style={{
         background: 'var(--bg-surface)',
         borderRadius: tab === 'login' ? '0 var(--radius-xl) var(--radius-xl) var(--radius-xl)'
-                    : tab === 'register' ? '0 0 var(--radius-xl) var(--radius-xl)'
-                    : 'var(--radius-xl)',
+                    : '0 0 var(--radius-xl) var(--radius-xl)',
         margin: '0 16px',
-        padding: '24px 20px 32px',
+        padding: '24px 20px 28px',
         boxShadow: '0 8px 40px rgba(80, 30, 20, 0.12)',
       }}>
         {tab === 'login' && <LoginTab onSuccess={onSuccess} />}
         {tab === 'register' && <RegisterTab onSuccess={onSuccess} />}
-        {tab === 'redeem' && <RedeemTab onSwitchToRegister={() => setTab('register')} onSuccess={onSuccess} />}
       </div>
+
+      {/* Redeem code link */}
+      {tab !== 'redeem' && (
+        <div style={{ textAlign: 'center', marginTop: '20px', padding: '0 16px' }}>
+          {tab === 'redeem' ? null : (
+            <button
+              onClick={() => setTab('redeem')}
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer',
+                fontFamily: 'var(--font-ui)', fontSize: '13px',
+                color: 'var(--text-secondary)',
+                display: 'inline-flex', alignItems: 'center', gap: '6px',
+              }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>card_giftcard</span>
+              Have a redeem code?
+            </button>
+          )}
+        </div>
+      )}
+
+      {/* Redeem panel — inline, below tabs */}
+      {tab === 'redeem' && (
+        <div style={{
+          background: 'var(--bg-surface)',
+          borderRadius: 'var(--radius-xl)',
+          margin: '8px 16px 0',
+          padding: '20px 20px 24px',
+          boxShadow: '0 8px 40px rgba(80, 30, 20, 0.12)',
+        }}>
+          <button
+            onClick={() => setTab('login')}
+            style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              display: 'flex', alignItems: 'center', gap: '4px',
+              fontFamily: 'var(--font-ui)', fontSize: '13px', color: 'var(--text-secondary)',
+              marginBottom: '16px', padding: 0,
+            }}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>arrow_back</span>
+            Back
+          </button>
+          <RedeemTab onSwitchToRegister={() => setTab('register')} onSuccess={onSuccess} />
+        </div>
+      )}
 
       <div style={{ height: '40px' }} />
 

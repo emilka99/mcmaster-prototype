@@ -64,6 +64,80 @@ function MiniStats({ notesCount }) {
 // ── Empty state ───────────────────────────────────────────────────────────────
 
 function EmptyAll({ navigate }) {
+  const [hasSubscription] = useState(() => localStorage.getItem('hasSubscription') !== 'false')
+
+  if (!hasSubscription) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', padding: '32px 20px', gap: '20px' }}>
+        {/* Subscribe prompt */}
+        <div style={{
+          background: 'linear-gradient(135deg, #7A003C 0%, #A0195A 100%)',
+          borderRadius: 'var(--radius-xl)', padding: '20px',
+          display: 'flex', flexDirection: 'column', gap: '12px',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span className="material-symbols-outlined" style={{ fontSize: '26px', color: 'rgba(255,255,255,0.9)' }}>menu_book</span>
+            <div style={{ fontFamily: 'var(--font-display)', fontWeight: 600, fontSize: '16px', color: '#fff' }}>
+              Unlock the full textbook
+            </div>
+          </div>
+          <p style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', color: 'rgba(255,255,255,0.8)', lineHeight: 1.5, margin: 0 }}>
+            Subscribe to save chapters, create folders and build your personal medical library.
+          </p>
+          <button
+            onClick={() => navigate('/reader/cardiology-3-2')}
+            style={{
+              height: '44px', background: '#fff', color: '#7A003C',
+              border: 'none', borderRadius: 'var(--radius-full)',
+              fontFamily: 'var(--font-ui)', fontWeight: 700, fontSize: '14px',
+              cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+            }}
+          >
+            Get full access
+            <span className="material-symbols-outlined" style={{ fontSize: '18px' }}>arrow_forward</span>
+          </button>
+        </div>
+
+        {/* Free e-learning CTA */}
+        <div style={{ textAlign: 'center', padding: '8px 0' }}>
+          <p style={{ fontFamily: 'var(--font-ui)', fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '12px' }}>
+            In the meantime, explore free content
+          </p>
+          <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+            <button
+              onClick={() => navigate('/video/v1')}
+              style={{
+                height: '40px', padding: '0 20px',
+                background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)',
+                borderRadius: 'var(--radius-full)',
+                fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '13px',
+                color: 'var(--text-primary)', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', gap: '6px',
+              }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>play_circle</span>
+              Videos
+            </button>
+            <button
+              onClick={() => navigate('/calculator/score2')}
+              style={{
+                height: '40px', padding: '0 20px',
+                background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)',
+                borderRadius: 'var(--radius-full)',
+                fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '13px',
+                color: 'var(--text-primary)', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', gap: '6px',
+              }}
+            >
+              <span className="material-symbols-outlined" style={{ fontSize: '16px' }}>calculate</span>
+              Calculators
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '64px 32px', textAlign: 'center' }}>
       <span className="material-symbols-outlined icon-xl" style={{ color: 'var(--text-tertiary)', marginBottom: '16px' }}>bookmark</span>
@@ -71,10 +145,10 @@ function EmptyAll({ navigate }) {
         No saved chapters yet
       </p>
       <p className="onboarding-hint" style={{ fontFamily: 'var(--font-ui)', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '28px', lineHeight: 1.5 }}>
-        Tap the bookmark icon while reading
+        Tap the bookmark icon while reading to save chapters here.
       </p>
       <button
-        onClick={() => navigate('/textbook')}
+        onClick={() => navigate('/reader/cardiology-3-2')}
         style={{
           height: '48px', padding: '0 28px',
           background: 'var(--interactive-primary)', color: '#fff',

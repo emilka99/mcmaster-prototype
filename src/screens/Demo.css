@@ -1,0 +1,244 @@
+/* ── Page grid ── */
+
+.demo-page {
+  display: grid;
+  grid-template-columns: 1fr 190px;
+  gap: 20px;
+  padding: 20px 16px;
+  min-height: 100dvh;
+  background: var(--bg-app, #f8f5f4);
+  width: 100%;
+  box-sizing: border-box;
+  align-items: start;
+}
+
+.demo-phone-col {
+  display: flex;
+  justify-content: center;
+  padding-top: 8px;
+}
+
+.demo-panel-col {
+  min-width: 0;
+  overflow-y: auto;
+  max-height: 100dvh;
+  padding-bottom: 40px;
+  pointer-events: all;
+  position: relative;
+  z-index: 10;
+}
+
+/* ── Phone frame ── */
+
+/*
+  Frame border-box math:
+    width: 380px, border: 10px → content width  = 360px
+    height: 800px, border: 10px → content height = 780px
+  Scale = 360/390 = 0.923
+  Scaled iframe: 390×0.923=360px wide, 844×0.923=779px tall → fits exactly
+*/
+.phone-frame {
+  width: 380px;
+  height: 800px;
+  border: 10px solid #1A1614;
+  border-radius: 48px;
+  overflow: hidden;
+  position: relative;
+  background: #000;
+  flex-shrink: 0;
+  box-shadow:
+    0 0 0 1px #333,
+    0 32px 64px rgba(0,0,0,0.35);
+}
+
+/* Center wrapper horizontally, scale around top-center so it fills frame exactly */
+.phone-screen-wrapper {
+  width: 390px;
+  height: 844px;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%) scale(0.923);
+  transform-origin: top center;
+}
+
+.phone-screen {
+  width: 390px;
+  height: 844px;
+  border: none;
+  display: block;
+}
+
+/* ── Panel sections ── */
+
+.demo-panel-section {
+  margin-bottom: 20px;
+}
+
+.demo-panel-label {
+  font-family: var(--font-ui, 'IBM Plex Sans', sans-serif);
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary, #666);
+  margin-bottom: 6px;
+}
+
+.demo-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: var(--radius-md, 8px);
+  border: 1px solid var(--border-subtle, #e8e0dc);
+  margin-bottom: 6px;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+  word-break: break-word;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  background: var(--bg-surface, #fff);
+  pointer-events: all;
+  user-select: none;
+}
+
+.demo-option input[type="radio"] {
+  display: none;
+}
+
+.demo-option.active {
+  border-color: var(--interactive-primary, #7A003C);
+  background: var(--bg-brand-subtle, #fdf0f5);
+}
+
+.demo-option-label {
+  font-family: var(--font-ui, 'IBM Plex Sans', sans-serif);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary, #1a1614);
+  line-height: 1.3;
+}
+
+.demo-option-sub {
+  font-family: var(--font-ui, 'IBM Plex Sans', sans-serif);
+  font-size: 10px;
+  color: var(--text-secondary, #666);
+  margin-top: 2px;
+  line-height: 1.4;
+}
+
+/* ── Toggle ── */
+
+.demo-divider {
+  border: none;
+  border-top: 1px solid var(--border-subtle, #e8e0dc);
+  margin-bottom: 16px;
+}
+
+.demo-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  pointer-events: all;
+  user-select: none;
+}
+
+.demo-toggle-label {
+  font-family: var(--font-ui, 'IBM Plex Sans', sans-serif);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-primary, #1a1614);
+}
+
+.demo-toggle-sub {
+  font-family: var(--font-ui, 'IBM Plex Sans', sans-serif);
+  font-size: 10px;
+  color: var(--text-secondary, #666);
+  margin-top: 2px;
+}
+
+.demo-toggle {
+  width: 40px;
+  height: 24px;
+  border-radius: 12px;
+  background: var(--border-default, #ccc);
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.2s ease;
+  pointer-events: none; /* click handled by parent row */
+}
+
+.demo-toggle::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.demo-toggle.on {
+  background: var(--interactive-primary, #7A003C);
+}
+
+.demo-toggle.on::after {
+  transform: translateX(16px);
+}
+
+/* ── Mobile fullscreen mode ── */
+
+.demo-mobile-fullscreen {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-app, #f8f5f4);
+}
+
+.demo-mobile-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+.demo-exit-mobile {
+  position: fixed;
+  bottom: 20px;
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(26, 22, 20, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+  z-index: 9999;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 560px) {
+  .demo-page {
+    grid-template-columns: 1fr;
+    padding: 16px;
+  }
+  .demo-phone-col {
+    justify-content: center;
+  }
+  .demo-panel-col {
+    max-height: none;
+    padding-bottom: 24px;
+  }
+}
