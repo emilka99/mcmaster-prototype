@@ -38,3 +38,11 @@ body {
 .icon-md { font-size: 24px; }
 .icon-lg { font-size: 32px; }
 .icon-xl { font-size: 48px; }
+
+/* Demo mode — hide tips */
+body.hide-tips .onboarding-hint,
+body.hide-tips .dev-toggle,
+body.hide-tips .empty-state-hint,
+body.hide-tips .sync-banner {
+  display: none !important;
+}

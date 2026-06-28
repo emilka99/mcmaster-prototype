@@ -117,7 +117,7 @@ function EmptyHome({ navigate }) {
         }}>
           {greeting()}
         </h1>
-        <p style={{ fontFamily: 'var(--font-ui)', fontSize: '16px', color: 'var(--text-secondary)' }}>
+        <p className="onboarding-hint" style={{ fontFamily: 'var(--font-ui)', fontSize: '16px', color: 'var(--text-secondary)' }}>
           Welcome to McMaster Textbook
         </p>
       </div>

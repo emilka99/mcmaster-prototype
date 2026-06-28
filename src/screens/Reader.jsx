@@ -674,7 +674,7 @@ export default function Reader() {
 
       {/* ── Sync outdated banner ── */}
       {offlineState.syncStatus === 'outdated' && (
-        <div style={{
+        <div className="sync-banner" style={{
           display: 'flex', alignItems: 'center', gap: '8px',
           padding: '8px 20px',
           background: 'var(--color-background-warning, #FFFBEB)',

@@ -70,7 +70,7 @@ function EmptyAll({ navigate }) {
       <p style={{ fontFamily: 'var(--font-ui)', fontWeight: 600, fontSize: '16px', color: 'var(--text-primary)', marginBottom: '8px' }}>
         No saved chapters yet
       </p>
-      <p style={{ fontFamily: 'var(--font-ui)', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '28px', lineHeight: 1.5 }}>
+      <p className="onboarding-hint" style={{ fontFamily: 'var(--font-ui)', fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '28px', lineHeight: 1.5 }}>
         Tap the bookmark icon while reading
       </p>
       <button
